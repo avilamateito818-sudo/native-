@@ -6,7 +6,7 @@ const app = express();
 const PORT = process.env.PORT || 8080;
 
 const USER_HASH = "c5a86d0115bf2ec0912ac75f088683390d15310e634340fb716005d52b267487";
-const PASS_HASH = "1848f515312efb1e7d0be73d9034c396c372c568b29ec50820e5a1e98789f9d0";
+const PASS_HASH = "c64a86bbbb244f55c26083fec5badf43fdf9f9c6631bd144f1b03ccdf2ce812e";
 
 const publicDir = path.join(__dirname, "..");
 
