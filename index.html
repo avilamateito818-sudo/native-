@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Native Origen — Cosmética y belleza de lujo. Sérum, maquillaje, fragancias y cuidado corporal." />
+  <title>Native Origen — Cosmética & Belleza</title>
+  <link rel="icon" type="image/svg+xml" href="images/favicon.svg" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- Preloader -->
+  <div class="preloader" id="preloader">
+    <div class="preloader__bar" id="preloader-bar"></div>
+    <div class="preloader__logo">B</div>
+  </div>
+
+  <!-- ============ NAVBAR ============ -->
+  <header class="nav" id="nav">
+    <div class="nav__inner">
+      <a href="#inicio" class="brand">
+        <span class="brand__mark">B</span>
+        <span class="brand__name">Native<span>·</span>Origen</span>
+      </a>
+
+      <nav>
+        <ul class="nav__links" id="nav-links">
+          <li><a href="#inicio">Inicio</a></li>
+          <li><a href="#nosotros">Nosotros</a></li>
+          <li class="has-menu">
+            <a href="#" class="menu-toggle" aria-haspopup="true">Catálogo ▾</a>
+            <ul class="cat__menu">
+              <li><a href="labiales.html">💄 Labiales</a></li>
+              <li><a href="maquillaje.html">🎨 Maquillaje</a></li>
+              <li><a href="cremas.html">🧴 Cremas</a></li>
+              <li><a href="mascarillas.html">🎭 Mascarillas</a></li>
+              <li><a href="corporal.html">🫧 Corporal</a></li>
+              <li><a href="fragancias.html">🌸 Fragancias</a></li>
+            </ul>
+          </li>
+          <li><a href="#ofertas">Ofertas</a></li>
+          <li><a href="#testimonios">Opiniones</a></li>
+          <li><a href="#contacto">Contacto</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav__cta">
+        <button class="nav__bag" id="bag-btn" aria-label="Bolsa de compras">
+          🛍 <span class="count" id="bag-count">0</span>
+        </button>
+        <a href="#catalogo" class="btn-nav">Comprar</a>
+        <button class="burger" id="burger" aria-label="Abrir menú" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- ============ HERO ============ -->
+    <section class="hero" id="inicio">
+      <div class="hero__blob"></div>
+      <div class="hero__inner">
+        <div>
+          <span class="hero__eyebrow">Cosmética & Belleza desde 2012</span>
+          <h1>Despierta tu belleza <em>natural</em>, cada día.</h1>
+          <p class="hero__copy">
+            Descubre una selección curada de productos de cosmética facial, maquillaje,
+            cuidado corporal y fragancias. Ingredientes nobles, fórmulas limpias y resultados que se ven y se sienten.
+          </p>
+          <div class="hero__actions">
+            <a href="#catalogo" class="btn btn--gold">Ver Catálogo</a>
+            <a href="#nosotros" class="btn btn--ghost">Conócenos</a>
+          </div>
+          <div class="hero__stats">
+            <div data-prefix="+" data-num="12" data-suffix="k"><span class="num">+12k</span> <small>Clientas felices</small></div>
+            <div data-prefix="+" data-num="350" data-suffix=""><span class="num">+350</span> <small>Productos</small></div>
+            <div data-prefix="" data-num="4.9" data-suffix=""><span class="num">4.9</span> <small>Valoración</small></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ MARQUEE ============ -->
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee__track">
+        <span>Envio gratis +$50 <i class="star">✦</i> Belleza limpia <i class="star">✦</i> Cruelty free <i class="star">✦</i> Vegano friendly <i class="star">✦</i> Envio gratis +$50 <i class="star">✦</i> Belleza limpia <i class="star">✦</i> Cruelty free <i class="star">✦</i> Vegano friendly <i class="star">✦</i></span>
+      </div>
+    </div>
+
+    <!-- ============ SOBRE NOSOTROS ============ -->
+    <section class="section about" id="nosotros">
+      <div class="section__head">
+        <span class="section__num">01</span>
+        <div>
+          <span class="section__tag">Sobre Nosotros</span>
+          <h2 class="section__title">Un ritual de belleza<br />hecho <em>a mano</em> y con alma</h2>
+        </div>
+        <p class="section__lead">
+          Creamos cosmética que se siente tan bien como se ve: labiales cremosos,
+          cremas que abrazan la piel y mascarillas que sí se notan.
+        </p>
+      </div>
+
+      <!-- Manifiesto editorial -->
+      <p class="about__statement reveal">
+        Creemos en la belleza <span>lenta</span>, honesta y natural: la que nace de un
+        buen ingrediente, una fórmula cuidada y cero artificios que sobren.
+      </p>
+
+      <!-- Vitrina interactiva de categorías -->
+      <div class="showcase" id="showcase">
+        <button class="showcase__card reveal" data-categoria="Labiales" aria-label="Ver labiales">
+          <span class="showcase__emoji">💄</span>
+          <strong>Labiales</strong>
+          <p>Acabados mate, cremosos y brillo cristal que duran todo el día.</p>
+          <span class="showcase__cta">Ver Catálogo →</span>
+        </button>
+        <button class="showcase__card reveal" data-categoria="Cremas" aria-label="Ver cremas">
+          <span class="showcase__emoji">🧴</span>
+          <strong>Cremas</strong>
+          <p>Hidratación profunda con extractos botánicos y mantecas nobles.</p>
+          <span class="showcase__cta">Ver Catálogo →</span>
+        </button>
+        <button class="showcase__card reveal" data-categoria="Mascarillas" aria-label="Ver mascarillas">
+          <span class="showcase__emoji">🎭</span>
+          <strong>Mascarillas</strong>
+          <p>Arcillas, caolín y flores para un glow visible desde la primera aplicación.</p>
+          <span class="showcase__cta">Ver Catálogo →</span>
+        </button>
+        <button class="showcase__card reveal" data-categoria="Fragancias" aria-label="Ver fragancias">
+          <span class="showcase__emoji">🌸</span>
+          <strong>Fragancias</strong>
+          <p>Jazmín, vainilla y ámbar que dejan un recuerdo imposible de olvidar.</p>
+          <span class="showcase__cta">Ver Catálogo →</span>
+        </button>
+      </div>
+
+      <!-- Franja de cifras -->
+      <div class="about__band reveal">
+        <div>
+          <span class="big">120</span>
+          <span>recetas propias en el laboratorio</span>
+        </div>
+        <div>
+          <span class="big">0</span>
+          <span>test en animales, siempre</span>
+        </div>
+        <div>
+          <span class="big">98%</span>
+          <span>ingredientes de origen natural</span>
+        </div>
+        <div>
+          <span class="big">+14</span>
+          <span>años formulando con amor</span>
+        </div>
+      </div>
+
+      <div class="about__grid">
+        <div class="about__media reveal">
+          <div class="collage">
+            <span class="c1">💄</span>
+            <span class="c2">🧴</span>
+            <span class="c3">🎭</span>
+            <span class="c4">🌸</span>
+          </div>
+          <div class="stamp">Belleza que se siente bien</div>
+        </div>
+        <div class="about__body reveal">
+          <span class="section__tag">Nuestro ADN</span>
+          <h3>Nada se sale del frasco sin haber pasado <em>3 pruebas</em> de piel</h3>
+          <p>
+            Native Origen nació en un pequeño laboratorio con una idea clara: la belleza
+            no debería costarte, ni a tu piel ni al planeta. Cada labial, crema y mascarilla
+            que sale de nuestra casa es probado por personas reales, en piel real,
+            antes de llegar a tus manos.
+          </p>
+          <div class="process">
+            <div class="process__step">
+              <span class="n">01</span>
+              <p><strong>Ingrediente</strong> Materias primas nobles y trazables.</p>
+            </div>
+            <div class="process__step">
+              <span class="n">02</span>
+              <p><strong>Fórmula</strong> Pequeños lotes, máxima atención.</p>
+            </div>
+            <div class="process__step">
+              <span class="n">03</span>
+              <p><strong>Resultado</strong> Pruebas en piel real antes de vender.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CATÁLOGO ============ -->
+    <section class="section catalog" id="catalogo">
+      <div class="section__head">
+        <span class="section__num">02</span>
+        <div>
+          <span class="section__tag">Catálogo</span>
+          <h2 class="section__title">Nuestros productos estrella</h2>
+        </div>
+        <p class="section__lead">Explora por categoría y encuentra la pieza perfecta para tu rutina de belleza. Precios en USD.</p>
+      </div>
+
+      <div class="catalog__filters" id="catalog-filters">
+        <button class="filter-btn active" data-filter="Todos">Todos</button>
+        <button class="filter-btn" data-filter="Labiales">Labiales</button>
+        <button class="filter-btn" data-filter="Maquillaje">Maquillaje</button>
+        <button class="filter-btn" data-filter="Cremas">Cremas</button>
+        <button class="filter-btn" data-filter="Mascarillas">Mascarillas</button>
+        <button class="filter-btn" data-filter="Corporal">Corporal</button>
+        <button class="filter-btn" data-filter="Fragancias">Fragancias</button>
+      </div>
+
+      <div class="catalog__grid" id="catalog-grid"></div>
+      <p class="catalog__empty" id="catalog-empty">No hay productos en esta categoría por el momento.</p>
+    </section>
+
+    <!-- ============ BANNER OFERTAS ============ -->
+    <section class="promo" id="ofertas">
+      <div class="promo__inner">
+        <div class="reveal">
+          <span class="section__tag">Oferta del mes</span>
+          <h2>Rutina <em>Glow</em> completa con <em>-30%</em></h2>
+          <p>
+            Sérum, crema hidratante y limpiador en un set pensado para iluminar tu piel
+            de día a día. La forma perfecta de empezar (o renovar) tu ritual de belleza.
+          </p>
+          <a href="#catalogo" class="btn btn--gold">Quiero mi set</a>
+        </div>
+        <div class="promo__offer reveal">
+          <div class="big">−30%</div>
+          <span>En el set rutina Glow</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ TESTIMONIOS ============ -->
+    <section class="section testimonials" id="testimonios">
+      <div class="section__head">
+        <span class="section__num">03</span>
+        <div>
+          <span class="section__tag">Opiniones</span>
+          <h2 class="section__title">Lo que dicen nuestras clientas</h2>
+        </div>
+      </div>
+      <div class="testimonials__grid">
+        <div class="testimonial reveal">
+          <div class="stars">★★★★★</div>
+          <p>"El sérum Glow cambió mi piel por completo. Se nota la diferencia desde la primera semana."</p>
+          <footer>Mariana G. <small>Ciudad de México</small></footer>
+        </div>
+        <div class="testimonial reveal">
+          <div class="stars">★★★★★</div>
+          <p>"Encargo cada mes mi labial Terciopelo. Duración increíble y el color es precioso."</p>
+          <footer>Lucía F. <small>Bogotá</small></footer>
+        </div>
+        <div class="testimonial reveal">
+          <div class="stars">★★★★★</div>
+          <p>"El perfume Flor de Noche es mi firma personal. Todo el mundo me pregunta qué uso."</p>
+          <footer>Valentina R. <small>Buenos Aires</small></footer>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CONTACTO / PETICIONES ============ -->
+    <section class="section newsletter" id="contacto">
+      <div class="newsletter__inner contact__inner reveal">
+        <span class="section__tag">Contacto</span>
+        <h2>Cuéntanos, ¿qué necesitas?</h2>
+        <p>
+          Déjanos tu nombre, correo y teléfono junto con tu petición. Te contactamos
+          en menos de 24 horas.
+        </p>
+
+        <form class="contact__form" id="contact-form" action="https://formsubmit.co/aliados.online36@gmail.com" method="POST">
+          <input type="hidden" name="_subject" value="Nueva petición — Native Origen" />
+          <input type="hidden" name="_template" value="table" />
+          <input type="hidden" name="_captcha" value="false" />
+          <input class="f" type="text" name="nombre" placeholder="Tu nombre" aria-label="Tu nombre" required />
+          <input class="f" type="email" name="correo" placeholder="Tu correo electrónico" aria-label="Tu correo electrónico" required />
+          <input class="f" type="tel" name="telefono" placeholder="Tu teléfono (ej. 315 472 9668)" aria-label="Tu teléfono" pattern="[0-9\s+()-]{7,15}" required />
+          <textarea class="f" name="peticion" placeholder="¿Qué necesitas? Cuéntanos tu petición..." aria-label="Tu petición" rows="4" required></textarea>
+          <button class="btn btn--gold" type="submit">Enviar petición ✦</button>
+        </form>
+
+        <div class="contact__info">
+          <a href="tel:+573154729668"><span>📞</span> 315 472 9668</a>
+          <a href="mailto:aliados.online36@gmail.com"><span>✉</span> aliados.online36@gmail.com</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="footer">
+    <div class="footer__grid">
+      <div>
+        <a href="#inicio" class="brand">
+          <span class="brand__mark">B</span>
+          <span class="brand__name">Native<span>·</span>Origen</span>
+        </a>
+        <p>Cosmética y belleza de lujo con fórmulas limpias, éticas y efectivas. Hecho con amor.</p>
+        <div class="footer__contact">
+          <a href="tel:+573154729668">📞 315 472 9668</a>
+          <a href="mailto:aliados.online36@gmail.com">✉ aliados.online36@gmail.com</a>
+        </div>
+      </div>
+      <div>
+        <h4>Tienda</h4>
+        <ul>
+          <li><a href="labiales.html">Labiales</a></li>
+          <li><a href="maquillaje.html">Maquillaje</a></li>
+          <li><a href="cremas.html">Cremas</a></li>
+          <li><a href="mascarillas.html">Mascarillas</a></li>
+          <li><a href="corporal.html">Corporal</a></li>
+          <li><a href="fragancias.html">Fragancias</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Compañía</h4>
+        <ul>
+          <li><a href="#nosotros">Nosotros</a></li>
+          <li><a href="#ofertas">Ofertas</a></li>
+          <li><a href="#testimonios">Opiniones</a></li>
+          <li><a href="#contacto">Contacto</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Ayuda</h4>
+        <ul>
+          <li><a href="#contacto">Envíos</a></li>
+          <li><a href="#contacto">Devoluciones</a></li>
+          <li><a href="#contacto">Preguntas frecuentes</a></li>
+          <li><a href="#contacto">Términos & privacidad</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <span>© 2026 Native Origen. Todos los derechos reservados.</span>
+      <span>Hecho con ✦ y mucho cuidado</span>
+      <a href="admin.html" class="footer__admin" aria-label="Panel administrador">⚙</a>
+    </div>
+  </footer>
+
+  <!-- Toast -->
+  <div class="toast" id="toast" role="status"></div>
+
+  <!-- Drawer de la bolsa -->
+  <div class="drawer-overlay" id="drawer-overlay"></div>
+  <aside class="drawer" id="drawer" aria-label="Tu bolsa de compras" aria-hidden="true">
+    <div class="drawer__head">
+      <h3>Tu bolsa 🛍</h3>
+      <button class="drawer__close" id="drawer-close" aria-label="Cerrar bolsa">✕</button>
+    </div>
+    <div class="drawer__items" id="drawer-items"></div>
+    <div class="drawer__foot">
+      <div class="drawer__subtotal">
+        <span>Subtotal</span>
+        <span id="drawer-subtotal">$0.00</span>
+      </div>
+      <div class="drawer__actions">
+        <button class="btn btn--gold" id="btn-checkout" disabled>Pagar ahora</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Back to top -->
+  <button class="to-top" id="to-top" aria-label="Volver arriba">↑</button>
+
+  <script src="js/productos.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
