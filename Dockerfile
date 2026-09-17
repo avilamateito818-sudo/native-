@@ -16,7 +16,6 @@ COPY cremas.html ./cremas.html
 COPY mascarillas.html ./mascarillas.html
 COPY corporal.html ./corporal.html
 COPY fragancias.html ./fragancias.html
-COPY admin.html ./admin.html
 
 ENV PORT=8080
 EXPOSE 8080
