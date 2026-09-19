@@ -19,8 +19,8 @@ document.addEventListener("DOMContentLoaded", () => {
     setTimeout(() => preloader.classList.add("hidden"), 200);
   });
 
-  const PRODUCTOS = window.PRODUCTOS || [];
-  const CATEGORIAS = window.CATEGORIAS || {};
+  let PRODUCTOS = (window.obtenerProductos ? window.obtenerProductos() : window.PRODUCTOS) || [];
+  const CATEGORIAS = (window.obtenerCategorias ? window.obtenerCategorias() : window.CATEGORIAS) || {};
   const ORDEN = window.ORDEN_CATEGORIAS || [];
   const categoria = document.body.dataset.categoria;
 
@@ -38,6 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function renderProductos(cat) {
     if (!grid) return;
+    PRODUCTOS = (window.obtenerProductos ? window.obtenerProductos() : window.PRODUCTOS) || [];
     const items = !cat || cat === "Todos" ? PRODUCTOS : PRODUCTOS.filter((p) => p.categoria === cat);
     grid.innerHTML = "";
 
@@ -49,20 +50,25 @@ document.addEventListener("DOMContentLoaded", () => {
     items.forEach((p, i) => {
       const card = document.createElement("article");
       card.className = "card reveal";
-      card.style.setProperty("--media-a", p.colores[0]);
-      card.style.setProperty("--media-b", p.colores[1]);
+      const colA = (p.colores && p.colores[0]) ? p.colores[0] : "#f6e7dd";
+      const colB = (p.colores && p.colores[1]) ? p.colores[1] : "#e7cfc6";
+      card.style.setProperty("--media-a", colA);
+      card.style.setProperty("--media-b", colB);
       card.style.animation = "none";
       void card.offsetWidth;
       card.style.animation = `cardIn 0.55s ease both`;
 
       const badge = p.viejo ? '<span class="card__badge">Oferta</span>' : "";
       const viejo = p.viejo ? `<del>$${p.viejo}.00</del>` : "";
+      const mediaHtml = p.imagen
+        ? `<img src="${p.imagen}" alt="${p.nombre}" class="card__img" loading="lazy" />`
+        : `<span class="emoji" loading="lazy">${p.emoji || "✨"}</span>`;
 
       card.innerHTML = `
         <div class="card__media">
           ${badge}
           <button class="card__wish" aria-label="Agregar a favoritos">♡</button>
-          <span class="emoji" loading="lazy">${p.emoji}</span>
+          ${mediaHtml}
         </div>
         <div class="card__body">
           <span class="card__cat">${p.categoria}</span>
@@ -85,6 +91,11 @@ document.addEventListener("DOMContentLoaded", () => {
       card.querySelector(".btn-add").addEventListener("click", () => agregarAlBolsa(p));
     });
   }
+
+  window.addEventListener("productosActualizados", (e) => {
+    PRODUCTOS = e.detail || (window.obtenerProductos ? window.obtenerProductos() : []);
+    renderProductos(categoria || filtro);
+  });
 
   /* ============ Página de categoría ============ */
   if (categoria) {
@@ -188,10 +199,15 @@ document.addEventListener("DOMContentLoaded", () => {
     bolsa.forEach((b) => {
       const item = document.createElement("div");
       item.className = "drawer__item";
-      item.style.setProperty("--media-a", b.colores[0]);
-      item.style.setProperty("--media-b", b.colores[1]);
+      const colA = (b.colores && b.colores[0]) ? b.colores[0] : "#f6e7dd";
+      const colB = (b.colores && b.colores[1]) ? b.colores[1] : "#e7cfc6";
+      item.style.setProperty("--media-a", colA);
+      item.style.setProperty("--media-b", colB);
+      const thumbHtml = b.imagen
+        ? `<img src="${b.imagen}" alt="${b.nombre}" style="width:100%;height:100%;object-fit:cover;border-radius:10px;" />`
+        : (b.emoji || "🛍");
       item.innerHTML = `
-        <div class="thumb">${b.emoji}</div>
+        <div class="thumb">${thumbHtml}</div>
         <div class="info">
           <strong>${b.nombre}</strong>
           <small>${b.categoria}</small>

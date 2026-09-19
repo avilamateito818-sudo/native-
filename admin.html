@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Panel de Administración — Native Origen</title>
+  <link rel="icon" type="image/svg+xml" href="images/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/admin.css" />
+</head>
+<body>
+
+  <!-- ============ PANTALLA DE ACCESO / LOGIN ============ -->
+  <div class="login-screen" id="login-screen">
+    <div class="login-box">
+      <div class="login-box__logo">✦</div>
+      <h2>Panel Administrador</h2>
+      <p>Accede para cambiar fotos, precios, categorías y añadir productos al catálogo.</p>
+      
+      <form class="login-form" id="login-form">
+        <div class="form-group">
+          <label for="admin-user">Usuario</label>
+          <input class="input-control" type="text" id="admin-user" placeholder="admin" required autocomplete="username" />
+        </div>
+        <div class="form-group">
+          <label for="admin-pass">Contraseña</label>
+          <input class="input-control" type="password" id="admin-pass" placeholder="••••••••" required autocomplete="current-password" />
+        </div>
+        <button class="btn-primary" type="submit">Ingresar al Panel</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============ PANEL PRINCIPAL ============ -->
+  <div class="admin-app" id="admin-app" style="display: none;">
+    <header class="admin-header">
+      <div class="admin-header__inner">
+        <a href="index.html" class="admin-brand">
+          <div class="admin-brand__mark">✦</div>
+          <div>
+            <h1 class="admin-brand__title">Native<span>·</span>Origen</h1>
+          </div>
+          <span class="admin-brand__badge">Admin</span>
+        </a>
+
+        <div class="admin-nav-actions">
+          <a href="index.html" class="btn-header">🛍️ Ver Tienda</a>
+          <button class="btn-header btn-header--gold" id="btn-nuevo-prod">➕ Nuevo Producto</button>
+          <button class="btn-header" id="btn-descargar-js" title="Descargar archivo js/productos.js para guardar en Git">📥 Exportar a Git</button>
+          <button class="btn-header" id="btn-logout">Cerrar Sesión</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="admin-main">
+      <!-- Resumen Métricas -->
+      <section class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-card__icon">📦</div>
+          <div class="metric-card__info">
+            <strong id="metric-total">0</strong>
+            <span>Productos Activos</span>
+          </div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-card__icon">🏷️</div>
+          <div class="metric-card__info">
+            <strong id="metric-cats">0</strong>
+            <span>Categorías</span>
+          </div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-card__icon">💰</div>
+          <div class="metric-card__info">
+            <strong id="metric-precio">$0</strong>
+            <span>Precio Promedio</span>
+          </div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-card__icon">🔥</div>
+          <div class="metric-card__info">
+            <strong id="metric-ofertas">0</strong>
+            <span>En Oferta</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Barra de Controles y Búsqueda -->
+      <section class="controls-bar">
+        <div class="controls-bar__left">
+          <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input class="input-control" type="text" id="admin-search" placeholder="Buscar por nombre o descripción..." />
+          </div>
+          <select class="filter-select" id="admin-cat-filter">
+            <option value="Todos">Todas las categorías</option>
+          </select>
+        </div>
+
+        <div class="controls-bar__right">
+          <button class="btn-action btn-action--edit" id="btn-restablecer" style="padding: 10px 18px;">🔄 Restaurar Catálogo</button>
+        </div>
+      </section>
+
+      <!-- Grid de Productos -->
+      <section class="products-admin-grid" id="admin-products-grid"></section>
+    </main>
+  </div>
+
+  <!-- ============ MODAL DE CREACIÓN / EDICIÓN ============ -->
+  <div class="modal-overlay" id="product-modal">
+    <div class="modal-dialog">
+      <div class="modal-head">
+        <h3 id="modal-title">Añadir Producto</h3>
+        <button class="modal-close" id="modal-close-btn" aria-label="Cerrar modal">✕</button>
+      </div>
+
+      <form id="product-form">
+        <input type="hidden" id="prod-id" />
+        
+        <div class="modal-body">
+          <!-- Columna Izquierda: Campos del Formulario -->
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="prod-nombre">Nombre del Producto *</label>
+              <input class="input-control" type="text" id="prod-nombre" placeholder="Ej. Sérum Glow Radiante" required />
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="prod-categoria">Categoría *</label>
+                <select class="input-control" id="prod-categoria" required>
+                  <option value="Labiales">💄 Labiales</option>
+                  <option value="Maquillaje">🎨 Maquillaje</option>
+                  <option value="Cremas">🧴 Cremas</option>
+                  <option value="Mascarillas">🎭 Mascarillas</option>
+                  <option value="Corporal">🫧 Corporal</option>
+                  <option value="Fragancias">🌸 Fragancias</option>
+                  <option value="NUEVA">+ Otra categoría...</option>
+                </select>
+              </div>
+
+              <div class="form-group" id="group-nueva-cat" style="display: none;">
+                <label for="prod-nueva-cat">Nueva Categoría</label>
+                <input class="input-control" type="text" id="prod-nueva-cat" placeholder="Nombre de categoría" />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="prod-precio">Precio ($ USD) *</label>
+                <input class="input-control" type="number" id="prod-precio" min="1" step="0.5" placeholder="28" required />
+              </div>
+
+              <div class="form-group">
+                <label for="prod-viejo">Precio Anterior / Oferta ($)</label>
+                <input class="input-control" type="number" id="prod-viejo" min="0" step="0.5" placeholder="Opcional (ej. 35)" />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="prod-desc">Descripción *</label>
+              <textarea class="input-control" id="prod-desc" rows="3" placeholder="Ingredientes nobles, beneficios para la piel, acabado..." required></textarea>
+            </div>
+
+            <!-- Sección de Foto / Imagen -->
+            <div class="form-group">
+              <label>Foto / Imagen del Producto</label>
+              <div class="image-uploader" id="image-dropzone">
+                <div class="image-uploader__icon">📸</div>
+                <p><strong>Haz clic para subir una foto</strong> o arrástrala aquí</p>
+                <p style="font-size: 11px; margin-top: 4px;">PNG, JPG, WebP (se optimizará automáticamente)</p>
+                <input type="file" id="prod-file" accept="image/*" style="display: none;" />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="prod-img-url" style="font-size: 11px; color: var(--muted);">O pegar enlace URL de imagen:</label>
+              <input class="input-control" type="url" id="prod-img-url" placeholder="https://ejemplo.com/foto.jpg" />
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="prod-emoji">Emoji (si no tiene foto)</label>
+                <input class="input-control" type="text" id="prod-emoji" placeholder="✨" maxlength="4" />
+              </div>
+              <div class="form-group">
+                <label for="prod-color-a">Color de fondo</label>
+                <div style="display: flex; gap: 8px;">
+                  <input type="color" id="prod-color-a" value="#f6e7dd" style="height: 42px; width: 50%; border: none; border-radius: 8px; cursor: pointer;" />
+                  <input type="color" id="prod-color-b" value="#e7cfc6" style="height: 42px; width: 50%; border: none; border-radius: 8px; cursor: pointer;" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Columna Derecha: Vista Previa en Vivo -->
+          <div class="preview-panel">
+            <span class="preview-panel__title">Vista Previa en Tienda</span>
+            <div class="preview-card" id="preview-card">
+              <div class="preview-card__media" id="preview-media" style="--media-a: #f6e7dd; --media-b: #e7cfc6;">
+                <span class="admin-card__badge" id="preview-badge" style="display: none;">Oferta</span>
+                <div id="preview-media-content"><span style="font-size: 64px;">✨</span></div>
+              </div>
+              <div class="preview-card__body">
+                <span class="admin-card__cat" id="preview-cat">Categoría</span>
+                <h4 class="admin-card__title" id="preview-name" style="margin: 4px 0;">Nombre del Producto</h4>
+                <p class="admin-card__desc" id="preview-desc">Descripción del producto tal como aparecerá en el catálogo.</p>
+                <div class="admin-card__price-row" style="margin-top: 10px;">
+                  <span class="admin-card__price" id="preview-price">$0.00</span>
+                  <span class="admin-card__old-price" id="preview-old"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-foot">
+          <button type="button" class="btn-secondary" id="modal-cancel-btn">Cancelar</button>
+          <button type="submit" class="btn-primary" style="margin-top: 0;">Guardar Producto</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="admin-toast" id="admin-toast"></div>
+
+  <script src="js/productos.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>
