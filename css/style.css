@@ -1784,6 +1784,54 @@ section[id] { scroll-margin-top: calc(var(--nav-h) + 12px); }
 .btn-volver { color: var(--wine); font-weight: 600; font-size: 14px; text-decoration: none; }
 .btn-volver:hover { text-decoration: underline; }
 
+/* ---------- Formulario de compra directa ---------- */
+.product-info__orderbox {
+  margin-top: 8px;
+  border: 1.5px solid var(--cream);
+  border-radius: 18px;
+  background: #fff;
+  padding: 18px 20px 20px;
+  box-shadow: 0 12px 34px -24px rgba(62, 42, 53, 0.4);
+}
+.orderbox__head { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+.orderbox__head .orderbox__ico {
+  width: 40px; height: 40px; border-radius: 12px; background: var(--gold);
+  display: grid; place-items: center; font-size: 19px; flex: none;
+}
+.orderbox__head h3 {
+  font-family: "Playfair Display", serif; color: var(--wine);
+  font-size: 21px; margin: 0; line-height: 1.1;
+}
+.orderbox__resumen { margin-left: auto; font-size: 12.5px; color: var(--muted); font-weight: 600; text-align: right; }
+.orderbox__resumen b { color: var(--wine); }
+.orderbox__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.orderbox__field { display: flex; flex-direction: column; gap: 5px; }
+.orderbox__field span {
+  font-size: 10.5px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted);
+}
+.orderbox__field input,
+.orderbox__field select {
+  font: inherit; font-size: 14.5px; padding: 11px 13px; border-radius: 12px;
+  border: 1.5px solid var(--cream); background: #fdfaf6; color: var(--wine-dark);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease; width: 100%;
+}
+.orderbox__field input::placeholder { color: #c4b39f; }
+.orderbox__field input:focus,
+.orderbox__field select:focus {
+  outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px rgba(197, 153, 110, 0.18);
+}
+.orderbox__total {
+  display: flex; align-items: center; justify-content: space-between;
+  margin: 14px 0 12px; padding-top: 14px; border-top: 1px dashed var(--cream);
+}
+.orderbox__total span { color: var(--muted); font-weight: 600; }
+.orderbox__total strong { font-size: 26px; color: var(--wine); font-family: "Playfair Display", serif; }
+#btn-orderbox-submit { width: 100%; padding: 14px; font-size: 15px; }
+@media (max-width: 520px) {
+  .orderbox__grid { grid-template-columns: 1fr; }
+  .orderbox__resumen { display: none; }
+}
+
 .product-info__notfound { text-align: center; padding: 60px 20px; }
 .product-info__notfound .ico { font-size: 54px; display: block; margin-bottom: 14px; }
 .product-info__notfound h2 { font-family: "Playfair Display", serif; color: var(--wine); font-size: 30px; margin: 0 0 8px; }

@@ -167,16 +167,72 @@ document.addEventListener("DOMContentLoaded", () => {
         ${ws ? `<a class="btn-whatsapp" target="_blank" rel="noopener" href="https://wa.me/${ws.replace(/\D/g, "")}?text=${encodeURIComponent("Hola Native Origen, me interesa \"" + p.nombre + "\"")}">💬 ¿Dudas? Escríbenos</a>` : ""}
         <a class="btn-volver" href="index.html#catalogo">← Volver al catálogo</a>
       </div>
+      ${agotado ? "" : `
+      <div class="product-info__orderbox" id="orderbox">
+        <div class="orderbox__head">
+          <span class="orderbox__ico">🛒</span>
+          <h3>Compra directa</h3>
+          <span class="orderbox__resumen">${p.nombre} · ${sim}${p.precio}.00 × <b id="orderbox-qty">${cantidad}</b></span>
+        </div>
+        <form id="order-form" novalidate>
+          <div class="orderbox__grid">
+            <label class="orderbox__field">
+              <span>Tu nombre</span>
+              <input type="text" id="order-nombre" placeholder="Nombre y apellido" autocomplete="name" />
+            </label>
+            <label class="orderbox__field">
+              <span>Tu WhatsApp</span>
+              <input type="tel" id="order-tel" placeholder="300 000 0000" autocomplete="tel" />
+            </label>
+            <label class="orderbox__field">
+              <span>Ciudad</span>
+              <input type="text" id="order-ciudad" placeholder="Tu ciudad" autocomplete="address-level2" />
+            </label>
+            <label class="orderbox__field">
+              <span>Dirección</span>
+              <input type="text" id="order-dir" placeholder="Barrio y dirección" autocomplete="street-address" />
+            </label>
+            <label class="orderbox__field">
+              <span>Tipo de entrega</span>
+              <select id="order-entrega">
+                <option>Envío a domicilio</option>
+                <option>Punto de encuentro</option>
+              </select>
+            </label>
+            <label class="orderbox__field">
+              <span>Forma de pago</span>
+              <select id="order-pago">
+                <option>Efectivo al recibir</option>
+                <option>Nequi</option>
+                <option>Transferencia bancaria</option>
+              </select>
+            </label>
+          </div>
+          <div class="orderbox__total">
+            <span>Total a pagar</span>
+            <strong id="orderbox-total">${sim}${(p.precio * cantidad).toFixed(2)}</strong>
+          </div>
+          <button type="submit" class="btn btn--gold" id="btn-orderbox-submit">Confirmar pedido por WhatsApp</button>
+        </form>
+      </div>`}
     `;
 
     const qtyVal = document.getElementById("qty-val");
+    const sincronizarOrden = () => {
+      const q = document.getElementById("orderbox-qty");
+      const t = document.getElementById("orderbox-total");
+      if (q) q.textContent = cantidad;
+      if (t) t.textContent = `${sim}${(p.precio * cantidad).toFixed(2)}`;
+    };
     document.getElementById("qty-minus").addEventListener("click", () => {
       cantidad = Math.max(1, cantidad - 1);
       qtyVal.textContent = cantidad;
+      sincronizarOrden();
     });
     document.getElementById("qty-plus").addEventListener("click", () => {
       cantidad += 1;
       qtyVal.textContent = cantidad;
+      sincronizarOrden();
     });
     document.getElementById("btn-add-detail").addEventListener("click", () => {
       const bolsa = leerBolsa();
@@ -187,6 +243,49 @@ document.addEventListener("DOMContentLoaded", () => {
       actualizarContador();
       mostrarToast(`✓ ${p.nombre} añadido a tu bolsa`);
     });
+
+    const formOrden = document.getElementById("order-form");
+    if (formOrden) {
+      formOrden.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const nombre = document.getElementById("order-nombre").value.trim();
+        const tel = document.getElementById("order-tel").value.trim();
+        const ciudad = document.getElementById("order-ciudad").value.trim();
+        const dir = document.getElementById("order-dir").value.trim();
+        if (!nombre || !tel || !ciudad || !dir) {
+          mostrarToast("⚠ Por favor completa nombre, WhatsApp, ciudad y dirección");
+          return;
+        }
+        const entrega = document.getElementById("order-entrega").value;
+        const pago = document.getElementById("order-pago").value;
+        const pedidos = (window.obtenerPedidos ? window.obtenerPedidos() : []) || [];
+        const total = p.precio * cantidad;
+        const nuevoPedido = {
+          id: (pedidos.length ? Math.max(...pedidos.map((x) => x.id || 100)) + 1 : 101),
+          fecha: new Date().toLocaleString(),
+          items: [{ id: p.id, nombre: p.nombre, cantidad, precio: p.precio }],
+          total,
+          estado: "Pedido nuevo",
+          cliente: nombre,
+          telefono: tel,
+          ciudad,
+          direccion: dir,
+          entrega,
+          pago
+        };
+        pedidos.push(nuevoPedido);
+        if (window.guardarPedidos) window.guardarPedidos(pedidos);
+        if (ws) {
+          const texto = `🧾 NUEVO PEDIDO #${nuevoPedido.id} — Native Origen\n\n📦 ${p.nombre} × ${cantidad}\n💰 Total: ${sim}${total.toFixed(2)}\n\n👤 ${nombre}\n📱 ${tel}\n📍 ${ciudad}, ${dir}\n🚚 ${entrega}\n💳 ${pago}`;
+          window.open(`https://wa.me/${ws.replace(/\D/g, "")}?text=${encodeURIComponent(texto)}`, "_blank");
+        }
+        mostrarToast(`✓ ¡Pedido #${nuevoPedido.id} enviado por WhatsApp!`);
+        formOrden.reset();
+        cantidad = 1;
+        qtyVal.textContent = cantidad;
+        sincronizarOrden();
+      });
+    }
   }
 
   function renderBreadcrumb() {
