@@ -1,28 +1,21 @@
 // ruta API Vercel: GET/POST /api/testimonios
-const fs = require("fs");
-const path = require("path");
+const { leerCatalogo, guardarCatalogo, cabeceras } = require("./_db.js");
 
-const catalogoPath = path.join(__dirname, "..", "data", "catalogo.json");
-
-function leerCatalogo() {
-  try {
-    return JSON.parse(fs.readFileSync(catalogoPath, "utf-8"));
-  } catch (e) {
-    return null;
-  }
-}
-
-module.exports = (req, res) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-
+module.exports = async (req, res) => {
+  cabeceras(res);
   if (req.method === "OPTIONS") return res.status(200).end();
 
-  const cat = leerCatalogo();
+  const cat = await leerCatalogo();
 
   if (req.method === "POST") {
-    return res.status(200).json({ ok: true, message: "Modo solo lectura (Vercel)" });
+    const tests = (req.body && req.body.testimonios) || req.body;
+    if (!Array.isArray(tests)) {
+      return res.status(400).json({ ok: false, message: "Formato inválido: se esperaba un arreglo de testimonios" });
+    }
+    const catActual = cat || {};
+    catActual.testimonios = tests;
+    await guardarCatalogo(catActual);
+    return res.status(200).json({ ok: true, message: "Testimonios guardados con éxito" });
   }
 
   res.status(200).json({ ok: true, data: (cat && cat.testimonios) || [] });

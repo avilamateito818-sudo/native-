@@ -248,3 +248,17 @@ window.ORDEN_CATEGORIAS = window.ORDEN_CATEGORIAS_DEFECTO;
 window.CONFIG_TIENDA = window.obtenerConfigTienda();
 window.TESTIMONIOS = window.obtenerTestimonios();
 window.PEDIDOS = window.obtenerPedidos();
+
+/* Re-sincronizar con el backend al volver a la pestaña:
+   así los cambios hechos desde otro dispositivo se reflejan al entrar. */
+function resincronizarDesdeServidor() {
+  if (window.sincronizarDesdeServidor && document.visibilityState === "visible") {
+    window.sincronizarDesdeServidor(function() {});
+  }
+}
+if (typeof document !== "undefined") {
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") resincronizarDesdeServidor();
+  });
+  window.addEventListener("focus", () => setTimeout(resincronizarDesdeServidor, 80));
+}

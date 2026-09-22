@@ -1,31 +1,24 @@
 // ruta API Vercel: GET/POST /api/productos
-// Sirve el catálogo real desde data/catalogo.json (misma fuente que server/server.js).
-const fs = require("fs");
-const path = require("path");
+// Lee el catálogo desde Vercel Blob (multidispositivo) y, si aún no hay
+// blob, usa data/catalogo.json del repo como respaldo inicial.
+const { leerCatalogo, guardarCatalogo, cabeceras } = require("./_db.js");
 
-const catalogoPath = path.join(__dirname, "..", "data", "catalogo.json");
-
-function leerCatalogo() {
-  try {
-    return JSON.parse(fs.readFileSync(catalogoPath, "utf-8"));
-  } catch (e) {
-    return null;
-  }
-}
-
-module.exports = (req, res) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-
+module.exports = async (req, res) => {
+  cabeceras(res);
   if (req.method === "OPTIONS") return res.status(200).end();
 
-  const cat = leerCatalogo();
+  const cat = await leerCatalogo();
   const productos = (cat && cat.productos) || [];
 
   if (req.method === "POST") {
-    // En Vercel el sistema de archivos es de solo lectura: informamos ok sin persistir.
-    return res.status(200).json({ ok: true, message: "Modo solo lectura (Vercel)", total: productos.length });
+    const lista = (req.body && req.body.productos) || req.body;
+    if (!Array.isArray(lista)) {
+      return res.status(400).json({ ok: false, message: "Formato inválido: se esperaba un arreglo de productos" });
+    }
+    const catActual = cat || {};
+    catActual.productos = lista;
+    await guardarCatalogo(catActual);
+    return res.status(200).json({ ok: true, message: "Productos guardados y publicados con éxito", total: lista.length });
   }
 
   res.status(200).json({ ok: true, data: productos, total: productos.length });
