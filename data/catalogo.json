@@ -1,0 +1,384 @@
+{
+  "version": "2.5",
+  "fechaActualizacion": "2026-09-22T17:00:03.316Z",
+  "productos": [
+    {
+      "id": 1,
+      "nombre": "Labial Terciopelo Nude",
+      "categoria": "Labiales",
+      "precio": 14,
+      "viejo": 19,
+      "desc": "Acabado mate de larga duración con manteca de cacao que hidrata mientras colorea.",
+      "emoji": "💄",
+      "imagen": "",
+      "colores": [
+        "#e8c4c8",
+        "#d98f8f"
+      ],
+      "stock": "disponible",
+      "badge": "Bestseller"
+    },
+    {
+      "id": 2,
+      "nombre": "Brillo Labial Cristal",
+      "categoria": "Labiales",
+      "precio": 13,
+      "desc": "Efecto espejo con infusión de menta para unos labios jugosos y frescos.",
+      "emoji": "💋",
+      "imagen": "",
+      "colores": [
+        "#f6d6d8",
+        "#efa3a9"
+      ],
+      "stock": "disponible"
+    },
+    {
+      "id": 3,
+      "nombre": "Labial Mate Amapola",
+      "categoria": "Labiales",
+      "precio": 15,
+      "desc": "Rojo intenso de pigmento puro, desliza como seda y no transfiere.",
+      "emoji": "🌺",
+      "imagen": "",
+      "colores": [
+        "#f2c2be",
+        "#d97a74"
+      ],
+      "stock": "disponible"
+    },
+    {
+      "id": 4,
+      "nombre": "Paleta Sombras Aurora",
+      "categoria": "Maquillaje",
+      "precio": 26,
+      "desc": "8 tonos neutros y dorados con pigmentación intensa y acabado sedoso.",
+      "emoji": "🎨",
+      "imagen": "",
+      "colores": [
+        "#eadfc2",
+        "#c8a96e"
+      ],
+      "stock": "disponible",
+      "badge": "Nuevo"
+    },
+    {
+      "id": 5,
+      "nombre": "Máscara de Pestañas Volumen",
+      "categoria": "Maquillaje",
+      "precio": 18,
+      "desc": "Volumen extremo con curva prolongada y fórmula que no se corre.",
+      "emoji": "👁️",
+      "imagen": "",
+      "colores": [
+        "#d9d9d9",
+        "#b9bec9"
+      ],
+      "stock": "disponible"
+    },
+    {
+      "id": 6,
+      "nombre": "Rubor Melocotón",
+      "categoria": "Maquillaje",
+      "precio": 12,
+      "desc": "Calor natural en segundos, se difumina con la yema de los dedos.",
+      "emoji": "🍑",
+      "imagen": "",
+      "colores": [
+        "#f7dcc4",
+        "#efb68d"
+      ],
+      "stock": "disponible"
+    },
+    {
+      "id": 7,
+      "nombre": "Crema Hidratante Rosa",
+      "categoria": "Cremas",
+      "precio": 22,
+      "desc": "Hidratación profunda con extracto de rosas, ceramidas y ácido hialurónico.",
+      "emoji": "🧴",
+      "imagen": "",
+      "colores": [
+        "#f4d9e2",
+        "#eec9d6"
+      ],
+      "stock": "disponible",
+      "badge": "100% Orgánico"
+    },
+    {
+      "id": 8,
+      "nombre": "Sérum Glow Radiante",
+      "categoria": "Cremas",
+      "precio": 28,
+      "viejo": 34,
+      "desc": "Vitamina C y ácido hialurónico para una piel luminosa de día a día.",
+      "emoji": "✨",
+      "imagen": "",
+      "colores": [
+        "#f6e7dd",
+        "#e3c4f0"
+      ],
+      "stock": "disponible",
+      "badge": "Oferta"
+    },
+    {
+      "id": 9,
+      "nombre": "Helado de Manos Karité",
+      "categoria": "Cremas",
+      "precio": 11,
+      "desc": "Crema de manos ultra rica de rápida absorción que repara grietas.",
+      "emoji": "🤲",
+      "imagen": "",
+      "colores": [
+        "#f7ecd8",
+        "#ecd3a8"
+      ],
+      "stock": "disponible"
+    },
+    {
+      "id": 10,
+      "nombre": "Mascarilla de Arcilla Rosa",
+      "categoria": "Mascarillas",
+      "precio": 18,
+      "desc": "Purifica y refina poros con caolín rosa y aloe vera, 10 minutos de ritual.",
+      "emoji": "🎭",
+      "imagen": "",
+      "colores": [
+        "#e9e3f2",
+        "#c2b0e0"
+      ],
+      "stock": "disponible"
+    },
+    {
+      "id": 11,
+      "nombre": "Mascarilla Exfoliante de Azúcar",
+      "categoria": "Mascarillas",
+      "precio": 16,
+      "desc": "Renueva la piel con partículas de azúcar y manteca de karité.",
+      "emoji": "🍬",
+      "imagen": "",
+      "colores": [
+        "#f3e3c8",
+        "#e2c79a"
+      ],
+      "stock": "disponible"
+    },
+    {
+      "id": 12,
+      "nombre": "Mascarilla Nocturna de Aloe",
+      "categoria": "Mascarillas",
+      "precio": 20,
+      "desc": "Piel jugosa al despertar: aloe, glicerina y camomila mientras duermes.",
+      "emoji": "🌿",
+      "imagen": "",
+      "colores": [
+        "#dcefe0",
+        "#a8d4b6"
+      ],
+      "stock": "disponible",
+      "badge": "Vegano"
+    },
+    {
+      "id": 13,
+      "nombre": "Aceite Corporal de Almendra",
+      "categoria": "Corporal",
+      "precio": 19,
+      "desc": "Nutre y suaviza con un aroma envolvente y acabado sedoso sin brillo graso.",
+      "emoji": "🫧",
+      "imagen": "",
+      "colores": [
+        "#e6e4f0",
+        "#c9c4e0"
+      ],
+      "stock": "disponible"
+    },
+    {
+      "id": 14,
+      "nombre": "Body Butter de Cacao",
+      "categoria": "Corporal",
+      "precio": 17,
+      "desc": "Manteca corporal extra rica para pieles secas, textura de mousse.",
+      "emoji": "🍫",
+      "imagen": "",
+      "colores": [
+        "#ecd3bf",
+        "#d4a58a"
+      ],
+      "stock": "disponible"
+    },
+    {
+      "id": 15,
+      "nombre": "Gel de Ducha Aloe-Menta",
+      "categoria": "Corporal",
+      "precio": 14,
+      "desc": "Limpieza suave que deja la piel fresca y tonificada, pH balanceado.",
+      "emoji": "🚿",
+      "imagen": "",
+      "colores": [
+        "#d8f0ea",
+        "#a9d8cc"
+      ],
+      "stock": "disponible"
+    },
+    {
+      "id": 16,
+      "nombre": "Perfume Flor de Noche",
+      "categoria": "Fragancias",
+      "precio": 45,
+      "viejo": 55,
+      "desc": "Jazmín, vainilla y ámbar para un aura que perdura más de 8 horas.",
+      "emoji": "🌸",
+      "imagen": "",
+      "colores": [
+        "#f2dce3",
+        "#ddb4c4"
+      ],
+      "stock": "disponible",
+      "badge": "Exclusivo"
+    },
+    {
+      "id": 17,
+      "nombre": "Eau de Toilette Amor de Vainilla",
+      "categoria": "Fragancias",
+      "precio": 39,
+      "desc": "Vainilla cálida con toques de sándalo y naranja, dulce pero sofisticada.",
+      "emoji": "🍦",
+      "imagen": "",
+      "colores": [
+        "#f7ead2",
+        "#e9cf9a"
+      ],
+      "stock": "disponible"
+    },
+    {
+      "id": 18,
+      "nombre": "Bruma Corporal de Jazmín",
+      "categoria": "Fragancias",
+      "precio": 24,
+      "desc": "Rocío perfumado ligero para el cuerpo, ideal para después del baño.",
+      "emoji": "💐",
+      "imagen": "",
+      "colores": [
+        "#ede2cf",
+        "#d3cba0"
+      ],
+      "stock": "disponible"
+    }
+  ],
+  "categorias": {
+    "Labiales": {
+      "emoji": "💄",
+      "tagline": "Color que dura y labios que se sienten besables.",
+      "desc": "Cremosos, mates y en brillo cristal. Pigmentos nobles sobre mantecas que cuidan tus labios.",
+      "grad": [
+        "#f3d9df",
+        "#dfa8b6"
+      ],
+      "n": "01"
+    },
+    "Maquillaje": {
+      "emoji": "🎨",
+      "tagline": "Rostro, ojos y color con acabado de estudio.",
+      "desc": "Productos de maquillaje pensados para durar de la mañana a la noche, con fórmula limpia.",
+      "grad": [
+        "#eadfc2",
+        "#c8a96e"
+      ],
+      "n": "02"
+    },
+    "Cremas": {
+      "emoji": "🧴",
+      "tagline": "Hidratación que abraza la piel todo el día.",
+      "desc": "Cremas y sérums con ceramidas, vitamina C y extractos botánicos de ósmosis pura.",
+      "grad": [
+        "#f4d9e2",
+        "#eec9d6"
+      ],
+      "n": "03"
+    },
+    "Mascarillas": {
+      "emoji": "🎭",
+      "tagline": "Rituales de 10 minutos que sí se notan.",
+      "desc": "Arcillas, azúcar y aloe para purificar, renovar y despertar con glow visible.",
+      "grad": [
+        "#e9e3f2",
+        "#c2b0e0"
+      ],
+      "n": "04"
+    },
+    "Corporal": {
+      "emoji": "🫧",
+      "tagline": "Cuidado de pies a cabeza, sin pretextos.",
+      "desc": "Aceites, mantecas y geles que nutren la piel del cuerpo con aromas que enamoran.",
+      "grad": [
+        "#e6e4f0",
+        "#c9c4e0"
+      ],
+      "n": "05"
+    },
+    "Fragancias": {
+      "emoji": "🌸",
+      "tagline": "Aromas que se quedan en la memoria.",
+      "desc": "Perfumes y brumas con notas de jazmín, vainilla y ámbar, libres de alcohol agresivo.",
+      "grad": [
+        "#f2dce3",
+        "#ddb4c4"
+      ],
+      "n": "06"
+    }
+  },
+  "orden": [
+    "Labiales",
+    "Maquillaje",
+    "Cremas",
+    "Mascarillas",
+    "Corporal",
+    "Fragancias"
+  ],
+  "testimonios": [
+    {
+      "id": 1,
+      "nombre": "Mariana G.",
+      "ciudad": "Ciudad de México",
+      "estrellas": 5,
+      "comentario": "El sérum Glow cambió mi piel por completo. Se nota la diferencia desde la primera semana."
+    },
+    {
+      "id": 2,
+      "nombre": "Lucía F.",
+      "ciudad": "Bogotá",
+      "estrellas": 5,
+      "comentario": "Encargo cada mes mi labial Terciopelo. Duración increíble y el color es precioso."
+    },
+    {
+      "id": 3,
+      "nombre": "Valentina R.",
+      "ciudad": "Buenos Aires",
+      "estrellas": 5,
+      "comentario": "El perfume Flor de Noche es mi firma personal. Todo el mundo me pregunta qué uso."
+    }
+  ],
+  "configTienda": {
+    "marqueeTexto": "Envio gratis +$50 ✦ Belleza limpia ✦ Cruelty free ✦ Vegano friendly",
+    "heroEyebrow": "Cosmética & Belleza desde 2012",
+    "heroTitulo": "Despierta tu belleza <em>natural</em>, cada día.",
+    "heroCopy": "Descubre una selección curada de productos de cosmética facial, maquillaje, cuidado corporal y fragancias. Ingredientes nobles, fórmulas limpias y resultados que se ven y se sienten.",
+    "stat1Num": "+12k",
+    "stat1Label": "Clientas felices",
+    "stat2Num": "+350",
+    "stat2Label": "Productos",
+    "stat3Num": "4.9",
+    "stat3Label": "Valoración",
+    "promoTag": "Oferta del mes",
+    "promoDescuento": "−30%",
+    "promoTitulo": "Rutina <em>Glow</em> completa con <em>-30%</em>",
+    "promoSubtexto": "En el set rutina Glow",
+    "promoDesc": "Sérum, crema hidratante y limpiador en un set pensado para iluminar tu piel de día a día. La forma perfecta de empezar (o renovar) tu ritual de belleza.",
+    "nombreMarca": "Native·Origen",
+    "monedaSimbolo": "$",
+    "envioGratisMinimo": 50,
+    "whatsappContacto": "573154729668",
+    "telefonoContacto": "315 472 9668",
+    "emailContacto": "aliados.online36@gmail.com"
+  },
+  "pedidos": []
+}

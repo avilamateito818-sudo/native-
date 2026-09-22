@@ -1,5 +1,4 @@
-// ruta API Vercel: GET/POST /api/productos
-// Sirve el catálogo real desde data/catalogo.json (misma fuente que server/server.js).
+// ruta API Vercel: GET/POST /api/pedidos
 const fs = require("fs");
 const path = require("path");
 
@@ -21,12 +20,10 @@ module.exports = (req, res) => {
   if (req.method === "OPTIONS") return res.status(200).end();
 
   const cat = leerCatalogo();
-  const productos = (cat && cat.productos) || [];
 
   if (req.method === "POST") {
-    // En Vercel el sistema de archivos es de solo lectura: informamos ok sin persistir.
-    return res.status(200).json({ ok: true, message: "Modo solo lectura (Vercel)", total: productos.length });
+    return res.status(200).json({ ok: true, message: "Modo solo lectura (Vercel)" });
   }
 
-  res.status(200).json({ ok: true, data: productos, total: productos.length });
+  res.status(200).json({ ok: true, data: (cat && cat.pedidos) || [] });
 };

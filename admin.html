@@ -17,7 +17,7 @@
     <div class="login-box">
       <div class="login-box__logo">✦</div>
       <h2>Panel Administrador</h2>
-      <p>Accede para cambiar fotos, precios, categorías y añadir productos al catálogo.</p>
+      <p>Control total de productos, inventario, categorías, testimonios, banners y tienda.</p>
       
       <form class="login-form" id="login-form">
         <div class="form-group">
@@ -34,7 +34,7 @@
   </div>
 
   <!-- ============ PANEL PRINCIPAL ============ -->
-  <div class="admin-app" id="admin-app" style="display: none;">
+  <div class="admin-app hidden" id="admin-app" >
     <header class="admin-header">
       <div class="admin-header__inner">
         <a href="index.html" class="admin-brand">
@@ -42,74 +42,366 @@
           <div>
             <h1 class="admin-brand__title">Native<span>·</span>Origen</h1>
           </div>
-          <span class="admin-brand__badge">Admin</span>
+          <span class="admin-brand__badge">Admin Suite</span>
         </a>
 
         <div class="admin-nav-actions">
-          <a href="index.html" class="btn-header">🛍️ Ver Tienda</a>
+          <a href="index.html" class="btn-header" target="_blank" rel="noopener">🛍️ Ver Tienda</a>
           <button class="btn-header btn-header--gold" id="btn-nuevo-prod">➕ Nuevo Producto</button>
-          <button class="btn-header" id="btn-descargar-js" title="Descargar archivo js/productos.js para guardar en Git">📥 Exportar a Git</button>
           <button class="btn-header" id="btn-logout">Cerrar Sesión</button>
         </div>
       </div>
     </header>
 
+    <!-- Navegación por pestañas -->
+    <nav class="admin-tabs-nav" aria-label="Secciones del Administrador">
+      <button class="tab-btn active" data-tab="tab-productos">📦 Productos</button>
+      <button class="tab-btn" data-tab="tab-categorias">🏷️ Categorías</button>
+      <button class="tab-btn" data-tab="tab-testimonios">⭐ Testimonios</button>
+      <button class="tab-btn" data-tab="tab-contenido">📢 Banners & Anuncios</button>
+      <button class="tab-btn" data-tab="tab-ajustes">⚙️ Ajustes de Tienda</button>
+      <button class="tab-btn" data-tab="tab-pedidos">🛍️ Pedidos (<span id="count-pedidos-tab">0</span>)</button>
+      <button class="tab-btn" data-tab="tab-respaldo">💾 Respaldos & Git</button>
+    </nav>
+
     <main class="admin-main">
-      <!-- Resumen Métricas -->
-      <section class="metrics-grid">
-        <div class="metric-card">
-          <div class="metric-card__icon">📦</div>
-          <div class="metric-card__info">
-            <strong id="metric-total">0</strong>
-            <span>Productos Activos</span>
+      <!-- ============ TAB 1: PRODUCTOS ============ -->
+      <div class="tab-pane active" id="tab-productos">
+        <!-- Resumen Métricas -->
+        <section class="metrics-grid">
+          <div class="metric-card">
+            <div class="metric-card__icon">📦</div>
+            <div class="metric-card__info">
+              <strong id="metric-total">0</strong>
+              <span>Productos Totales</span>
+            </div>
           </div>
-        </div>
-        <div class="metric-card">
-          <div class="metric-card__icon">🏷️</div>
-          <div class="metric-card__info">
-            <strong id="metric-cats">0</strong>
-            <span>Categorías</span>
+          <div class="metric-card">
+            <div class="metric-card__icon">🏷️</div>
+            <div class="metric-card__info">
+              <strong id="metric-cats">0</strong>
+              <span>Categorías</span>
+            </div>
           </div>
-        </div>
-        <div class="metric-card">
-          <div class="metric-card__icon">💰</div>
-          <div class="metric-card__info">
-            <strong id="metric-precio">$0</strong>
-            <span>Precio Promedio</span>
+          <div class="metric-card">
+            <div class="metric-card__icon">💰</div>
+            <div class="metric-card__info">
+              <strong id="metric-precio">$0</strong>
+              <span>Precio Promedio</span>
+            </div>
           </div>
-        </div>
-        <div class="metric-card">
-          <div class="metric-card__icon">🔥</div>
-          <div class="metric-card__info">
-            <strong id="metric-ofertas">0</strong>
-            <span>En Oferta</span>
+          <div class="metric-card">
+            <div class="metric-card__icon">🔥</div>
+            <div class="metric-card__info">
+              <strong id="metric-ofertas">0</strong>
+              <span>En Oferta</span>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <!-- Barra de Controles y Búsqueda -->
-      <section class="controls-bar">
-        <div class="controls-bar__left">
-          <div class="search-box">
-            <span class="search-icon">🔍</span>
-            <input class="input-control" type="text" id="admin-search" placeholder="Buscar por nombre o descripción..." />
+        <!-- Barra de Acciones en Lote (Bulk Bar) -->
+        <div class="bulk-bar hidden" id="bulk-bar" >
+          <div class="bulk-bar__info">
+            <span>☑️ <strong id="bulk-count">0</strong> seleccionados</span>
           </div>
-          <select class="filter-select" id="admin-cat-filter">
-            <option value="Todos">Todas las categorías</option>
-          </select>
+          <div class="bulk-bar__actions">
+            <button class="btn-secondary btn-xs" id="btn-bulk-oferta" >🔥 Aplicar Descuento</button>
+            <button class="btn-secondary btn-xs" id="btn-bulk-stock" >📦 Cambiar Stock</button>
+            <button class="btn-secondary btn-xs" id="btn-bulk-cat" >🏷️ Mover Categoría</button>
+            <button class="btn-action btn-action--delete btn-xs btn-round" id="btn-bulk-delete" >🗑️ Eliminar</button>
+            <button class="btn-secondary btn-xs" id="btn-bulk-cancel" >✕ Deseleccionar</button>
+          </div>
         </div>
 
-        <div class="controls-bar__right">
-          <button class="btn-action btn-action--edit" id="btn-restablecer" style="padding: 10px 18px;">🔄 Restaurar Catálogo</button>
-        </div>
-      </section>
+        <!-- Barra de Controles y Búsqueda -->
+        <section class="controls-bar">
+          <div class="controls-bar__left">
+            <div class="search-box">
+              <span class="search-icon">🔍</span>
+              <input class="input-control" type="text" id="admin-search" placeholder="Buscar por nombre o descripción..." />
+            </div>
+            <select class="filter-select" id="admin-cat-filter">
+              <option value="Todos">Todas las categorías</option>
+            </select>
+            <select class="filter-select" id="admin-sort-filter">
+              <option value="orden-manual">Orden manual / Catálogo</option>
+              <option value="recientes">Más recientes (ID)</option>
+              <option value="nombre">Nombre (A-Z)</option>
+              <option value="precio-menor">Precio: Menor a Mayor</option>
+              <option value="precio-mayor">Precio: Mayor a Menor</option>
+              <option value="ofertas">Solo Ofertas</option>
+              <option value="agotados">Solo Agotados</option>
+            </select>
+          </div>
 
-      <!-- Grid de Productos -->
-      <section class="products-admin-grid" id="admin-products-grid"></section>
+          <div class="controls-bar__right">
+            <button class="btn-secondary btn-pad-m" id="btn-select-all" >☑️ Seleccionar Todos</button>
+            <button class="btn-primary btn-primary-md" id="btn-nuevo-prod-main" >➕ Añadir Producto</button>
+          </div>
+        </section>
+
+        <!-- Grid de Productos -->
+        <section class="products-admin-grid" id="admin-products-grid"></section>
+      </div>
+
+      <!-- ============ TAB 2: CATEGORÍAS ============ -->
+      <div class="tab-pane" id="tab-categorias">
+        <section class="controls-bar">
+          <div class="controls-bar__left">
+            <h2 class="section-heading" >Gestión de Categorías</h2>
+          </div>
+          <div class="controls-bar__right">
+            <button class="btn-primary btn-primary-lg" id="btn-nueva-cat" >➕ Nueva Categoría</button>
+          </div>
+        </section>
+
+        <section class="categories-admin-grid" id="admin-categories-grid"></section>
+      </div>
+
+      <!-- ============ TAB 3: TESTIMONIOS ============ -->
+      <div class="tab-pane" id="tab-testimonios">
+        <section class="controls-bar">
+          <div class="controls-bar__left">
+            <h2 class="section-heading" >Opiniones y Testimonios de Clientas</h2>
+          </div>
+          <div class="controls-bar__right">
+            <button class="btn-primary btn-primary-lg" id="btn-nuevo-testimonio" >➕ Añadir Testimonio</button>
+          </div>
+        </section>
+
+        <section class="testimonials-admin-grid" id="admin-testimonials-grid"></section>
+      </div>
+
+      <!-- ============ TAB 4: CONTENIDO & ANUNCIOS ============ -->
+      <div class="tab-pane" id="tab-contenido">
+        <section class="controls-bar">
+          <div class="controls-bar__left">
+            <h2 class="section-heading" >Textos, Banners y Mensajes de la Tienda</h2>
+          </div>
+        </section>
+
+        <form id="form-contenido-tienda" class="content-grid">
+          <!-- Marquee Superior -->
+          <div class="content-card">
+            <div class="content-card__head">
+              <span class="head-icon" >📢</span>
+              <h3>Barra de Anuncios Superior</h3>
+            </div>
+            <div class="form-group">
+              <label for="cfg-marquee">Texto del cintillo desplazable</label>
+              <textarea class="input-control" id="cfg-marquee" rows="3" placeholder="Envio gratis +$50 ✦ Belleza limpia ✦ Cruelty free..."></textarea>
+              <small class="field-hint" >Usa el símbolo ✦ o viñetas para separar anuncios.</small>
+            </div>
+          </div>
+
+          <!-- Hero / Bienvenida -->
+          <div class="content-card">
+            <div class="content-card__head">
+              <span class="head-icon" >✨</span>
+              <h3>Portada / Hero</h3>
+            </div>
+            <div class="form-group">
+              <label for="cfg-hero-eyebrow">Subtítulo / Etiqueta</label>
+              <input class="input-control" type="text" id="cfg-hero-eyebrow" placeholder="Cosmética & Belleza desde 2012" />
+            </div>
+            <div class="form-group mt-10" >
+              <label for="cfg-hero-titulo">Título Principal</label>
+              <input class="input-control" type="text" id="cfg-hero-titulo" placeholder="Despierta tu belleza natural, cada día." />
+            </div>
+            <div class="form-group mt-10" >
+              <label for="cfg-hero-copy">Párrafo de Presentación</label>
+              <textarea class="input-control" id="cfg-hero-copy" rows="2" placeholder="Descubre una selección curada..."></textarea>
+            </div>
+            <div class="form-row mt-10" >
+              <div class="form-group">
+                <label for="cfg-stat1-num">Dato 1 (Cifra)</label>
+                <input class="input-control" type="text" id="cfg-stat1-num" placeholder="+12k" />
+              </div>
+              <div class="form-group">
+                <label for="cfg-stat1-label">Dato 1 (Texto)</label>
+                <input class="input-control" type="text" id="cfg-stat1-label" placeholder="Clientas felices" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Banner de Oferta del Mes -->
+          <div class="content-card col-full" >
+            <div class="content-card__head">
+              <span class="head-icon" >🔥</span>
+              <h3>Banner Promocional / Oferta Destacada</h3>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="cfg-promo-tag">Etiqueta</label>
+                <input class="input-control" type="text" id="cfg-promo-tag" placeholder="Oferta del mes" />
+              </div>
+              <div class="form-group">
+                <label for="cfg-promo-descuento">Descuento o Destacado</label>
+                <input class="input-control" type="text" id="cfg-promo-descuento" placeholder="−30%" />
+              </div>
+            </div>
+            <div class="form-row mt-10" >
+              <div class="form-group">
+                <label for="cfg-promo-titulo">Título de la Oferta</label>
+                <input class="input-control" type="text" id="cfg-promo-titulo" placeholder="Rutina Glow completa con -30%" />
+              </div>
+              <div class="form-group">
+                <label for="cfg-promo-subtexto">Texto bajo el descuento</label>
+                <input class="input-control" type="text" id="cfg-promo-subtexto" placeholder="En el set rutina Glow" />
+              </div>
+            </div>
+            <div class="form-group mt-10" >
+              <label for="cfg-promo-desc">Descripción de la Oferta</label>
+              <textarea class="input-control" id="cfg-promo-desc" rows="2" placeholder="Sérum, crema hidratante y limpiador..."></textarea>
+            </div>
+
+            <button type="submit" class="btn-primary btn-inline-start" >💾 Guardar Cambios de Contenido</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- ============ TAB 5: AJUSTES DE TIENDA ============ -->
+      <div class="tab-pane" id="tab-ajustes">
+        <section class="controls-bar">
+          <div class="controls-bar__left">
+            <h2 class="section-heading" >Configuración General de la Tienda</h2>
+          </div>
+        </section>
+
+        <form id="form-ajustes-tienda" class="content-grid">
+          <div class="content-card">
+            <div class="content-card__head">
+              <span class="head-icon" >🏪</span>
+              <h3>Datos de la Marca & Moneda</h3>
+            </div>
+            <div class="form-group">
+              <label for="cfg-brand-name">Nombre de la Marca</label>
+              <input class="input-control" type="text" id="cfg-brand-name" placeholder="Native·Origen" />
+            </div>
+            <div class="form-row mt-12" >
+              <div class="form-group">
+                <label for="cfg-moneda-simbolo">Símbolo de Moneda</label>
+                <select class="input-control" id="cfg-moneda-simbolo">
+                  <option value="$">$ (USD / Dólar)</option>
+                  <option value="COP $">COP $ (Pesos Colombianos)</option>
+                  <option value="€">€ (Euro)</option>
+                  <option value="MXN $">MXN $ (Pesos Mexicanos)</option>
+                  <option value="S/">S/ (Soles Peruanos)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="cfg-envio-minimo">Envío Gratis Desde ($)</label>
+                <input class="input-control" type="number" id="cfg-envio-minimo" placeholder="50" min="0" />
+              </div>
+            </div>
+          </div>
+
+          <div class="content-card">
+            <div class="content-card__head">
+              <span class="head-icon" >📱</span>
+              <h3>Canales de Atención & Pedidos</h3>
+            </div>
+            <div class="form-group">
+              <label for="cfg-whatsapp">WhatsApp para Pedidos (con código país)</label>
+              <input class="input-control" type="text" id="cfg-whatsapp" placeholder="573154729668" />
+            </div>
+            <div class="form-row mt-12" >
+              <div class="form-group">
+                <label for="cfg-telefono">Teléfono de Contacto</label>
+                <input class="input-control" type="text" id="cfg-telefono" placeholder="315 472 9668" />
+              </div>
+              <div class="form-group">
+                <label for="cfg-email">Correo Electrónico</label>
+                <input class="input-control" type="email" id="cfg-email" placeholder="aliados.online36@gmail.com" />
+              </div>
+            </div>
+          </div>
+
+          <div class="col-full" >
+            <button type="submit" class="btn-primary mt-0" >💾 Guardar Ajustes de Tienda</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- ============ TAB 6: HISTORIAL DE PEDIDOS ============ -->
+      <div class="tab-pane" id="tab-pedidos">
+        <section class="controls-bar">
+          <div class="controls-bar__left">
+            <h2 class="section-heading" >Historial de Compras y Pedidos</h2>
+          </div>
+          <div class="controls-bar__right">
+            <button class="btn-secondary" id="btn-exportar-pedidos">📥 Exportar Pedidos</button>
+            <button class="btn-action btn-action--delete btn-danger-round" id="btn-limpiar-pedidos" >🗑️ Limpiar Historial</button>
+          </div>
+        </section>
+
+        <div class="orders-table-wrapper">
+          <table class="orders-table">
+            <thead>
+              <tr>
+                <th># ID</th>
+                <th>Fecha y Hora</th>
+                <th>Productos</th>
+                <th>Total ($)</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody id="orders-table-body">
+              <tr>
+                <td colspan="5" class="empty-cell" >No hay pedidos registrados aún.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ============ TAB 7: RESPALDOS Y GIT ============ -->
+      <div class="tab-pane" id="tab-respaldo">
+        <section class="controls-bar">
+          <div class="controls-bar__left">
+            <h2 class="section-heading" >Respaldos, Exportación y Git</h2>
+          </div>
+        </section>
+
+        <section class="backup-grid">
+          <!-- Exportar a Git -->
+          <div class="backup-card">
+            <span class="backup-icon" >📥</span>
+            <h3>Exportar a productos.js</h3>
+            <p>Descarga el archivo JavaScript actualizado listo para reemplazar <code>js/productos.js</code> y subir a tu repositorio Git / Vercel.</p>
+            <button class="btn-primary mt-auto" id="btn-descargar-js" >Descargar js/productos.js</button>
+          </div>
+
+          <!-- Respaldo JSON -->
+          <div class="backup-card">
+            <span class="backup-icon" >💾</span>
+            <h3>Exportar Respaldo JSON Completo</h3>
+            <p>Guarda una copia completa de productos, categorías, testimonios y configuraciones en un archivo JSON.</p>
+            <button class="btn-primary mt-auto" id="btn-exportar-json" >Descargar Respaldo JSON</button>
+          </div>
+
+          <!-- Importar Respaldo -->
+          <div class="backup-card">
+            <span class="backup-icon" >📤</span>
+            <h3>Importar Catálogo JSON</h3>
+            <p>Carga un archivo de respaldo previo para restaurar o actualizar masivamente los productos y configuraciones.</p>
+            <input type="file" id="input-importar-json" accept=".json"  / class="hidden">
+            <button class="btn-secondary mt-auto" id="btn-importar-json" >Seleccionar Archivo JSON</button>
+          </div>
+
+          <!-- Restaurar Defecto -->
+          <div class="backup-card">
+            <span class="backup-icon" >🔄</span>
+            <h3>Restablecer de Fábrica</h3>
+            <p>Elimina las personalizaciones locales y devuelve todos los productos y categorías a su estado original de catálogo.</p>
+            <button class="btn-action btn-action--delete mt-auto btn-danger-round" id="btn-restablecer" >Restaurar Todo</button>
+          </div>
+        </section>
+      </div>
     </main>
   </div>
 
-  <!-- ============ MODAL DE CREACIÓN / EDICIÓN ============ -->
+  <!-- ============ MODAL DE PRODUCTO (CREACIÓN / EDICIÓN) ============ -->
   <div class="modal-overlay" id="product-modal">
     <div class="modal-dialog">
       <div class="modal-head">
@@ -131,20 +423,12 @@
             <div class="form-row">
               <div class="form-group">
                 <label for="prod-categoria">Categoría *</label>
-                <select class="input-control" id="prod-categoria" required>
-                  <option value="Labiales">💄 Labiales</option>
-                  <option value="Maquillaje">🎨 Maquillaje</option>
-                  <option value="Cremas">🧴 Cremas</option>
-                  <option value="Mascarillas">🎭 Mascarillas</option>
-                  <option value="Corporal">🫧 Corporal</option>
-                  <option value="Fragancias">🌸 Fragancias</option>
-                  <option value="NUEVA">+ Otra categoría...</option>
-                </select>
+                <select class="input-control" id="prod-categoria" required></select>
               </div>
 
-              <div class="form-group" id="group-nueva-cat" style="display: none;">
-                <label for="prod-nueva-cat">Nueva Categoría</label>
-                <input class="input-control" type="text" id="prod-nueva-cat" placeholder="Nombre de categoría" />
+              <div class="form-group hidden" id="group-nueva-cat" >
+                <label for="prod-nueva-cat">Nombre de Nueva Categoría</label>
+                <input class="input-control" type="text" id="prod-nueva-cat" placeholder="Ej. Cuidado Facial" />
               </div>
             </div>
 
@@ -160,8 +444,33 @@
               </div>
             </div>
 
+            <div class="form-row">
+              <div class="form-group">
+                <label for="prod-stock">Estado de Inventario / Stock</label>
+                <select class="input-control" id="prod-stock">
+                  <option value="disponible">🟢 En Stock / Disponible</option>
+                  <option value="poco">🟡 Pocas Unidades</option>
+                  <option value="agotado">🔴 Agotado</option>
+                  <option value="oculto">👁️ Oculto / Borrador</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="prod-badge">Etiqueta Especial (Badge)</label>
+                <select class="input-control" id="prod-badge">
+                  <option value="">Sin etiqueta especial</option>
+                  <option value="Oferta">🔥 Oferta</option>
+                  <option value="Nuevo">✨ Nuevo</option>
+                  <option value="Bestseller">⭐ Bestseller</option>
+                  <option value="Exclusivo">💎 Exclusivo</option>
+                  <option value="Vegano">🌱 Vegano</option>
+                  <option value="100% Orgánico">🍃 100% Orgánico</option>
+                </select>
+              </div>
+            </div>
+
             <div class="form-group">
-              <label for="prod-desc">Descripción *</label>
+              <label for="prod-desc">Descripción y Beneficios *</label>
               <textarea class="input-control" id="prod-desc" rows="3" placeholder="Ingredientes nobles, beneficios para la piel, acabado..." required></textarea>
             </div>
 
@@ -171,14 +480,20 @@
               <div class="image-uploader" id="image-dropzone">
                 <div class="image-uploader__icon">📸</div>
                 <p><strong>Haz clic para subir una foto</strong> o arrástrala aquí</p>
-                <p style="font-size: 11px; margin-top: 4px;">PNG, JPG, WebP (se optimizará automáticamente)</p>
-                <input type="file" id="prod-file" accept="image/*" style="display: none;" />
+                <p class="up-hint" >PNG, JPG, WebP (se optimizará automáticamente)</p>
+                <input type="file" id="prod-file" accept="image/*"  / class="hidden">
               </div>
             </div>
 
             <div class="form-group">
-              <label for="prod-img-url" style="font-size: 11px; color: var(--muted);">O pegar enlace URL de imagen:</label>
+              <label for="prod-img-url" class="url-hint" >O pegar enlace URL de imagen:</label>
               <input class="input-control" type="url" id="prod-img-url" placeholder="https://ejemplo.com/foto.jpg" />
+            </div>
+
+            <div class="form-group">
+              <label for="prod-galeria">Galería de fotos (una URL por línea)</label>
+              <textarea class="input-control" id="prod-galeria" rows="3" placeholder="https://ejemplo.com/foto2.jpg&#10;https://ejemplo.com/foto3.jpg"></textarea>
+              <span class="field-hint">Estas fotos se verán en la galería de la página del producto, junto a la foto principal.</span>
             </div>
 
             <div class="form-row">
@@ -188,9 +503,9 @@
               </div>
               <div class="form-group">
                 <label for="prod-color-a">Color de fondo</label>
-                <div style="display: flex; gap: 8px;">
-                  <input type="color" id="prod-color-a" value="#f6e7dd" style="height: 42px; width: 50%; border: none; border-radius: 8px; cursor: pointer;" />
-                  <input type="color" id="prod-color-b" value="#e7cfc6" style="height: 42px; width: 50%; border: none; border-radius: 8px; cursor: pointer;" />
+                <div class="row-gap-8" >
+                  <input type="color" id="prod-color-a" value="#f6e7dd"  / class="color-input">
+                  <input type="color" id="prod-color-b" value="#e7cfc6"  / class="color-input">
                 </div>
               </div>
             </div>
@@ -201,14 +516,14 @@
             <span class="preview-panel__title">Vista Previa en Tienda</span>
             <div class="preview-card" id="preview-card">
               <div class="preview-card__media" id="preview-media" style="--media-a: #f6e7dd; --media-b: #e7cfc6;">
-                <span class="admin-card__badge" id="preview-badge" style="display: none;">Oferta</span>
-                <div id="preview-media-content"><span style="font-size: 64px;">✨</span></div>
+                <span class="admin-card__badge hidden" id="preview-badge" >Oferta</span>
+                <div id="preview-media-content" class="preview-emoji"><span >✨</span></div>
               </div>
               <div class="preview-card__body">
                 <span class="admin-card__cat" id="preview-cat">Categoría</span>
-                <h4 class="admin-card__title" id="preview-name" style="margin: 4px 0;">Nombre del Producto</h4>
+                <h4 class="admin-card__title my-4" id="preview-name" >Nombre del Producto</h4>
                 <p class="admin-card__desc" id="preview-desc">Descripción del producto tal como aparecerá en el catálogo.</p>
-                <div class="admin-card__price-row" style="margin-top: 10px;">
+                <div class="admin-card__price-row mt-10" >
                   <span class="admin-card__price" id="preview-price">$0.00</span>
                   <span class="admin-card__old-price" id="preview-old"></span>
                 </div>
@@ -219,7 +534,104 @@
 
         <div class="modal-foot">
           <button type="button" class="btn-secondary" id="modal-cancel-btn">Cancelar</button>
-          <button type="submit" class="btn-primary" style="margin-top: 0;">Guardar Producto</button>
+          <button type="button" class="btn-draft" id="btn-guardar-borrador">📝 Guardar Borrador</button>
+          <button type="submit" class="btn-publish" id="btn-publicar-prod">🚀 Publicar Producto</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============ MODAL DE CATEGORÍA ============ -->
+  <div class="modal-overlay" id="category-modal">
+    <div class="modal-dialog modal-dialog--sm" >
+      <div class="modal-head">
+        <h3 id="cat-modal-title">Nueva Categoría</h3>
+        <button class="modal-close" id="cat-modal-close-btn" aria-label="Cerrar modal">✕</button>
+      </div>
+
+      <form id="category-form">
+        <input type="hidden" id="cat-nombre-original" />
+        
+        <div class="modal-inner" >
+          <div class="form-row">
+            <div class="form-group flex-2" >
+              <label for="cat-nombre">Nombre de la Categoría *</label>
+              <input class="input-control" type="text" id="cat-nombre" placeholder="Ej. Cuidado Facial" required />
+            </div>
+            <div class="form-group flex-1" >
+              <label for="cat-emoji">Emoji *</label>
+              <input class="input-control" type="text" id="cat-emoji" placeholder="🧴" maxlength="4" required />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="cat-tagline">Frase Corta / Tagline *</label>
+            <input class="input-control" type="text" id="cat-tagline" placeholder="Ej. Hidratación profunda que abraza tu piel." required />
+          </div>
+
+          <div class="form-group">
+            <label for="cat-desc">Descripción *</label>
+            <textarea class="input-control" id="cat-desc" rows="2" placeholder="Fórmulas con ceramidas y extractos botánicos puros..." required></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>Gradiente de Color para Banners</label>
+            <div class="row-gap-10" >
+              <input type="color" id="cat-grad-a" value="#f4d9e2"  / class="color-input">
+              <input type="color" id="cat-grad-b" value="#eec9d6"  / class="color-input">
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-foot">
+          <button type="button" class="btn-secondary" id="cat-modal-cancel-btn">Cancelar</button>
+          <button type="submit" class="btn-primary mt-0" >Guardar Categoría</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============ MODAL DE TESTIMONIO ============ -->
+  <div class="modal-overlay" id="testimonio-modal">
+    <div class="modal-dialog modal-dialog--xs" >
+      <div class="modal-head">
+        <h3 id="testimonio-modal-title">Añadir Testimonio</h3>
+        <button class="modal-close" id="testimonio-modal-close-btn" aria-label="Cerrar modal">✕</button>
+      </div>
+
+      <form id="testimonio-form">
+        <input type="hidden" id="testimonio-id" />
+        
+        <div class="modal-inner" >
+          <div class="form-row">
+            <div class="form-group">
+              <label for="testimonio-nombre">Nombre de la Clienta *</label>
+              <input class="input-control" type="text" id="testimonio-nombre" placeholder="Ej. Mariana G." required />
+            </div>
+            <div class="form-group">
+              <label for="testimonio-ciudad">Ciudad o País *</label>
+              <input class="input-control" type="text" id="testimonio-ciudad" placeholder="Ej. Bogotá" required />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="testimonio-estrellas">Calificación</label>
+            <select class="input-control" id="testimonio-estrellas">
+              <option value="5">★★★★★ (5 Estrellas)</option>
+              <option value="4">★★★★☆ (4 Estrellas)</option>
+              <option value="3">★★★☆☆ (3 Estrellas)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="testimonio-texto">Opinión / Comentario *</label>
+            <textarea class="input-control" id="testimonio-texto" rows="3" placeholder="El sérum cambió mi piel por completo..." required></textarea>
+          </div>
+        </div>
+
+        <div class="modal-foot">
+          <button type="button" class="btn-secondary" id="testimonio-modal-cancel-btn">Cancelar</button>
+          <button type="submit" class="btn-primary mt-0" >Guardar Testimonio</button>
         </div>
       </form>
     </div>
@@ -228,6 +640,7 @@
   <div class="admin-toast" id="admin-toast"></div>
 
   <script src="js/productos.js"></script>
+  <script src="js/store.js"></script>
   <script src="js/admin.js"></script>
 </body>
 </html>

@@ -3,20 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Labiales — Native Origen. Mate, cremosos y brillo cristal, hechos con mantecas que cuidan tus labios." />
-  <title>Labiales — Native Origen</title>
+  <meta name="description" content="Detalle del producto Native Origen — foto, precio, descripción y galería." />
+  <title>Producto — Native Origen</title>
   <link rel="icon" type="image/svg+xml" href="images/favicon.svg" />
+
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/style.css" />
 </head>
-<body data-categoria="Labiales">
-
-  <div class="preloader" id="preloader">
-    <div class="preloader__bar" id="preloader-bar"></div>
-    <div class="preloader__logo">B</div>
-  </div>
+<body class="page-producto">
 
   <!-- ============ NAVBAR ============ -->
   <header class="nav" id="nav">
@@ -25,14 +21,15 @@
         <span class="brand__mark">B</span>
         <span class="brand__name">Native<span>·</span>Origen</span>
       </a>
+
       <nav>
         <ul class="nav__links" id="nav-links">
           <li><a href="index.html">Inicio</a></li>
           <li><a href="index.html#nosotros">Nosotros</a></li>
           <li class="has-menu">
-            <a href="#" class="menu-toggle" aria-haspopup="true">Catálogo ▾</a>
+            <a href="index.html#catalogo" class="menu-toggle" aria-haspopup="true">Catálogo ▾</a>
             <ul class="cat__menu">
-              <li><a href="labiales.html" class="on">💄 Labiales</a></li>
+              <li><a href="labiales.html">💄 Labiales</a></li>
               <li><a href="maquillaje.html">🎨 Maquillaje</a></li>
               <li><a href="cremas.html">🧴 Cremas</a></li>
               <li><a href="mascarillas.html">🎭 Mascarillas</a></li>
@@ -45,10 +42,11 @@
           <li><a href="index.html#contacto">Contacto</a></li>
         </ul>
       </nav>
+
       <div class="nav__cta">
-        <button class="nav__bag" id="bag-btn" aria-label="Bolsa de compras">
+        <a href="index.html?bolsa=1" class="nav__bag" id="bag-btn" aria-label="Bolsa de compras">
           🛍 <span class="count" id="bag-count">0</span>
-        </button>
+        </a>
         <a href="index.html#catalogo" class="btn-nav">Comprar</a>
         <button class="burger" id="burger" aria-label="Abrir menú" aria-expanded="false">
           <span></span><span></span><span></span>
@@ -57,37 +55,40 @@
     </div>
   </header>
 
-  <main>
-    <!-- Banner de categoría -->
-    <section class="cat-banner" id="cat-banner"></section>
+  <main class="product-page">
 
-    <!-- Productos -->
-    <section class="cat-section" id="catalogo">
-      <div class="section__head">
-        <span class="section__num">01</span>
-        <div>
-          <span class="section__tag">Catálogo</span>
-          <h2 class="section__title">Nuestros <em>labiales</em></h2>
+    <!-- Miga de pan -->
+    <div class="container">
+      <nav class="breadcrumb" id="breadcrumb" aria-label="Ruta de navegación"></nav>
+    </div>
+
+    <!-- Detalle del producto -->
+    <div class="container">
+      <div class="product-layout">
+        <div class="product-gallery" id="product-gallery">
+          <div class="product-gallery__main" id="gallery-main"></div>
+          <button class="product-gallery__arrow prev" id="gallery-prev" aria-label="Foto anterior">‹</button>
+          <button class="product-gallery__arrow next" id="gallery-next" aria-label="Foto siguiente">›</button>
+          <span class="product-gallery__counter" id="gallery-counter"></span>
+          <div class="product-gallery__thumbs" id="gallery-thumbs"></div>
         </div>
-        <p class="section__lead">Cada tono se prueba en labios reales antes de salir del taller. Color, hidratación y duración en un solo gesto.</p>
-      </div>
-      <div class="catalog__grid" id="catalog-grid"></div>
-    </section>
 
-    <!-- Otras categorías -->
-    <section class="otros">
-      <div class="otros__head">
-        <h3>Explora más categorías</h3>
-        <span class="section__tag">Cada una en su página</span>
+        <div class="product-info" id="product-info"></div>
       </div>
-      <div class="chips" id="otros"></div>
-    </section>
+    </div>
 
-    <!-- CTA -->
-    <section class="section cat-cta">
-      <h3>¿El carrito se quedó corto? 🛍</h3>
-      <p>Llena la bolsa con lo que te hace brillar. Los favoritos vuelan rápido.</p>
-      <a href="index.html#ofertas" class="btn btn--gold">Ver Ofertas</a>
+    <!-- También te puede gustar -->
+    <section class="section product-similar">
+      <div class="container">
+        <div class="section__head">
+          <span class="section__num">✦</span>
+          <div>
+            <span class="section__tag">Completa tu rutina</span>
+            <h2 class="section__title">También te puede <em>gustar</em></h2>
+          </div>
+        </div>
+        <div class="catalog__grid product-similar__grid" id="similar-grid"></div>
+      </div>
     </section>
   </main>
 
@@ -132,7 +133,7 @@
           <li><a href="index.html#contacto">Envíos</a></li>
           <li><a href="index.html#contacto">Devoluciones</a></li>
           <li><a href="index.html#contacto">Preguntas frecuentes</a></li>
-          <li><a href="index.html#contacto">Términos & privacidad</a></li>
+          <li><a href="index.html#contacto">Términos &amp; privacidad</a></li>
         </ul>
       </div>
     </div>
@@ -145,25 +146,6 @@
   <!-- Toast -->
   <div class="toast" id="toast" role="status"></div>
 
-  <!-- Drawer de la bolsa -->
-  <div class="drawer-overlay" id="drawer-overlay"></div>
-  <aside class="drawer" id="drawer" aria-label="Tu bolsa de compras" aria-hidden="true">
-    <div class="drawer__head">
-      <h3>Tu bolsa 🛍</h3>
-      <button class="drawer__close" id="drawer-close" aria-label="Cerrar bolsa">✕</button>
-    </div>
-    <div class="drawer__items" id="drawer-items"></div>
-    <div class="drawer__foot">
-      <div class="drawer__subtotal">
-        <span>Subtotal</span>
-        <span id="drawer-subtotal">$0.00</span>
-      </div>
-      <div class="drawer__actions">
-        <button class="btn btn--gold" id="btn-checkout" disabled>Pagar ahora</button>
-      </div>
-    </div>
-  </aside>
-
   <!-- Back to top -->
   <button class="to-top" id="to-top" aria-label="Volver arriba">↑</button>
 
@@ -171,6 +153,6 @@
   <script src="js/store.js"></script>
   <script src="js/nav.js"></script>
   <script src="js/gallery.js"></script>
-  <script src="js/main.js"></script>
+  <script src="js/producto.js"></script>
 </body>
 </html>
