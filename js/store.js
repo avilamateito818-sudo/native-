@@ -77,7 +77,13 @@ window.obtenerConfigTienda = function() {
     const raw = localStorage.getItem("NATIVE_CONFIG_TIENDA");
     if (raw) {
       const parsed = JSON.parse(raw);
-      if (parsed && typeof parsed === "object") return { ...window.CONFIG_TIENDA_DEFECTO, ...parsed };
+      if (parsed && typeof parsed === "object") {
+        const mezclado = { ...window.CONFIG_TIENDA_DEFECTO, ...parsed };
+        if (parsed.tema && typeof parsed.tema === "object") {
+          mezclado.tema = { ...(window.CONFIG_TIENDA_DEFECTO.tema || {}), ...parsed.tema };
+        }
+        return mezclado;
+      }
     }
   } catch (e) {}
   return { ...window.CONFIG_TIENDA_DEFECTO };
@@ -85,6 +91,7 @@ window.obtenerConfigTienda = function() {
 
 window.guardarConfigTienda = function(cfg) {
   try {
+    window.__CFG_DIRTY_AT = Date.now();
     localStorage.setItem("NATIVE_CONFIG_TIENDA", JSON.stringify(cfg));
     window.CONFIG_TIENDA = cfg;
     window.dispatchEvent(new CustomEvent("configTiendaActualizada", { detail: cfg }));
@@ -215,7 +222,12 @@ window.sincronizarDesdeServidor = function(callback) {
   const tareas = [
     ["/api/productos", window.guardarProductos, (d) => Array.isArray(d) && d.length > 0],
     ["/api/categorias", window.guardarCategorias, (d) => d && typeof d === "object" && Object.keys(d).length > 0],
-    ["/api/config", window.guardarConfigTienda, (d) => d && typeof d === "object" && Object.keys(d).length > 0],
+    ["/api/config", (d) => {
+      const dirty = window.__CFG_DIRTY_AT || 0;
+      if (Date.now() - dirty < 1200) return; // guardado local reciente aún en vuelo al servidor
+      if (d && !d.tema && window.CONFIG_TIENDA && window.CONFIG_TIENDA.tema) d = { ...d, tema: window.CONFIG_TIENDA.tema };
+      window.guardarConfigTienda(d);
+    }, (d) => d && typeof d === "object" && Object.keys(d).length > 0],
     ["/api/testimonios", window.guardarTestimonios, (d) => Array.isArray(d) && d.length > 0],
     ["/api/pedidos", window.guardarPedidos, (d) => Array.isArray(d)]
   ];
@@ -249,6 +261,87 @@ window.CONFIG_TIENDA = window.obtenerConfigTienda();
 window.TESTIMONIOS = window.obtenerTestimonios();
 window.PEDIDOS = window.obtenerPedidos();
 
+/* =====================================================================
+   APARIENCIA (tema) — convierte el objeto `tema` de la configuración
+   en variables CSS sobre <html>, repintando la página al instante.
+   Se aplica en la tienda y, si se elige, también en el panel admin.
+   ===================================================================== */
+
+const FUENTES_TITULOS = [
+  "Playfair Display", "Lora", "Merriweather", "Cormorant Garamond",
+  "Montserrat", "Poppins", "Quicksand", "Raleway", "Josefin Sans"
+];
+const FUENTES_TEXTO = [
+  "DM Sans", "Inter", "Nunito Sans", "Montserrat", "Poppins",
+  "Raleway", "Quicksand", "Source Sans 3"
+];
+window.FUENTES_TITULOS = FUENTES_TITULOS;
+window.FUENTES_TEXTO = FUENTES_TEXTO;
+
+function aMayus(nombre) {
+  return nombre.split(/[\s-]+/).map((p) => p.charAt(0).toUpperCase() + p.slice(1)).join(" ");
+}
+
+window.aplicarTema = function(tema) {
+  const t = tema || {};
+  const set = (prop, valor, sufijo) => {
+    if (valor === undefined || valor === null || valor === "") return;
+    document.documentElement.style.setProperty(prop, sufijo ? valor + sufijo : valor);
+  };
+  const hexRgb = (hex) => {
+    if (!hex) return "0, 0, 0";
+    let h = String(hex).replace("#", "").trim();
+    if (h.length === 3) h = h.split("").map((c) => c + c).join("");
+    const n = parseInt(h, 16);
+    if (isNaN(n)) return "0, 0, 0";
+    return ((n >> 16) & 255) + ", " + ((n >> 8) & 255) + ", " + (n & 255);
+  };
+
+  const paleta = {
+    wine: t.wine || "#5e1a33",
+    wineDark: t.wineDark || "#3f1022",
+    blush: t.blush || "#f4e3dd",
+    cream: t.cream || "#fbf6f0",
+    gold: t.gold || "#c8a96e",
+    goldLight: t.goldLight || "#e9d9b8",
+    charcoal: t.charcoal || "#241b20",
+    muted: t.muted || "#8a7780",
+    white: t.white || "#ffffff"
+  };
+  Object.keys(paleta).forEach((k) => {
+    set("--" + k.replace(/[A-Z]/g, (m) => "-" + m.toLowerCase()), paleta[k]);
+    set("--" + k.replace(/[A-Z]/g, (m) => "-" + m.toLowerCase()) + "-rgb", hexRgb(paleta[k]));
+  });
+
+  set("--nav-bg-rgb", hexRgb(t.navBg || "#fbf6f0"));
+  set("--hero-start", t.heroStart || "#fdf6ef");
+  set("--hero-mid", t.heroMid || "#f6e7dd");
+  set("--hero-end", t.heroEnd || "#f1dcd6");
+  set("--btn-bg", t.btnBg || "#5e1a33");
+  set("--btn-bg-hover", t.btnHover || "#3f1022");
+  set("--btn-text", t.btnText || "#fbf6f0");
+  set("--card-bg", t.cardBg || "#ffffff");
+  set("--marquee-bg", t.marqueeBg || "#5e1a33");
+  set("--marquee-text", t.marqueeText || "#fbf6f0");
+  set("--promo-bg", t.promoBg || "#3f1022");
+  set("--footer-bg", t.footerBg || "#3f1022");
+  set("--footer-text", t.footerText || "#fbf6f0");
+  set("--font-display", (t.fontDisplay ? '"' + aMayus(t.fontDisplay) + '", Georgia, serif' : ""));
+  set("--font-body", (t.fontBody ? '"' + aMayus(t.fontBody) + '", "Segoe UI", sans-serif' : ""));
+  const base = parseInt(t.fontSizeBase, 10);
+  set("--font-size-base", isNaN(base) ? 16 : base, "px");
+  const rad = parseInt(t.radius, 10);
+  set("--radius", isNaN(rad) ? 20 : rad, "px");
+
+  const disp = aMayus(t.fontDisplay || "Playfair Display");
+  const bodyF = aMayus(t.fontBody || "DM Sans");
+  const href = "https://fonts.googleapis.com/css2?family=" + disp.replace(/ /g, "+") +
+    ":wght@400;500;600;700&family=" + bodyF.replace(/ /g, "+") +
+    ":wght@400;500;600;700&display=swap";
+  const link = document.querySelector('link[rel="stylesheet"][href*="fonts.googleapis.com"]');
+  if (link) link.href = href;
+};
+
 /* Re-sincronizar con el backend al volver a la pestaña:
    así los cambios hechos desde otro dispositivo se reflejan al entrar. */
 function resincronizarDesdeServidor() {
@@ -261,4 +354,11 @@ if (typeof document !== "undefined") {
     if (document.visibilityState === "visible") resincronizarDesdeServidor();
   });
   window.addEventListener("focus", () => setTimeout(resincronizarDesdeServidor, 80));
+
+  /* Aplicar el tema guardado y re-aplicar cuando lleguen cambios */
+  window.aplicarTema(window.CONFIG_TIENDA && window.CONFIG_TIENDA.tema);
+  window.addEventListener("configTiendaActualizada", (e) => {
+    const cfg = ((e && e.detail) || window.CONFIG_TIENDA || {});
+    window.aplicarTema(cfg.tema);
+  });
 }

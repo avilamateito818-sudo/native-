@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/admin.css" />
+  <link rel="stylesheet" href="css/admin.css?v=1" />
 </head>
 <body>
 
@@ -59,6 +59,7 @@
       <button class="tab-btn" data-tab="tab-categorias">🏷️ Categorías</button>
       <button class="tab-btn" data-tab="tab-testimonios">⭐ Testimonios</button>
       <button class="tab-btn" data-tab="tab-contenido">📢 Banners & Anuncios</button>
+      <button class="tab-btn" data-tab="tab-apariencia">🎨 Apariencia & Colores</button>
       <button class="tab-btn" data-tab="tab-ajustes">⚙️ Ajustes de Tienda</button>
       <button class="tab-btn" data-tab="tab-pedidos">🛍️ Pedidos (<span id="count-pedidos-tab">0</span>)</button>
       <button class="tab-btn" data-tab="tab-respaldo">💾 Respaldos & Git</button>
@@ -319,6 +320,90 @@
 
           <div class="col-full" >
             <button type="submit" class="btn-primary mt-0" >💾 Guardar Ajustes de Tienda</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- ============ TAB 5b: APARIENCIA & COLORES ============ -->
+      <div class="tab-pane" id="tab-apariencia">
+        <section class="controls-bar">
+          <div class="controls-bar__left">
+            <h2 class="section-heading" >Apariencia & Colores</h2>
+            <p class="section-sub text-muted" style="margin-top:6px;max-width:640px;">Los cambios se aplican al instante en toda la tienda y en cualquier dispositivo (se guardan en el servidor). El panel también se repinta como vista previa.</p>
+          </div>
+        </section>
+
+        <form id="form-tema-tienda" class="content-grid">
+          <div class="content-card">
+            <div class="content-card__head">
+              <span class="head-icon" >🎨</span>
+              <h3>Paleta de marca</h3>
+            </div>
+            <p class="text-muted" style="margin-bottom:14px;font-size:13.5px;">Colores base que tiñen todo el diseño.</p>
+            <div class="tema-grid">
+              <div class="tema-item"><label for="tema-wine">Vino / principal</label><input type="color" id="tema-wine" value="#5e1a33" /><input type="text" id="tema-wine-text" class="input-control" value="#5e1a33" /></div>
+              <div class="tema-item"><label for="tema-winedark">Vino oscuro</label><input type="color" id="tema-winedark" value="#3f1022" /><input type="text" id="tema-winedark-text" class="input-control" value="#3f1022" /></div>
+              <div class="tema-item"><label for="tema-cream">Fondo crema</label><input type="color" id="tema-cream" value="#fbf6f0" /><input type="text" id="tema-cream-text" class="input-control" value="#fbf6f0" /></div>
+              <div class="tema-item"><label for="tema-blush">Rubor</label><input type="color" id="tema-blush" value="#f4e3dd" /><input type="text" id="tema-blush-text" class="input-control" value="#f4e3dd" /></div>
+              <div class="tema-item"><label for="tema-gold">Dorado</label><input type="color" id="tema-gold" value="#c8a96e" /><input type="text" id="tema-gold-text" class="input-control" value="#c8a96e" /></div>
+              <div class="tema-item"><label for="tema-goldlight">Dorado claro</label><input type="color" id="tema-goldlight" value="#e9d9b8" /><input type="text" id="tema-goldlight-text" class="input-control" value="#e9d9b8" /></div>
+              <div class="tema-item"><label for="tema-charcoal">Texto principal</label><input type="color" id="tema-charcoal" value="#241b20" /><input type="text" id="tema-charcoal-text" class="input-control" value="#241b20" /></div>
+              <div class="tema-item"><label for="tema-muted">Texto suave</label><input type="color" id="tema-muted" value="#8a7780" /><input type="text" id="tema-muted-text" class="input-control" value="#8a7780" /></div>
+              <div class="tema-item"><label for="tema-white">Blanco</label><input type="color" id="tema-white" value="#ffffff" /><input type="text" id="tema-white-text" class="input-control" value="#ffffff" /></div>
+            </div>
+          </div>
+
+          <div class="content-card">
+            <div class="content-card__head">
+              <span class="head-icon" >🧩</span>
+              <h3>Secciones del sitio</h3>
+            </div>
+            <p class="text-muted" style="margin-bottom:14px;font-size:13.5px;">Ajustes puntuales por zona. Vacíos = siguen a la paleta.</p>
+            <div class="tema-grid">
+              <div class="tema-item"><label for="tema-navbg">Barra de navegación</label><input type="color" id="tema-navbg" value="#fbf6f0" /><input type="text" id="tema-navbg-text" class="input-control" value="#fbf6f0" /></div>
+              <div class="tema-item"><label for="tema-herostart">Hero — fondo inicio</label><input type="color" id="tema-herostart" value="#fdf6ef" /><input type="text" id="tema-herostart-text" class="input-control" value="#fdf6ef" /></div>
+              <div class="tema-item"><label for="tema-heroend">Hero — fondo final</label><input type="color" id="tema-heroend" value="#f1dcd6" /><input type="text" id="tema-heroend-text" class="input-control" value="#f1dcd6" /></div>
+              <div class="tema-item"><label for="tema-btnbg">Botones primarios</label><input type="color" id="tema-btnbg" value="#5e1a33" /><input type="text" id="tema-btnbg-text" class="input-control" value="#5e1a33" /></div>
+              <div class="tema-item"><label for="tema-btnhover">Botones — al pasar el mouse</label><input type="color" id="tema-btnhover" value="#3f1022" /><input type="text" id="tema-btnhover-text" class="input-control" value="#3f1022" /></div>
+              <div class="tema-item"><label for="tema-btntext">Texto de botones</label><input type="color" id="tema-btntext" value="#fbf6f0" /><input type="text" id="tema-btntext-text" class="input-control" value="#fbf6f0" /></div>
+              <div class="tema-item"><label for="tema-cardbg">Tarjetas (productos)</label><input type="color" id="tema-cardbg" value="#ffffff" /><input type="text" id="tema-cardbg-text" class="input-control" value="#ffffff" /></div>
+              <div class="tema-item"><label for="tema-marqueebg">Cinta / Marquee</label><input type="color" id="tema-marqueebg" value="#5e1a33" /><input type="text" id="tema-marqueebg-text" class="input-control" value="#5e1a33" /></div>
+              <div class="tema-item"><label for="tema-promobg">Banner promocional</label><input type="color" id="tema-promobg" value="#3f1022" /><input type="text" id="tema-promobg-text" class="input-control" value="#3f1022" /></div>
+              <div class="tema-item"><label for="tema-footerbg">Pie de página</label><input type="color" id="tema-footerbg" value="#3f1022" /><input type="text" id="tema-footerbg-text" class="input-control" value="#3f1022" /></div>
+            </div>
+          </div>
+
+          <div class="content-card">
+            <div class="content-card__head">
+              <span class="head-icon" >🔤</span>
+              <h3>Tipografía & forma</h3>
+            </div>
+            <div class="form-row mt-12">
+              <div class="form-group">
+                <label for="tema-fontdisplay">Fuente de títulos</label>
+                <select class="input-control" id="tema-fontdisplay"></select>
+              </div>
+              <div class="form-group">
+                <label for="tema-fontbody">Fuente de texto</label>
+                <select class="input-control" id="tema-fontbody"></select>
+              </div>
+            </div>
+            <div class="form-row mt-12">
+              <div class="form-group">
+                <label for="tema-fontsize">Tamaño base de letra (px)</label>
+                <input class="input-control" type="number" id="tema-fontsize" value="16" min="12" max="22" />
+              </div>
+              <div class="form-group">
+                <label for="tema-radius">Redondez de tarjetas (px)</label>
+                <input class="input-control" type="number" id="tema-radius" value="20" min="0" max="48" />
+              </div>
+            </div>
+          </div>
+
+          <div class="col-full" style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;">
+            <button type="submit" class="btn-primary mt-0" >💾 Guardar Apariencia</button>
+            <button type="button" class="btn-secondary" id="btn-restablecer-tema" >♻️ Restablecer estilo original</button>
+            <span class="text-muted" style="margin-left:auto;font-size:13px;">Se sincroniza en cualquier dispositivo al entrar o refrescar.</span>
           </div>
         </form>
       </div>
@@ -640,7 +725,7 @@
   <div class="admin-toast" id="admin-toast"></div>
 
   <script src="js/productos.js"></script>
-  <script src="js/store.js?v=2"></script>
-  <script src="js/admin.js"></script>
+<script src="js/store.js?v=3"></script>
+<script src="js/admin.js?v=1"></script>
 </body>
 </html>

@@ -204,6 +204,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const cfgTelefono = document.getElementById("cfg-telefono");
   const cfgEmail = document.getElementById("cfg-email");
 
+  // Formulario de Apariencia & Colores
+  const formTemaTienda = document.getElementById("form-tema-tienda");
+  const btnRestablecerTema = document.getElementById("btn-restablecer-tema");
+
   /* ============ Carga General ============ */
   function cargarTodosLosDatos() {
     const prods = window.obtenerProductos();
@@ -220,6 +224,7 @@ document.addEventListener("DOMContentLoaded", () => {
     renderizarPedidos(pedidos);
     cargarContenidoTienda(cfg);
     cargarAjustesTienda(cfg);
+    cargarTemaTienda(cfg);
   }
 
   function actualizarMetricas(prods, pedidos) {
@@ -1162,6 +1167,106 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (window.guardarConfigTienda) window.guardarConfigTienda(nuevoCfg);
       mostrarToast("✓ Ajustes de tienda guardados con éxito");
+    });
+  }
+
+  /* ============ APARIENCIA & COLORES (tema) ============ */
+  const TEMA_DEFECTO_LOCAL = (window.CONFIG_TIENDA_DEFECTO && window.CONFIG_TIENDA_DEFECTO.tema) || {};
+  const TEMA_MAP = {
+    "tema-wine": "wine", "tema-winedark": "wineDark", "tema-cream": "cream",
+    "tema-blush": "blush", "tema-gold": "gold", "tema-goldlight": "goldLight",
+    "tema-charcoal": "charcoal", "tema-muted": "muted", "tema-white": "white",
+    "tema-navbg": "navBg", "tema-herostart": "heroStart", "tema-heroend": "heroEnd",
+    "tema-btnbg": "btnBg", "tema-btnhover": "btnHover", "tema-btntext": "btnText",
+    "tema-cardbg": "cardBg", "tema-marqueebg": "marqueeBg",
+    "tema-promobg": "promoBg", "tema-footerbg": "footerBg"
+  };
+
+  function leerTemaForm(actual) {
+    const tema = { ...(actual || {}) };
+    Object.keys(TEMA_MAP).forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) tema[TEMA_MAP[id]] = el.value;
+    });
+    const fd = document.getElementById("tema-fontdisplay");
+    const fb = document.getElementById("tema-fontbody");
+    if (fd) tema.fontDisplay = fd.value;
+    if (fb) tema.fontBody = fb.value;
+    const fs = document.getElementById("tema-fontsize");
+    if (fs) tema.fontSizeBase = parseInt(fs.value, 10) || 16;
+    const rd = document.getElementById("tema-radius");
+    if (rd) tema.radius = parseInt(rd.value, 10) || 20;
+    return tema;
+  }
+
+  function cargarTemaTienda(cfg) {
+    const t = (cfg && cfg.tema) || {};
+    Object.keys(TEMA_MAP).forEach((id) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const clave = TEMA_MAP[id];
+      const valor = (t[clave] !== undefined && t[clave] !== null) ? t[clave] : TEMA_DEFECTO_LOCAL[clave];
+      el.value = valor !== undefined ? valor : "#000000";
+      const text = document.getElementById(id + "-text");
+      if (text) text.value = valor !== undefined ? valor : "#000000";
+    });
+
+    const fd = document.getElementById("tema-fontdisplay");
+    const fb = document.getElementById("tema-fontbody");
+    const llenarSelect = (sel, lista, valor) => {
+      if (!sel) return;
+      sel.innerHTML = "";
+      (lista || []).forEach((f) => {
+        const o = document.createElement("option");
+        o.value = f;
+        o.textContent = f;
+        sel.appendChild(o);
+      });
+      if (lista && lista.indexOf(valor) > -1) sel.value = valor;
+    };
+    llenarSelect(fd, window.FUENTES_TITULOS, t.fontDisplay || TEMA_DEFECTO_LOCAL.fontDisplay || "Playfair Display");
+    llenarSelect(fb, window.FUENTES_TEXTO, t.fontBody || TEMA_DEFECTO_LOCAL.fontBody || "DM Sans");
+
+    const fs = document.getElementById("tema-fontsize");
+    if (fs) fs.value = t.fontSizeBase || TEMA_DEFECTO_LOCAL.fontSizeBase || 16;
+    const rd = document.getElementById("tema-radius");
+    if (rd) rd.value = t.radius !== undefined ? t.radius : (TEMA_DEFECTO_LOCAL.radius || 20);
+  }
+
+  if (formTemaTienda) {
+    formTemaTienda.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const actual = (window.obtenerConfigTienda && window.obtenerConfigTienda()) || {};
+      const nuevoTema = leerTemaForm(actual.tema);
+      if (window.guardarConfigTienda) window.guardarConfigTienda({ ...actual, tema: nuevoTema });
+      mostrarToast("🎨 Apariencia guardada y aplicada en toda la tienda");
+    });
+
+    if (btnRestablecerTema) {
+      btnRestablecerTema.addEventListener("click", () => {
+        const actual = (window.obtenerConfigTienda && window.obtenerConfigTienda()) || {};
+        const temaOriginal = { ...(window.CONFIG_TIENDA_DEFECTO && window.CONFIG_TIENDA_DEFECTO.tema) };
+        if (window.guardarConfigTienda) window.guardarConfigTienda({ ...actual, tema: temaOriginal });
+        cargarTemaTienda({ tema: temaOriginal });
+        mostrarToast("♻️ Estilo original restablecido en toda la tienda");
+      });
+    }
+
+    formTemaTienda.querySelectorAll("input[type=color][id]").forEach((cp) => {
+      const txt = document.getElementById(cp.id + "-text");
+      cp.addEventListener("input", () => {
+        if (txt) txt.value = cp.value;
+        window.aplicarTema && window.aplicarTema(leerTemaForm((window.obtenerConfigTienda && window.obtenerConfigTienda().tema) || {}));
+      });
+      if (txt) txt.addEventListener("input", () => {
+        if (/^#[0-9a-fA-F]{3,8}$/.test(txt.value.trim())) cp.value = txt.value.trim();
+        window.aplicarTema && window.aplicarTema(leerTemaForm((window.obtenerConfigTienda && window.obtenerConfigTienda().tema) || {}));
+      });
+    });
+    formTemaTienda.querySelectorAll("select, input[type=number]").forEach((el) => {
+      el.addEventListener("input", () => {
+        window.aplicarTema && window.aplicarTema(leerTemaForm((window.obtenerConfigTienda && window.obtenerConfigTienda().tema) || {}));
+      });
     });
   }
 
