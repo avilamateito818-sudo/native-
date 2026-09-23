@@ -1,6 +1,6 @@
 {
   "version": "2.5",
-  "fechaActualizacion": "2026-09-23T16:43:09.038Z",
+  "fechaActualizacion": "2026-09-23T23:10:29.311Z",
   "productos": [
     {
       "id": 1,
@@ -406,7 +406,8 @@
       "fontBody": "DM Sans",
       "fontSizeBase": 16,
       "radius": 20
-    }
+    },
+    "logoUrl": ""
   },
   "pedidos": []
 }

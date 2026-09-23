@@ -396,7 +396,8 @@ window.CONFIG_TIENDA_DEFECTO = {
     "fontBody": "DM Sans",
     "fontSizeBase": 16,
     "radius": 20
-  }
+  },
+  "logoUrl": ""
 };
 
 window.TESTIMONIOS_DEFECTO = [

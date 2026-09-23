@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/admin.css?v=1" />
+  <link rel="stylesheet" href="css/admin.css?v=2" />
 </head>
 <body>
 
@@ -334,6 +334,34 @@
         </section>
 
         <form id="form-tema-tienda" class="content-grid">
+          <div class="content-card">
+            <div class="content-card__head">
+              <span class="head-icon" >🏷️</span>
+              <h3>Logo & Título del Negocio</h3>
+            </div>
+            <p class="text-muted" style="margin-bottom:14px;font-size:13.5px;">El nombre y la foto de logo aparecen en el encabezado y el pie de toda la tienda. El logo se guarda en la nube (Vercel Blob).</p>
+            <div class="form-row mt-12" >
+              <div class="form-group">
+                <label for="cfg-brand-name-apariencia">Título / nombre del negocio</label>
+                <input class="input-control" type="text" id="cfg-brand-name-apariencia" placeholder="Native·Origen" />
+              </div>
+              <div class="form-group">
+                <label>Foto de logo</label>
+                <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+                  <img id="logo-preview" alt="Vista previa del logo" style="width:64px;height:64px;object-fit:contain;border-radius:50%;border:1px solid var(--border);background:var(--cream);display:none;" />
+                  <span id="logo-sin-logo" class="text-muted" style="font-size:13px;">Sin logo por ahora — se muestra el monograma.</span>
+                  <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                    <button type="button" class="btn-secondary" id="btn-elegir-logo">🖼️ Elegir imagen</button>
+                    <button type="button" class="btn-secondary" id="btn-quitar-logo">🗑️ Quitar logo</button>
+                  </div>
+                  <input type="file" id="input-logo-file" accept="image/*" style="display:none;" />
+                  <input type="hidden" id="cfg-logo-url" />
+                </div>
+              </div>
+            </div>
+            <p class="text-muted" style="margin-top:10px;font-size:12.5px;">Consejo: lo ideal es una imagen cuadrada (png/jpg) de fondo transparente.</p>
+          </div>
+
           <div class="content-card">
             <div class="content-card__head">
               <span class="head-icon" >🎨</span>
@@ -725,7 +753,7 @@
   <div class="admin-toast" id="admin-toast"></div>
 
   <script src="js/productos.js"></script>
-<script src="js/store.js?v=3"></script>
-<script src="js/admin.js?v=1"></script>
+<script src="js/store.js?v=4"></script>
+<script src="js/admin.js?v=2"></script>
 </body>
 </html>

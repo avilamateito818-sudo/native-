@@ -7,6 +7,7 @@ const PORT = process.env.PORT || 8080;
 
 const publicDir = path.join(__dirname, "..");
 const dataDir = path.join(publicDir, "data");
+const mediaDir = path.join(publicDir, "media");
 const catalogoPath = path.join(dataDir, "catalogo.json");
 const productosJsPath = path.join(publicDir, "js", "productos.js");
 
@@ -16,12 +17,19 @@ app.use(express.urlencoded({ extended: true, limit: "20mb" }));
 // Servir archivos estáticos del sitio
 app.use(express.static(publicDir, { extensions: ["html"] }));
 
-// Asegurar que exista carpeta data
+// Asegurar que existan las carpetas data y media
 if (!fs.existsSync(dataDir)) {
   try {
     fs.mkdirSync(dataDir, { recursive: true });
   } catch (e) {
     console.error("No se pudo crear carpeta data:", e);
+  }
+}
+if (!fs.existsSync(mediaDir)) {
+  try {
+    fs.mkdirSync(mediaDir, { recursive: true });
+  } catch (e) {
+    console.error("No se pudo crear carpeta media:", e);
   }
 }
 
@@ -199,6 +207,36 @@ app.post("/api/pedidos", (req, res) => {
     res.json({ ok: true, message: "Pedidos guardados con éxito" });
   } catch (e) {
     res.status(500).json({ ok: false, message: "Error al guardar pedidos" });
+  }
+});
+
+// Subir imagen (logo) — guarda en /media y devuelve la URL local
+app.post("/api/upload", (req, res) => {
+  try {
+    const { mime, filename, data } = req.body || {};
+    const base64 = String(data || "").replace(/^data:[^;]+;base64,/, "");
+    if (!base64) return res.status(400).json({ ok: false, message: "No se recibieron datos de imagen" });
+
+    const buffer = Buffer.from(base64, "base64");
+    if (!buffer.length) return res.status(400).json({ ok: false, message: "Imagen vacía" });
+
+    const ext = (filename && String(filename).split(".").pop()) || (mime && String(mime).split("/")[1]) || "png";
+    const name = "logo-" + Date.now() + "." + ext.replace(/[^a-z0-9]/gi, "");
+    fs.writeFileSync(path.join(mediaDir, name), buffer);
+
+    // Limpiar logos locales anteriores (el config apunta solo al más nuevo)
+    try {
+      fs.readdirSync(mediaDir).forEach((f) => {
+        if (f.startsWith("logo-") && f !== name) {
+          try { fs.unlinkSync(path.join(mediaDir, f)); } catch (e) {}
+        }
+      });
+    } catch (e) {}
+
+    res.json({ ok: true, url: "/media/" + name });
+  } catch (e) {
+    console.error("Error en POST /api/upload:", e);
+    res.status(500).json({ ok: false, message: "Error al subir la imagen: " + e.message });
   }
 });
 

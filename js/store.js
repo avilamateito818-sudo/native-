@@ -342,6 +342,42 @@ window.aplicarTema = function(tema) {
   if (link) link.href = href;
 };
 
+/* Aplica el nombre del negocio y, si existe, el logo subido desde el panel.
+   Si no hay logo, deja el monograma (primera letra) como está hoy. */
+window.aplicarMarca = function(cfg) {
+  if (typeof document === "undefined") return;
+  const c = cfg || window.CONFIG_TIENDA || {};
+  const nombre = c.nombreMarca || "Native·Origen";
+  const logo = c.logoUrl || "";
+
+  document.querySelectorAll(".brand__name").forEach((el) => {
+    if (el && el.textContent.trim() !== nombre) el.textContent = nombre;
+  });
+
+  document.querySelectorAll(".brand__mark, .preloader__logo, .admin-brand__mark").forEach((mark) => {
+    if (!mark) return;
+    if (logo) {
+      let img = mark.querySelector && mark.querySelector("img");
+      if (!img && mark.tagName.toLowerCase() === "img") img = mark;
+      if (img) {
+        img.src = logo;
+        img.alt = nombre;
+      } else {
+        const nuevo = document.createElement("img");
+        nuevo.className = "brand__logo";
+        nuevo.src = logo;
+        nuevo.alt = nombre;
+        mark.innerHTML = "";
+        mark.appendChild(nuevo);
+      }
+    } else {
+      // Monograma con la inicial del nombre (refresca también si cambia el título)
+      mark.innerHTML = "";
+      mark.appendChild(document.createTextNode(nombre.charAt(0).toUpperCase()));
+    }
+  });
+};
+
 /* Re-sincronizar con el backend al volver a la pestaña:
    así los cambios hechos desde otro dispositivo se reflejan al entrar. */
 function resincronizarDesdeServidor() {
@@ -355,10 +391,12 @@ if (typeof document !== "undefined") {
   });
   window.addEventListener("focus", () => setTimeout(resincronizarDesdeServidor, 80));
 
-  /* Aplicar el tema guardado y re-aplicar cuando lleguen cambios */
+  /* Aplicar el tema y la marca guardados, y re-aplicar cuando lleguen cambios */
   window.aplicarTema(window.CONFIG_TIENDA && window.CONFIG_TIENDA.tema);
+  window.aplicarMarca(window.CONFIG_TIENDA);
   window.addEventListener("configTiendaActualizada", (e) => {
     const cfg = ((e && e.detail) || window.CONFIG_TIENDA || {});
     window.aplicarTema(cfg.tema);
+    window.aplicarMarca(cfg);
   });
 }

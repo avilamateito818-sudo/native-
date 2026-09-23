@@ -207,6 +207,13 @@ document.addEventListener("DOMContentLoaded", () => {
   // Formulario de Apariencia & Colores
   const formTemaTienda = document.getElementById("form-tema-tienda");
   const btnRestablecerTema = document.getElementById("btn-restablecer-tema");
+  const cfgBrandNameApariencia = document.getElementById("cfg-brand-name-apariencia");
+  const inputLogoFile = document.getElementById("input-logo-file");
+  const btnElegirLogo = document.getElementById("btn-elegir-logo");
+  const btnQuitarLogo = document.getElementById("btn-quitar-logo");
+  const cfgLogoUrl = document.getElementById("cfg-logo-url");
+  const logoPreview = document.getElementById("logo-preview");
+  const logoSinLogo = document.getElementById("logo-sin-logo");
 
   /* ============ Carga General ============ */
   function cargarTodosLosDatos() {
@@ -1164,6 +1171,7 @@ document.addEventListener("DOMContentLoaded", () => {
         telefonoContacto: cfgTelefono.value.trim(),
         emailContacto: cfgEmail.value.trim()
       };
+      if (cfgBrandNameApariencia) cfgBrandNameApariencia.value = cfgBrandName.value.trim();
 
       if (window.guardarConfigTienda) window.guardarConfigTienda(nuevoCfg);
       mostrarToast("✓ Ajustes de tienda guardados con éxito");
@@ -1231,6 +1239,67 @@ document.addEventListener("DOMContentLoaded", () => {
     if (fs) fs.value = t.fontSizeBase || TEMA_DEFECTO_LOCAL.fontSizeBase || 16;
     const rd = document.getElementById("tema-radius");
     if (rd) rd.value = t.radius !== undefined ? t.radius : (TEMA_DEFECTO_LOCAL.radius || 20);
+
+    // Logo & Título del Negocio
+    if (cfgBrandNameApariencia) {
+      cfgBrandNameApariencia.value = (cfg && cfg.nombreMarca) || window.CONFIG_TIENDA_DEFECTO.nombreMarca || "Native·Origen";
+    }
+    const logo = (cfg && cfg.logoUrl) || "";
+    if (cfgLogoUrl) cfgLogoUrl.value = logo;
+    mostrarLogoPanel(logo);
+    if (window.aplicarMarca) window.aplicarMarca(cfg || window.CONFIG_TIENDA);
+  }
+
+  /* Actualiza la vista previa del logo y el estado de los botones */
+  function mostrarLogoPanel(url) {
+    if (!logoPreview || !logoSinLogo) return;
+    if (url) {
+      logoPreview.src = url;
+      logoPreview.style.display = "block";
+      logoSinLogo.style.display = "none";
+      if (btnQuitarLogo) btnQuitarLogo.style.display = "inline-flex";
+    } else {
+      logoPreview.style.display = "none";
+      logoPreview.removeAttribute("src");
+      logoSinLogo.style.display = "";
+      if (btnQuitarLogo) btnQuitarLogo.style.display = "none";
+    }
+  }
+
+  /* Sube el archivo elegido y deja su URL lista para guardar */
+  async function subirLogo(file) {
+    if (!file) return;
+    if (file.size > 6 * 1024 * 1024) {
+      mostrarToast("⚠ La imagen supera los 6 MB");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = async (event) => {
+      try {
+        const res = await fetch("/api/upload", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            mime: file.type || "image/png",
+            filename: file.name || "logo.png",
+            data: event.target.result,
+            anteriorLogoUrl: (cfgLogoUrl && cfgLogoUrl.value) || ""
+          })
+        });
+        const json = await res.json();
+        if (json.ok && json.url) {
+          if (cfgLogoUrl) cfgLogoUrl.value = json.url;
+          mostrarLogoPanel(json.url);
+          if (window.aplicarMarca) window.aplicarMarca({ ...window.CONFIG_TIENDA, logoUrl: json.url });
+          mostrarToast("🖼️ Logo subido. Pulsa 💾 Guardar para publicarlo en toda la tienda");
+        } else {
+          mostrarToast("⚠ Error al subir el logo: " + (json.message || "inténtalo de nuevo"));
+        }
+      } catch (err) {
+        mostrarToast("⚠ No se pudo subir el logo (revisa tu conexión)");
+      }
+    };
+    reader.readAsDataURL(file);
   }
 
   if (formTemaTienda) {
@@ -1238,8 +1307,23 @@ document.addEventListener("DOMContentLoaded", () => {
       e.preventDefault();
       const actual = (window.obtenerConfigTienda && window.obtenerConfigTienda()) || {};
       const nuevoTema = leerTemaForm(actual.tema);
-      if (window.guardarConfigTienda) window.guardarConfigTienda({ ...actual, tema: nuevoTema });
-      mostrarToast("🎨 Apariencia guardada y aplicada en toda la tienda");
+      const nombre = (cfgBrandNameApariencia && cfgBrandNameApariencia.value.trim()) || "Native·Origen";
+      const logo = (cfgLogoUrl && cfgLogoUrl.value.trim()) || "";
+      if (cfgBrandName) cfgBrandName.value = nombre;
+      if (window.guardarConfigTienda) window.guardarConfigTienda({ ...actual, nombreMarca: nombre, logoUrl: logo, tema: nuevoTema });
+      mostrarToast("🎨 Apariencia y logo guardados en toda la tienda");
+    });
+
+    if (btnElegirLogo && inputLogoFile) btnElegirLogo.addEventListener("click", () => inputLogoFile.click());
+    if (inputLogoFile) inputLogoFile.addEventListener("change", () => {
+      if (inputLogoFile.files && inputLogoFile.files[0]) subirLogo(inputLogoFile.files[0]);
+      inputLogoFile.value = "";
+    });
+    if (btnQuitarLogo) btnQuitarLogo.addEventListener("click", () => {
+      if (cfgLogoUrl) cfgLogoUrl.value = "";
+      mostrarLogoPanel("");
+      if (window.aplicarMarca) window.aplicarMarca({ ...window.CONFIG_TIENDA, logoUrl: "" });
+      mostrarToast("🗑️ Logo quitado. Pulsa 💾 Guardar para publicarlo");
     });
 
     if (btnRestablecerTema) {

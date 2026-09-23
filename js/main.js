@@ -43,6 +43,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const cfg = window.obtenerConfigTienda ? window.obtenerConfigTienda() : (window.CONFIG_TIENDA || {});
     const sim = cfg.monedaSimbolo || "$";
 
+    // 0. Logo y nombre del negocio
+    if (window.aplicarMarca) window.aplicarMarca(cfg);
+
     // 1. Marquee
     const marqueeTrack = document.querySelector(".marquee__track span");
     if (marqueeTrack && cfg.marqueeTexto) {
