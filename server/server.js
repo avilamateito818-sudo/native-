@@ -146,7 +146,11 @@ app.get("/api/categorias", (req, res) => {
 // Obtener Configuración de Tienda
 app.get("/api/config", (req, res) => {
   const cat = leerCatalogo();
-  res.json({ ok: true, data: cat && cat.configTienda ? cat.configTienda : null });
+  res.json({
+    ok: true,
+    data: cat && cat.configTienda ? cat.configTienda : null,
+    updateAt: cat && cat.fechaActualizacion ? new Date(cat.fechaActualizacion).getTime() : null
+  });
 });
 
 // Obtener Testimonios

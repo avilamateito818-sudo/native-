@@ -18,5 +18,9 @@ module.exports = async (req, res) => {
     return res.status(200).json({ ok: true, message: "Configuración de tienda guardada con éxito" });
   }
 
-  res.status(200).json({ ok: true, data: (cat && cat.configTienda) || null });
+  res.status(200).json({
+    ok: true,
+    data: (cat && cat.configTienda) || null,
+    updateAt: cat ? (new Date(cat.fechaActualizacion).getTime() || null) : null
+  });
 };

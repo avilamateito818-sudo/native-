@@ -93,6 +93,7 @@ window.guardarConfigTienda = function(cfg) {
   try {
     window.__CFG_DIRTY_AT = Date.now();
     localStorage.setItem("NATIVE_CONFIG_TIENDA", JSON.stringify(cfg));
+    localStorage.setItem("NATIVE_CONFIG_TIENDA_AT", String(Date.now()));
     window.CONFIG_TIENDA = cfg;
     window.dispatchEvent(new CustomEvent("configTiendaActualizada", { detail: cfg }));
     if (window.fetch) {
@@ -171,6 +172,7 @@ window.restablecerCatalogo = function() {
     localStorage.removeItem("NATIVE_PRODUCTOS");
     localStorage.removeItem("NATIVE_CATEGORIAS");
     localStorage.removeItem("NATIVE_CONFIG_TIENDA");
+    localStorage.removeItem("NATIVE_CONFIG_TIENDA_AT");
     localStorage.removeItem("NATIVE_TESTIMONIOS");
     localStorage.removeItem("NATIVE_PEDIDOS");
     window.PRODUCTOS = [...window.PRODUCTOS_DEFECTO];
@@ -223,8 +225,13 @@ window.sincronizarDesdeServidor = function(callback) {
     ["/api/productos", window.guardarProductos, (d) => Array.isArray(d) && d.length > 0],
     ["/api/categorias", window.guardarCategorias, (d) => d && typeof d === "object" && Object.keys(d).length > 0],
     ["/api/config", (d) => {
+      // No sobreescribir una edición local reciente con datos viejos del servidor:
+      // si el guardado en servidor aún no llegó (o falló), el local manda.
       const dirty = window.__CFG_DIRTY_AT || 0;
-      if (Date.now() - dirty < 1200) return; // guardado local reciente aún en vuelo al servidor
+      if (Date.now() - dirty < 1500) return;
+      const editado = parseInt(localStorage.getItem("NATIVE_CONFIG_TIENDA_AT") || "0", 10) || 0;
+      const serverAt = window.__CFG_SERVER_AT || 0;
+      if (editado && serverAt && serverAt < editado - 3000) return;
       if (d && !d.tema && window.CONFIG_TIENDA && window.CONFIG_TIENDA.tema) d = { ...d, tema: window.CONFIG_TIENDA.tema };
       window.guardarConfigTienda(d);
     }, (d) => d && typeof d === "object" && Object.keys(d).length > 0],
@@ -241,7 +248,11 @@ window.sincronizarDesdeServidor = function(callback) {
       .then((r) => (r.ok ? r.json() : null))
       .then((json) => {
         if (json && json.ok && valido(json.data)) {
+          if (url === "/api/config") window.__CFG_SERVER_AT = json.updateAt || 0;
           guardar(json.data);
+          if (url === "/api/config" && window.__CFG_SERVER_AT) {
+            localStorage.setItem("NATIVE_CONFIG_TIENDA_AT", String(window.__CFG_SERVER_AT));
+          }
           huboDatos = true;
         }
       })
@@ -343,14 +354,18 @@ window.aplicarTema = function(tema) {
 };
 
 /* Aplica el nombre del negocio y, si existe, el logo subido desde el panel.
-   Si no hay logo, deja el monograma (primera letra) como está hoy. */
+   Si no hay logo, deja el monograma (primera letra) como está hoy.
+   Cuando el nombre difiere del estándar, renombra también otros lugares
+   fijos (pestaña, meta, copyright, historias, sidebar del admin). */
 window.aplicarMarca = function(cfg) {
   if (typeof document === "undefined") return;
   const c = cfg || window.CONFIG_TIENDA || {};
   const nombre = c.nombreMarca || "Native·Origen";
   const logo = c.logoUrl || "";
+  const DEFAULTS = ["Native·Origen", "Native Origen"];
+  const previa = window.__MARCA_PREVIA || "";
 
-  document.querySelectorAll(".brand__name").forEach((el) => {
+  document.querySelectorAll(".brand__name, .admin-brand__title").forEach((el) => {
     if (el && el.textContent.trim() !== nombre) el.textContent = nombre;
   });
 
@@ -375,6 +390,42 @@ window.aplicarMarca = function(cfg) {
       mark.innerHTML = "";
       mark.appendChild(document.createTextNode(nombre.charAt(0).toUpperCase()));
     }
+  });
+
+  // Renombrados globales (título, meta, copyright, historias, _subject…)
+  const viejos = [];
+  DEFAULTS.forEach((v) => { if (v && v !== nombre) viejos.push(v); });
+  if (previa && previa !== nombre) viejos.push(previa);
+  window.__MARCA_PREVIA = nombre;
+  if (!viejos.length) return;
+
+  const reemplaza = (txt) => {
+    let out = txt;
+    viejos.forEach((v) => { out = out.split(v).join(nombre); });
+    return out;
+  };
+
+  if (document.title) document.title = reemplaza(document.title);
+  document.querySelectorAll("meta[content]").forEach((m) => {
+    const cont = m.getAttribute("content");
+    if (cont) m.setAttribute("content", reemplaza(cont));
+  });
+  document.querySelectorAll("input, textarea").forEach((el) => {
+    if (el.hasAttribute("placeholder")) el.placeholder = reemplaza(el.placeholder);
+    if (el.type !== "checkbox" && el.type !== "radio") el.value = reemplaza(el.value);
+  });
+  document.querySelectorAll("[aria-label]").forEach((el) => {
+    el.setAttribute("aria-label", reemplaza(el.getAttribute("aria-label")));
+  });
+
+  // Texto visible de la página (copyright, historias, etc.)
+  const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+  const nodos = [];
+  while (walker.nextNode()) nodos.push(walker.currentNode);
+  nodos.forEach((n) => {
+    const v = n.nodeValue || "";
+    const nv = reemplaza(v);
+    if (nv !== v) n.nodeValue = nv;
   });
 };
 
