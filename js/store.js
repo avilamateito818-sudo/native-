@@ -89,6 +89,15 @@ window.obtenerConfigTienda = function() {
   return { ...window.CONFIG_TIENDA_DEFECTO };
 };
 
+function postConfigTienda(cfg) {
+  if (!window.fetch) return Promise.reject(new Error("no fetch"));
+  return fetch("/api/config", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ configTienda: cfg })
+  });
+}
+
 window.guardarConfigTienda = function(cfg) {
   try {
     window.__CFG_DIRTY_AT = Date.now();
@@ -97,16 +106,35 @@ window.guardarConfigTienda = function(cfg) {
     window.CONFIG_TIENDA = cfg;
     window.dispatchEvent(new CustomEvent("configTiendaActualizada", { detail: cfg }));
     if (window.fetch) {
-      fetch("/api/config", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ configTienda: cfg })
-      }).catch(() => {});
+      postConfigTienda(cfg)
+        .then((r) => {
+          if (!r.ok) throw new Error("status " + r.status);
+          const pend = localStorage.getItem("NATIVE_CONFIG_PENDIENTE");
+          if (pend && pend === JSON.stringify(cfg)) localStorage.removeItem("NATIVE_CONFIG_PENDIENTE");
+        })
+        .catch(() => {
+          // Si el servidor está caído (o suspenso), el cambio NO se pierde:
+          // queda en cola local para reintentarse hasta que el servidor lo reciba.
+          try { localStorage.setItem("NATIVE_CONFIG_PENDIENTE", JSON.stringify(cfg)); } catch (e) {}
+        });
     }
     return true;
   } catch (e) {
     return false;
   }
+};
+
+/* Reintenta enviar al servidor la config que quedó pendiente,
+   de modo que un guardado hecho mientras el backend fallaba
+   NUNCA se pierde y se propaga apenas el servidor vuelva. */
+window.reintentarConfigPendiente = function() {
+  const raw = localStorage.getItem("NATIVE_CONFIG_PENDIENTE");
+  if (!raw || !window.fetch) return;
+  let cfg = null;
+  try { cfg = JSON.parse(raw); } catch (e) { localStorage.removeItem("NATIVE_CONFIG_PENDIENTE"); return; }
+  postConfigTienda(cfg)
+    .then((r) => { if (r.ok) localStorage.removeItem("NATIVE_CONFIG_PENDIENTE"); })
+    .catch(() => {});
 };
 
 window.obtenerTestimonios = function() {
@@ -173,6 +201,7 @@ window.restablecerCatalogo = function() {
     localStorage.removeItem("NATIVE_CATEGORIAS");
     localStorage.removeItem("NATIVE_CONFIG_TIENDA");
     localStorage.removeItem("NATIVE_CONFIG_TIENDA_AT");
+    localStorage.removeItem("NATIVE_CONFIG_PENDIENTE");
     localStorage.removeItem("NATIVE_TESTIMONIOS");
     localStorage.removeItem("NATIVE_PEDIDOS");
     window.PRODUCTOS = [...window.PRODUCTOS_DEFECTO];
@@ -432,11 +461,13 @@ window.aplicarMarca = function(cfg) {
 /* Re-sincronizar con el backend al volver a la pestaña:
    así los cambios hechos desde otro dispositivo se reflejan al entrar. */
 function resincronizarDesdeServidor() {
-  if (window.sincronizarDesdeServidor && document.visibilityState === "visible") {
-    window.sincronizarDesdeServidor(function() {});
+  if (document.visibilityState === "visible") {
+    if (window.reintentarConfigPendiente) window.reintentarConfigPendiente();
+    if (window.sincronizarDesdeServidor) window.sincronizarDesdeServidor(function() {});
   }
 }
 if (typeof document !== "undefined") {
+  if (window.reintentarConfigPendiente) window.reintentarConfigPendiente();
   document.addEventListener("visibilitychange", () => {
     if (document.visibilityState === "visible") resincronizarDesdeServidor();
   });
