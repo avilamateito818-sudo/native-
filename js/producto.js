@@ -164,7 +164,7 @@ document.addEventListener("DOMContentLoaded", () => {
         </button>
       </div>
       <div class="product-info__extra">
-        ${ws ? `<a class="btn-whatsapp" target="_blank" rel="noopener" href="https://wa.me/${ws.replace(/\D/g, "")}?text=${encodeURIComponent("Hola Native Origen, me interesa \"" + p.nombre + "\"")}">💬 ¿Dudas? Escríbenos</a>` : ""}
+        ${ws ? `<a class="btn-whatsapp" target="_blank" rel="noopener" href="https://wa.me/${ws.replace(/\D/g, "")}?text=${encodeURIComponent("Hola Amelisa C0smetico, me interesa \"" + p.nombre + "\"")}">💬 ¿Dudas? Escríbenos</a>` : ""}
         <a class="btn-volver" href="index.html#catalogo">← Volver al catálogo</a>
       </div>
       ${agotado ? "" : `
@@ -276,7 +276,7 @@ document.addEventListener("DOMContentLoaded", () => {
         pedidos.push(nuevoPedido);
         if (window.guardarPedidos) window.guardarPedidos(pedidos);
         if (ws) {
-          const texto = `🧾 NUEVO PEDIDO #${nuevoPedido.id} — Native Origen\n\n📦 ${p.nombre} × ${cantidad}\n💰 Total: ${sim}${total.toFixed(2)}\n\n👤 ${nombre}\n📱 ${tel}\n📍 ${ciudad}, ${dir}\n🚚 ${entrega}\n💳 ${pago}`;
+          const texto = `🧾 NUEVO PEDIDO #${nuevoPedido.id} — Amelisa C0smetico\n\n📦 ${p.nombre} × ${cantidad}\n💰 Total: ${sim}${total.toFixed(2)}\n\n👤 ${nombre}\n📱 ${tel}\n📍 ${ciudad}, ${dir}\n🚚 ${entrega}\n💳 ${pago}`;
           window.open(`https://wa.me/${ws.replace(/\D/g, "")}?text=${encodeURIComponent(texto)}`, "_blank");
         }
         mostrarToast(`✓ ¡Pedido #${nuevoPedido.id} enviado por WhatsApp!`);
@@ -410,7 +410,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (similarGrid) similarGrid.parentElement.style.display = "none";
       return;
     }
-    document.title = `${productoActual.nombre} — Native Origen`;
+    document.title = `${productoActual.nombre} — Amelisa C0smetico`;
     renderGallery();
     renderInfo();
     renderBreadcrumb();

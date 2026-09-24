@@ -315,7 +315,7 @@ document.addEventListener("DOMContentLoaded", () => {
       n: "01"
     };
 
-    document.title = `${categoria} — Native Origen`;
+    document.title = `${categoria} — Amelisa C0smetico`;
 
     const banner = document.getElementById("cat-banner");
     if (banner) {
@@ -497,7 +497,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Si tiene WhatsApp configurado, abrir chat opcionalmente
       if (cfg.whatsappContacto) {
-        const textoMsg = encodeURIComponent(`Hola Native Origen, me gustaría confirmar mi pedido #${nuevoPedido.id} por total de ${sim}${total}`);
+        const textoMsg = encodeURIComponent(`Hola Amelisa C0smetico, me gustaría confirmar mi pedido #${nuevoPedido.id} por total de ${sim}${total}`);
         const urlWp = `https://wa.me/${cfg.whatsappContacto}?text=${textoMsg}`;
         window.open(urlWp, "_blank");
       }

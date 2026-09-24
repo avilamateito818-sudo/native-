@@ -162,7 +162,11 @@ app.get("/api/testimonios", (req, res) => {
 // Obtener Pedidos
 app.get("/api/pedidos", (req, res) => {
   const cat = leerCatalogo();
-  res.json({ ok: true, data: cat && cat.pedidos ? cat.pedidos : [] });
+  res.json({
+    ok: true,
+    data: cat && cat.pedidos ? cat.pedidos : [],
+    updateAt: cat && cat.fechaActualizacion ? new Date(cat.fechaActualizacion).getTime() : null
+  });
 });
 
 // Guardar / Publicar Configuración de Tienda
@@ -205,7 +209,14 @@ app.post("/api/pedidos", (req, res) => {
   try {
     const pedidos = req.body.pedidos || req.body;
     let cat = leerCatalogo() || {};
-    cat.pedidos = pedidos;
+    const previos = Array.isArray(cat.pedidos) ? cat.pedidos : [];
+    const mapa = new Map();
+    previos.forEach((p) => { if (p && p.id !== undefined && p.id !== null) mapa.set(String(p.id), p); });
+    pedidos.forEach((p) => { if (p && p.id !== undefined && p.id !== null) mapa.set(String(p.id), p); });
+    const conId = Array.from(mapa.values());
+    const sinId = previos.concat(pedidos).filter((p) => !p || p.id === undefined || p.id === null);
+    cat.pedidos = pedidos.length > 0 ? conId.concat(sinId) : [];
+    cat.fechaActualizacion = new Date().toISOString();
 
     fs.writeFileSync(catalogoPath, JSON.stringify(cat, null, 2), "utf-8");
     res.json({ ok: true, message: "Pedidos guardados con éxito" });

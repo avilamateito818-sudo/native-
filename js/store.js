@@ -1,7 +1,7 @@
 "use strict";
 
 /* =====================================================================
-   STORE.JS — Capa de datos compartida de Native Origen
+   STORE.JS — Capa de datos compartida de Amelisa C0smetico
    ---------------------------------------------------------------
    Responsabilidad ÚNICA: lectura/escritura de datos (productos,
    categorías, config, testimonios, pedidos) con persistencia local
@@ -98,6 +98,15 @@ function postConfigTienda(cfg) {
   });
 }
 
+function postPedidos(lista) {
+  if (!window.fetch) return Promise.reject(new Error("no fetch"));
+  return fetch("/api/pedidos", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ pedidos: lista })
+  });
+}
+
 window.guardarConfigTienda = function(cfg) {
   try {
     window.__CFG_DIRTY_AT = Date.now();
@@ -179,20 +188,42 @@ window.obtenerPedidos = function() {
 
 window.guardarPedidos = function(lista) {
   try {
+    const ahora = Date.now();
     localStorage.setItem("NATIVE_PEDIDOS", JSON.stringify(lista));
+    localStorage.setItem("NATIVE_PEDIDOS_AT", String(ahora));
     window.PEDIDOS = lista;
     window.dispatchEvent(new CustomEvent("pedidosActualizados", { detail: lista }));
     if (window.fetch) {
-      fetch("/api/pedidos", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ pedidos: lista })
-      }).catch(() => {});
+      postPedidos(lista)
+        .then((r) => {
+          if (!r.ok) throw new Error("status " + r.status);
+          const pend = localStorage.getItem("NATIVE_PEDIDOS_PENDIENTE");
+          if (pend && pend === JSON.stringify(lista)) localStorage.removeItem("NATIVE_PEDIDOS_PENDIENTE");
+        })
+        .catch(() => {
+          // Si el servidor está caído (o suspenso), el pedido NO se pierde:
+          // queda en cola local para reintentarse hasta que el servidor lo reciba.
+          try { localStorage.setItem("NATIVE_PEDIDOS_PENDIENTE", JSON.stringify(lista)); } catch (e) {}
+        });
     }
     return true;
   } catch (e) {
     return false;
   }
+};
+
+/* Reintenta enviar al servidor los pedidos que quedaron pendientes,
+   de modo que un pedido hecho mientras el backend fallaba NUNCA se
+   pierde y se propaga apenas el servidor vuelva. */
+window.reintentarPedidosPendientes = function() {
+  const raw = localStorage.getItem("NATIVE_PEDIDOS_PENDIENTE");
+  if (!raw || !window.fetch) return;
+  let lista = null;
+  try { lista = JSON.parse(raw); } catch (e) { localStorage.removeItem("NATIVE_PEDIDOS_PENDIENTE"); return; }
+  if (!Array.isArray(lista)) { localStorage.removeItem("NATIVE_PEDIDOS_PENDIENTE"); return; }
+  postPedidos(lista)
+    .then((r) => { if (r.ok) localStorage.removeItem("NATIVE_PEDIDOS_PENDIENTE"); })
+    .catch(() => {});
 };
 
 window.restablecerCatalogo = function() {
@@ -204,6 +235,8 @@ window.restablecerCatalogo = function() {
     localStorage.removeItem("NATIVE_CONFIG_PENDIENTE");
     localStorage.removeItem("NATIVE_TESTIMONIOS");
     localStorage.removeItem("NATIVE_PEDIDOS");
+    localStorage.removeItem("NATIVE_PEDIDOS_AT");
+    localStorage.removeItem("NATIVE_PEDIDOS_PENDIENTE");
     window.PRODUCTOS = [...window.PRODUCTOS_DEFECTO];
     window.CATEGORIAS = { ...window.CATEGORIAS_DEFECTO };
     window.ORDEN_CATEGORIAS = [...window.ORDEN_CATEGORIAS_DEFECTO];
@@ -265,7 +298,23 @@ window.sincronizarDesdeServidor = function(callback) {
       window.guardarConfigTienda(d);
     }, (d) => d && typeof d === "object" && Object.keys(d).length > 0],
     ["/api/testimonios", window.guardarTestimonios, (d) => Array.isArray(d) && d.length > 0],
-    ["/api/pedidos", window.guardarPedidos, (d) => Array.isArray(d)]
+    ["/api/pedidos", (d) => {
+      // Nunca borrar pedidos locales con una lista vacía del servidor.
+      const locales = (window.obtenerPedidos ? window.obtenerPedidos() : []) || [];
+      if (Array.isArray(d) && d.length === 0 && locales.length > 0) return;
+      // Anti-stale: ignorar el servidor si editamos localmente hace más de 3s y el
+      // guardado en el servidor aún no llegó (o falló) — el local manda.
+      const editado = parseInt(localStorage.getItem("NATIVE_PEDIDOS_AT") || "0", 10) || 0;
+      const serverAt = window.__PEDIDOS_SERVER_AT || 0;
+      if (editado && serverAt && serverAt < editado - 3000) return;
+      // Fusionar por id (local + servidor): no se pierden pedidos de otros dispositivos.
+      const mapa = new Map();
+      locales.forEach((p) => { if (p && p.id !== undefined && p.id !== null) mapa.set(String(p.id), p); });
+      d.forEach((p) => { if (p && p.id !== undefined && p.id !== null) mapa.set(String(p.id), p); });
+      const conId = Array.from(mapa.values());
+      const sinId = locales.concat(d).filter((p) => !p || p.id === undefined || p.id === null);
+      window.guardarPedidos(conId.concat(sinId));
+    }, (d) => Array.isArray(d)]
   ];
 
   let terminadas = 0;
@@ -278,6 +327,7 @@ window.sincronizarDesdeServidor = function(callback) {
       .then((json) => {
         if (json && json.ok && valido(json.data)) {
           if (url === "/api/config") window.__CFG_SERVER_AT = json.updateAt || 0;
+          if (url === "/api/pedidos") window.__PEDIDOS_SERVER_AT = json.updateAt || 0;
           guardar(json.data);
           if (url === "/api/config" && window.__CFG_SERVER_AT) {
             localStorage.setItem("NATIVE_CONFIG_TIENDA_AT", String(window.__CFG_SERVER_AT));
@@ -389,7 +439,8 @@ window.aplicarTema = function(tema) {
 window.aplicarMarca = function(cfg) {
   if (typeof document === "undefined") return;
   const c = cfg || window.CONFIG_TIENDA || {};
-  const nombre = c.nombreMarca || "Native·Origen";
+  const nombre = c.nombreMarca || "Amelisa C0smetico";
+  const marcaFabrica = "Amelisa C0smetico";
   const logo = c.logoUrl || "";
   const DEFAULTS = ["Native·Origen", "Native Origen"];
   const previa = window.__MARCA_PREVIA || "";
@@ -424,6 +475,7 @@ window.aplicarMarca = function(cfg) {
   // Renombrados globales (título, meta, copyright, historias, _subject…)
   const viejos = [];
   DEFAULTS.forEach((v) => { if (v && v !== nombre) viejos.push(v); });
+  if (marcaFabrica && marcaFabrica !== nombre && !viejos.includes(marcaFabrica)) viejos.push(marcaFabrica);
   if (previa && previa !== nombre) viejos.push(previa);
   window.__MARCA_PREVIA = nombre;
   if (!viejos.length) return;
@@ -463,11 +515,13 @@ window.aplicarMarca = function(cfg) {
 function resincronizarDesdeServidor() {
   if (document.visibilityState === "visible") {
     if (window.reintentarConfigPendiente) window.reintentarConfigPendiente();
+    if (window.reintentarPedidosPendientes) window.reintentarPedidosPendientes();
     if (window.sincronizarDesdeServidor) window.sincronizarDesdeServidor(function() {});
   }
 }
 if (typeof document !== "undefined") {
   if (window.reintentarConfigPendiente) window.reintentarConfigPendiente();
+  if (window.reintentarPedidosPendientes) window.reintentarPedidosPendientes();
   document.addEventListener("visibilitychange", () => {
     if (document.visibilityState === "visible") resincronizarDesdeServidor();
   });

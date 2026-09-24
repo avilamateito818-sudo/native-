@@ -1,7 +1,7 @@
 "use strict";
 
 /* =====================================================================
-   PRODUCTOS.JS — Datos por defecto del catálogo Native Origen
+   PRODUCTOS.JS — Datos por defecto del catálogo Amelisa C0smetico
    ---------------------------------------------------------------
    ARCHIVO GENERADO por el servidor (server/server.js) a partir de
    data/catalogo.json. NO editar a mano: tus cambios se perderán en la
@@ -363,7 +363,7 @@ window.CONFIG_TIENDA_DEFECTO = {
   "promoTitulo": "Rutina <em>Glow</em> completa con <em>-30%</em>",
   "promoSubtexto": "En el set rutina Glow",
   "promoDesc": "Sérum, crema hidratante y limpiador en un set pensado para iluminar tu piel de día a día. La forma perfecta de empezar (o renovar) tu ritual de belleza.",
-  "nombreMarca": "Native·Origen",
+  "nombreMarca": "Amelisa C0smetico",
   "monedaSimbolo": "$",
   "envioGratisMinimo": 50,
   "whatsappContacto": "573154729668",
