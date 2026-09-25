@@ -216,7 +216,11 @@ document.addEventListener("DOMContentLoaded", () => {
           <ol class="orderbox__pasos">
             <li><b>Busca</b> el producto que necesitas en el catálogo.</li>
             <li><b>Llena</b> los datos de tu compra aquí.</li>
-            <li><b>Confirma</b> y te contactamos por WhatsApp.</li>
+            <li><b>Confirma</b> tu pedido por WhatsApp.</li>
+            <li><b>Envía</b> el comprobante de pago a este número de WhatsApp:
+              ${ws ? `<a class="orderbox__wasap" target="_blank" rel="noopener"
+                 href="https://wa.me/${ws.replace(/\D/g, "")}?text=${encodeURIComponent("Hola, acabo de realizar un pedido en Amelisa C0smetico. Adjunto mi comprobante de pago.")}">+${ws.replace(/\D/g, "")}</a>` : "el número que aparece en la página"}
+            </li>
           </ol>
         </form>
       </div>`}
