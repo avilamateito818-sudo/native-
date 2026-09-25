@@ -2584,7 +2584,7 @@ a, button, input, select, textarea, .card, .card__media, .thumb,
   .section__title { font-size: 27px; }
 }
 
-/* ---- J. Sin rebote al llegar al final de la página (iOS) ---- */
-body {
-  overscroll-behavior-y: none;
-}
+/* ---- J. Rebote al final de la página ----
+   NO usar `overscroll-behavior: none` aquí: sobre `body` Chromium lo
+   convierte en contenedor de scroll y cancela la rueda y el deslizamiento
+   del dedo, dejando la página sin poder bajar. Es preferible el rebote. */
