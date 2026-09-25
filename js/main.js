@@ -1,6 +1,26 @@
 "use strict";
 
 document.addEventListener("DOMContentLoaded", () => {
+  /* ============ Recordar por donde ibas scrolling ============
+     Al abrir una ficha y volver, el catalogo te devuelve justo donde
+     lo dejaste en vez de tener que bajar de nuevo desde arriba. */
+  const LLAVE_SCROLL = "NATIVE_SCROLL_CATALOGO";
+  const recordarPosicion = () => {
+    try { sessionStorage.setItem(LLAVE_SCROLL, String(window.scrollY)); } catch (e) {}
+  };
+  window.addEventListener("pagehide", recordarPosicion);
+  window.addEventListener("beforeunload", recordarPosicion);
+  const restaurarPosicion = () => {
+    if (location.hash || location.search.includes("id=")) return;
+    let guardado = null;
+    try { guardado = sessionStorage.getItem(LLAVE_SCROLL); } catch (e) {}
+    if (guardado === null) return;
+    sessionStorage.removeItem(LLAVE_SCROLL);
+    const y = parseInt(guardado, 10);
+    if (!y || y < 200) return;
+    requestAnimationFrame(() => requestAnimationFrame(() => window.scrollTo(0, y)));
+  };
+
   /* ============ Preloader ============ */
   const preloader = document.getElementById("preloader");
   const preloaderBar = document.getElementById("preloader-bar");
@@ -217,6 +237,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       card.querySelector(".btn-more").addEventListener("click", () => {
+        recordarPosicion();
         window.location.href = `producto.html?id=${p.id}`;
       });
 
@@ -234,6 +255,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const movX = Math.abs(e.clientX - downX);
         const movY = Math.abs(e.clientY - downY);
         if (movX > 12 || movY > 12) return; // fue un scroll, no un clic
+        recordarPosicion();
         window.location.href = `producto.html?id=${p.id}`;
       });
     });
@@ -581,6 +603,8 @@ document.addEventListener("DOMContentLoaded", () => {
   if (toTop) {
     toTop.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
   }
+
+  restaurarPosicion();
 
   renderDrawer();
   if (location.search.includes("bolsa=1")) {
