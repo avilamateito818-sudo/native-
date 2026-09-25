@@ -1819,6 +1819,9 @@ section[id] { scroll-margin-top: calc(var(--nav-h) + 12px); }
 .btn-add-detail[disabled] { opacity: 0.55; cursor: not-allowed; }
 
 .product-info__extra { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; margin-top: 4px; }
+.product-info__detalle {
+  margin-top: 16px; padding-top: 14px; border-top: 1px dashed var(--cream);
+}
 .product-info__vermas {
   display: inline-flex; align-items: center; gap: 7px; margin-top: 2px;
   background: none; border: none; padding: 4px 0; cursor: pointer;
