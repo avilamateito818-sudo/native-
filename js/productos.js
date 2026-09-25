@@ -460,6 +460,11 @@ window.CONFIG_TIENDA_DEFECTO = {
   "heroEyebrow": "Cosmética & Belleza desde 2012",
   "heroTitulo": "Despierta tu belleza <em>natural</em>, cada día.",
   "heroCopy": "Descubre una selección curada de productos de cosmética facial, maquillaje, cuidado corporal y fragancias. Ingredientes nobles, fórmulas limpias y resultados que se ven y se sienten.",
+  "banners": [
+    { "imagen": "", "titulo": "Portada", "alt": "" },
+    { "imagen": "", "titulo": "Oferta", "alt": "" },
+    { "imagen": "", "titulo": "Categorias", "alt": "" }
+  ],
   "stat1Num": "+12k",
   "stat1Label": "Clientas felices",
   "stat2Num": "+350",

@@ -145,9 +145,42 @@
     });
   }
 
+  /* El encabezado es de dos filas (marca + buscador, y enlaces debajo) y al
+     hacer scroll se compacta a una sola. Su alto real cambia, asi que se mide
+     y se publica en --nav-h; de ese valor dependen el salto a los anclajes, las
+     barras fijas y el relleno de las secciones. Vive aquí porque nav.js está
+     en todas las páginas, incluida la ficha de producto. */
+  function medirNav() {
+    const nav = document.getElementById("nav");
+    if (!nav) return;
+    const alto = Math.round(nav.getBoundingClientRect().height);
+    if (alto > 0) document.documentElement.style.setProperty("--nav-h", alto + "px");
+  }
+
+  /* Al bajar, el encabezado se compacta (oculta la fila de marca + buscador y
+     deja la barra de enlaces) y la cinta de anuncios se retira. Vive aquí
+     para que ocurra igual en la portada, en las categorías y en la ficha. */
+  function alDesplazar() {
+    const nav = document.getElementById("nav");
+    if (nav) {
+      if (window.scrollY > 30) nav.classList.add("scrolled", "compacto");
+      else nav.classList.remove("scrolled", "compacto");
+    }
+    if (document.querySelector(".marquee--top")) {
+      document.body.classList.toggle("marquee-oculta", window.scrollY > 40);
+    }
+  }
+
   function iniciar() {
     activarMenuCatalogo();
     activarPopoverShowcase();
+    medirNav();
+    alDesplazar();
+    const nav = document.getElementById("nav");
+    if (nav && typeof ResizeObserver !== "undefined") new ResizeObserver(medirNav).observe(nav);
+    window.addEventListener("scroll", alDesplazar, { passive: true });
+    window.addEventListener("resize", medirNav);
+    window.addEventListener("load", () => { medirNav(); alDesplazar(); });
   }
   // El grid de categorías se genera después, así que re-enlazamos cuando llegue.
   document.addEventListener("amelisa:categorias", activarPopoverShowcase);

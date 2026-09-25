@@ -213,6 +213,20 @@
               <label for="cfg-hero-copy">Párrafo de Presentación</label>
               <textarea class="input-control" id="cfg-hero-copy" rows="2" placeholder="Descubre una selección curada..."></textarea>
             </div>
+            <div class="form-group mt-10" >
+              <label>Fotos del carrusel de portada</label>
+              <input class="input-control" type="text" id="cfg-banner-1" placeholder="Portada → imagenes/portada.jpg" />
+              <small class="field-hint">Ruta o URL de la foto. Déjala vacía para usar el degradado de la marca.</small>
+            </div>
+            <div class="form-group mt-10" >
+              <label for="cfg-banner-2">Foto del banner de oferta</label>
+              <input class="input-control" type="text" id="cfg-banner-2" placeholder="Oferta → imagenes/oferta.jpg" />
+            </div>
+            <div class="form-group mt-10" >
+              <label for="cfg-banner-3">Foto del banner de categorías</label>
+              <input class="input-control" type="text" id="cfg-banner-3" placeholder="Categorías → imagenes/categorias.jpg" />
+            </div>
+            <small class="field-hint">Las fotos del carrusel usan cover: se recorta a 498px de alto. Recomendadas 1440×498 px. Ejemplo de uso: <code>imagenes/mi-foto.jpg</code>.</small>
             <div class="form-row mt-10" >
               <div class="form-group">
                 <label for="cfg-stat1-num">Dato 1 (Cifra)</label>
@@ -764,8 +778,8 @@
 
   <div class="admin-toast" id="admin-toast"></div>
 
-  <script src="js/productos.js?v=2"></script>
+  <script src="js/productos.js?v=3"></script>
 <script src="js/store.js?v=11"></script>
-<script src="js/admin.js?v=6"></script>
+<script src="js/admin.js?v=7"></script>
 </body>
 </html>

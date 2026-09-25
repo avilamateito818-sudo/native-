@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css?v=19" />
+  <link rel="stylesheet" href="css/style.css?v=20" />
 </head>
 <body>
 
@@ -27,34 +27,28 @@
     </div>
   </div>
 
-  <!-- ============ NAVBAR ============ -->
+  <!-- ============ NAVBAR (dos filas: marca+buscador / enlaces) ============ -->
   <header class="nav" id="nav">
-    <div class="nav__inner">
+    <!-- Fila superior: marca + buscador -->
+    <div class="nav__top">
       <a href="#inicio" class="brand">
         <span class="brand__mark">A</span>
         <span class="brand__name">Native<span>·</span>Origen</span>
       </a>
 
-      <nav>
-        <ul class="nav__links" id="nav-links">
-          <li><a href="#inicio">Inicio</a></li>
-          <li><a href="#nosotros">Nosotros</a></li>
-          <li class="has-menu">
-            <a href="#" class="menu-toggle" aria-haspopup="true">Catálogo ▾</a>
-            <ul class="cat__menu">
-              <li><a href="labiales.html">💄 Labiales</a></li>
-              <li><a href="maquillaje.html">🎨 Maquillaje</a></li>
-              <li><a href="cremas.html">🧴 Cremas</a></li>
-              <li><a href="mascarillas.html">🎭 Mascarillas</a></li>
-              <li><a href="corporal.html">🫧 Corporal</a></li>
-              <li><a href="fragancias.html">🌸 Fragancias</a></li>
-            </ul>
-          </li>
-          <li><a href="#ofertas">Ofertas</a></li>
-          <li><a href="#testimonios">Opiniones</a></li>
-          <li><a href="#contacto">Contacto</a></li>
-        </ul>
-      </nav>
+      <form class="nav__search" id="nav-search-form" role="search" autocomplete="off">
+        <input
+          class="nav__search-input"
+          id="nav-search"
+          type="search"
+          placeholder="¿Qué estás buscando?"
+          aria-label="Buscar productos"
+          aria-expanded="false"
+          aria-controls="nav-search-results"
+        />
+        <button class="nav__search-btn" type="submit" aria-label="Buscar">🔍</button>
+        <div class="nav__search-results" id="nav-search-results" role="listbox" hidden></div>
+      </form>
 
       <div class="nav__cta">
         <button class="nav__bag" id="bag-btn" aria-label="Bolsa de compras">
@@ -66,31 +60,40 @@
         </button>
       </div>
     </div>
+
+    <!-- Fila inferior: barra de navegación -->
+    <nav class="nav__bottom">
+      <ul class="nav__links" id="nav-links">
+        <li><a href="#inicio">Inicio</a></li>
+        <li><a href="#nosotros">Nosotros</a></li>
+        <li class="has-menu">
+          <a href="#" class="menu-toggle" aria-haspopup="true">Catálogo ▾</a>
+          <ul class="cat__menu">
+            <li><a href="labiales.html">💄 Labiales</a></li>
+            <li><a href="maquillaje.html">🎨 Maquillaje</a></li>
+            <li><a href="cremas.html">🧴 Cremas</a></li>
+            <li><a href="mascarillas.html">🎭 Mascarillas</a></li>
+            <li><a href="corporal.html">🫧 Corporal</a></li>
+            <li><a href="fragancias.html">🌸 Fragancias</a></li>
+          </ul>
+        </li>
+        <li><a href="#categorias">Categorías</a></li>
+        <li><a href="#destacados">Novedades</a></li>
+        <li><a href="#ofertas">Ofertas</a></li>
+        <li><a href="#testimonios">Opiniones</a></li>
+        <li><a href="#contacto">Contacto</a></li>
+      </ul>
+    </nav>
   </header>
 
   <main>
-    <!-- ============ HERO ============ -->
-    <section class="hero" id="inicio">
-      <div class="hero__blob"></div>
-      <div class="hero__inner">
-        <div>
-          <span class="hero__eyebrow">Cosmética & Belleza desde 2012</span>
-          <h1>Despierta tu belleza <em>natural</em>, cada día.</h1>
-          <p class="hero__copy">
-            Descubre una selección curada de productos de cosmética facial, maquillaje,
-            cuidado corporal y fragancias. Ingredientes nobles, fórmulas limpias y resultados que se ven y se sienten.
-          </p>
-          <div class="hero__actions">
-            <a href="#catalogo" class="btn btn--gold">Ver Catálogo</a>
-            <a href="#nosotros" class="btn btn--ghost">Conócenos</a>
-          </div>
-          <div class="hero__stats">
-            <div data-prefix="+" data-num="12" data-suffix="k"><span class="num">+12k</span> <small>Clientas felices</small></div>
-            <div data-prefix="+" data-num="350" data-suffix=""><span class="num">+350</span> <small>Productos</small></div>
-            <div data-prefix="" data-num="4.9" data-suffix=""><span class="num">4.9</span> <small>Valoración</small></div>
-          </div>
-        </div>
-      </div>
+    <!-- ============ HERO / CARRUSEL ============ -->
+    <section class="hero hero--carrusel" id="inicio" aria-roledescription="carrusel" aria-label="Novedades">
+      <div class="hero__pista" id="hero-pista"></div>
+
+      <button class="hero__arrow hero__arrow--prev" id="hero-prev" aria-label="Anterior">‹</button>
+      <button class="hero__arrow hero__arrow--next" id="hero-next" aria-label="Siguiente">›</button>
+      <div class="hero__dots" id="hero-dots" role="tablist" aria-label="Ir a la diapositiva"></div>
     </section>
 
     <!-- ============ SOBRE NOSOTROS ============ -->
@@ -349,10 +352,10 @@
   <!-- Back to top -->
   <button class="to-top" id="to-top" aria-label="Volver arriba">↑</button>
 
-  <script src="js/productos.js?v=2"></script>
+  <script src="js/productos.js?v=3"></script>
   <script src="js/store.js?v=11"></script>
-  <script src="js/nav.js?v=2"></script>
+  <script src="js/nav.js?v=3"></script>
   <script src="js/gallery.js"></script>
-  <script src="js/main.js?v=9"></script>
+  <script src="js/main.js?v=10"></script>
 </body>
 </html>

@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css?v=19" />
+  <link rel="stylesheet" href="css/style.css?v=20" />
 </head>
 <body data-categoria="Mascarillas">
 
@@ -18,32 +18,29 @@
     <div class="preloader__logo">A</div>
   </div>
 
+    <!-- ============ NAVBAR (dos filas: marca+buscador / enlaces) ============ -->
   <header class="nav" id="nav">
-    <div class="nav__inner">
+    <!-- Fila superior: marca + buscador -->
+    <div class="nav__top">
       <a href="index.html" class="brand">
         <span class="brand__mark">A</span>
         <span class="brand__name">Native<span>·</span>Origen</span>
       </a>
-      <nav>
-        <ul class="nav__links" id="nav-links">
-          <li><a href="index.html">Inicio</a></li>
-          <li><a href="index.html#nosotros">Nosotros</a></li>
-          <li class="has-menu">
-            <a href="#" class="menu-toggle" aria-haspopup="true">Catálogo ▾</a>
-            <ul class="cat__menu">
-              <li><a href="labiales.html">💄 Labiales</a></li>
-              <li><a href="maquillaje.html">🎨 Maquillaje</a></li>
-              <li><a href="cremas.html">🧴 Cremas</a></li>
-              <li><a href="mascarillas.html" class="on">🎭 Mascarillas</a></li>
-              <li><a href="corporal.html">🫧 Corporal</a></li>
-              <li><a href="fragancias.html">🌸 Fragancias</a></li>
-            </ul>
-          </li>
-          <li><a href="index.html#ofertas">Ofertas</a></li>
-          <li><a href="index.html#testimonios">Opiniones</a></li>
-          <li><a href="index.html#contacto">Contacto</a></li>
-        </ul>
-      </nav>
+
+      <form class="nav__search" id="nav-search-form" role="search" autocomplete="off">
+        <input
+          class="nav__search-input"
+          id="nav-search"
+          type="search"
+          placeholder="¿Qué estás buscando?"
+          aria-label="Buscar productos"
+          aria-expanded="false"
+          aria-controls="nav-search-results"
+        />
+        <button class="nav__search-btn" type="submit" aria-label="Buscar">🔍</button>
+        <div class="nav__search-results" id="nav-search-results" role="listbox" hidden></div>
+      </form>
+
       <div class="nav__cta">
         <button class="nav__bag" id="bag-btn" aria-label="Bolsa de compras">
           🛍 <span class="count" id="bag-count">0</span>
@@ -54,6 +51,30 @@
         </button>
       </div>
     </div>
+
+    <!-- Fila inferior: barra de navegación -->
+    <nav class="nav__bottom">
+      <ul class="nav__links" id="nav-links">
+        <li><a href="index.html">Inicio</a></li>
+        <li><a href="index.html#nosotros">Nosotros</a></li>
+        <li class="has-menu">
+          <a href="#" class="menu-toggle" aria-haspopup="true">Catálogo ▾</a>
+          <ul class="cat__menu">
+            <li><a href="labiales.html">💄 Labiales</a></li>
+            <li><a href="maquillaje.html">🎨 Maquillaje</a></li>
+            <li><a href="cremas.html">🧴 Cremas</a></li>
+            <li><a href="mascarillas.html" class="on">🎭 Mascarillas</a></li>
+            <li><a href="corporal.html">🫧 Corporal</a></li>
+            <li><a href="fragancias.html">🌸 Fragancias</a></li>
+          </ul>
+        </li>
+        <li><a href="index.html#categorias">Categorías</a></li>
+        <li><a href="index.html#destacados">Novedades</a></li>
+        <li><a href="index.html#ofertas">Ofertas</a></li>
+        <li><a href="index.html#testimonios">Opiniones</a></li>
+        <li><a href="index.html#contacto">Contacto</a></li>
+      </ul>
+    </nav>
   </header>
 
   <main>
@@ -156,10 +177,10 @@
   </aside>
   <button class="to-top" id="to-top" aria-label="Volver arriba">↑</button>
 
-  <script src="js/productos.js?v=2"></script>
+  <script src="js/productos.js?v=3"></script>
   <script src="js/store.js?v=11"></script>
-  <script src="js/nav.js?v=2"></script>
+  <script src="js/nav.js?v=3"></script>
   <script src="js/gallery.js"></script>
-  <script src="js/main.js?v=9"></script>
+  <script src="js/main.js?v=10"></script>
 </body>
 </html>

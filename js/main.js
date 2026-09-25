@@ -387,6 +387,313 @@ document.addEventListener("DOMContentLoaded", () => {
     llenar("vitrina-ofertas", conDescuento.slice(0, 4));
   }
 
+  /* ============ Hero / carrusel ============
+     Tres diapositivas construidas con datos reales del catálogo:
+     portada, oferta con el descuento más fuerte y categorías.
+     Cada slide acepta una foto: si en la configuración se guarda una
+     ruta, se usa de fondo; si no, se ve el degradado de la marca. */
+  function renderHero() {
+    const pista = document.getElementById("hero-pista");
+    if (!pista) return;
+
+    PRODUCTOS = (window.obtenerProductos ? window.obtenerProductos() : window.PRODUCTOS) || [];
+    CATEGORIAS = (window.obtenerCategorias ? window.obtenerCategorias() : window.CATEGORIAS) || {};
+    const cfg = (window.obtenerConfigTienda ? window.obtenerConfigTienda() : window.CONFIG_TIENDA) || {};
+    const sim = cfg.monedaSimbolo || "$";
+    const banners = Array.isArray(cfg.banners) ? cfg.banners : [];
+
+    const disponibles = PRODUCTOS.filter((p) => p.stock !== "oculto" && p.stock !== "agotado");
+    const conDescuento = disponibles.filter((p) => p.viejo && parseFloat(p.viejo) > parseFloat(p.precio));
+
+    // El slide con mayor descuento manda el mensaje de oferta
+    const topOferta = conDescuento.slice().sort((a, b) => {
+      const da = 1 - parseFloat(a.precio) / parseFloat(a.viejo);
+      const db = 1 - parseFloat(b.precio) / parseFloat(b.viejo);
+      return db - da;
+    })[0];
+
+    const slides = [];
+
+    // 1) Portada (siempre primero)
+    slides.push({
+      eyebrow: cfg.heroEyebrow || "Cosmética & Belleza desde 2012",
+      titulo: cfg.heroTitulo || "Despierta tu belleza <em>natural</em>, cada día.",
+      texto: cfg.heroCopy || "Descubre una selección curada de cosmética facial, maquillaje, cuidado corporal y fragancias. Ingredientes nobles, fórmulas limpias y resultados que se ven y se sienten.",
+      cta: "Ver Catálogo",
+      ctaHref: "#catalogo",
+      cta2: "Conócenos",
+      cta2Href: "#nosotros",
+      gradiente: "wine",
+      foto: banners[0] && banners[0].imagen,
+      stats: true
+    });
+
+    // 2) Oferta real, si existe
+    if (topOferta) {
+      const dto = Math.round((1 - parseFloat(topOferta.precio) / parseFloat(topOferta.viejo)) * 100);
+      slides.push({
+        etiqueta: `-${dto}%`,
+        eyebrow: "Precio especial",
+        titulo: topOferta.nombre,
+        texto: topOferta.desc,
+        precio: `${sim}${topOferta.precio}.00`,
+        precioViejo: `${sim}${topOferta.viejo}.00`,
+        cta: "Ver la oferta",
+        ctaHref: `producto.html?id=${topOferta.id}`,
+        gradiente: "gold",
+        foto: banners[1] && banners[1].imagen
+      });
+    }
+
+    // 3) Categorías
+    const cats = Array.from(new Set(disponibles.map((p) => p.categoria))).filter(Boolean).slice(0, 5);
+    slides.push({
+      eyebrow: "Tu rutina",
+      titulo: "Encuentra lo que <em>tu piel</em> pide",
+      texto: "Explora todas nuestras categorías y arma tu rutina de belleza en un solo lugar.",
+      chips: cats.map((c) => ({ txt: `${(CATEGORIAS[c] || {}).emoji || "🏷️"} ${c}`, href: `${slugCategoria(c)}.html` })),
+      cta: "Ver todo el catálogo",
+      ctaHref: "#catalogo",
+      gradiente: "plum",
+      foto: banners[2] && banners[2].imagen
+    });
+
+    pista.innerHTML = "";
+    slides.forEach((s, i) => {
+      const art = document.createElement("article");
+      art.className = `hero__slide hero__slide--${s.gradiente}`;
+      art.setAttribute("role", "group");
+      art.setAttribute("aria-roledescription", "diapositiva");
+      art.setAttribute("aria-label", `${i + 1} de ${slides.length}`);
+      art.hidden = i !== 0;
+      if (s.foto) {
+        art.style.setProperty("--hero-foto", `url("${s.foto}")`);
+        art.classList.add("has-foto");
+      }
+
+      const chips = (s.chips || []).map((c) => `<a class="hero__chip" href="${c.href}">${c.txt}</a>`).join("");
+
+      art.innerHTML = `
+        <div class="hero__inner">
+          <div class="hero__content">
+            ${s.etiqueta ? `<span class="hero__sale">${s.etiqueta}</span>` : ""}
+            <span class="hero__eyebrow">${s.eyebrow}</span>
+            <h1 class="hero__title">${s.titulo}</h1>
+            ${s.precio ? `<p class="hero__precio"><strong>${s.precio}</strong><del>${s.precioViejo}</del></p>` : ""}
+            <p class="hero__copy">${s.texto}</p>
+            ${chips ? `<div class="hero__chips">${chips}</div>` : ""}
+            <div class="hero__actions">
+              <a href="${s.ctaHref}" class="btn btn--gold">${s.cta}</a>
+              ${s.cta2 ? `<a href="${s.cta2Href}" class="btn btn--ghost">${s.cta2}</a>` : ""}
+            </div>
+            ${s.stats ? `
+            <div class="hero__stats">
+              <div data-prefix="+" data-num="12" data-suffix="k"><span class="num">+12k</span> <small>Clientas felices</small></div>
+              <div data-prefix="+" data-num="${PRODUCTOS.length}" data-suffix=""><span class="num">+${PRODUCTOS.length}</span> <small>Productos</small></div>
+              <div data-prefix="" data-num="4.9" data-suffix=""><span class="num">4.9</span> <small>Valoración</small></div>
+            </div>` : ""}
+          </div>
+        </div>
+      `;
+      pista.appendChild(art);
+    });
+
+    iniciarCarrusel(slides.length);
+  }
+
+  function slugCategoria(cat) {
+    return String(cat).toLowerCase()
+      .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+  }
+
+  /* Lógica del carrusel: flechas, puntos, autoplay y deslizamiento */
+  function iniciarCarrusel(total) {
+    const pista = document.getElementById("hero-pista");
+    const dots = document.getElementById("hero-dots");
+    const prev = document.getElementById("hero-prev");
+    const next = document.getElementById("hero-next");
+    if (!pista || total < 2) {
+      if (dots) dots.innerHTML = "";
+      return;
+    }
+
+    const slides = [...pista.querySelectorAll(".hero__slide")];
+    let actual = 0;
+    let timer = null;
+
+    const ir = (i) => {
+      actual = (i + total) % total;
+      slides.forEach((s, k) => { s.hidden = k !== actual; });
+      if (dots) {
+        [...dots.children].forEach((d, k) => {
+          d.classList.toggle("is-active", k === actual);
+          d.setAttribute("aria-selected", k === actual ? "true" : "false");
+        });
+      }
+    };
+
+    if (dots) {
+      dots.innerHTML = "";
+      for (let i = 0; i < total; i++) {
+        const d = document.createElement("button");
+        d.className = "hero__dot";
+        d.type = "button";
+        d.setAttribute("role", "tab");
+        d.setAttribute("aria-label", `Diapositiva ${i + 1}`);
+        d.addEventListener("click", () => { ir(i); reiniciar(); });
+        dots.appendChild(d);
+      }
+    }
+
+    const reiniciar = () => {
+      if (timer) clearInterval(timer);
+      timer = setInterval(() => ir(actual + 1), 6500);
+    };
+
+    if (prev) prev.addEventListener("click", () => { ir(actual - 1); reiniciar(); });
+    if (next) next.addEventListener("click", () => { ir(actual + 1); reiniciar(); });
+
+    // Pausa el autoplay si la pestaña no está a la vista
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) { if (timer) clearInterval(timer); }
+      else reiniciar();
+    });
+
+    // Deslizar con el dedo. Se escuchan los dos juegos de eventos porque en
+    // táctil el navegador puede emitir pointercancel en cuanto decide que va
+    // a hacer scroll, y entonces pointerup nunca llega.
+    let sx = 0, sy = 0, modo = null;
+    const empezar = (x, y, m) => {
+      sx = x; sy = y; modo = m;
+      if (timer) clearInterval(timer);
+    };
+    const terminar = (x, y) => {
+      if (!modo) return;
+      const dx = x - sx, dy = y - sy;
+      modo = null;
+      if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy)) ir(dx < 0 ? actual + 1 : actual - 1);
+      reiniciar();
+    };
+
+    pista.addEventListener("pointerdown", (e) => {
+      if (e.pointerType === "touch") return;
+      empezar(e.clientX, e.clientY, "puntero");
+    }, { passive: true });
+    pista.addEventListener("pointerup", (e) => {
+      if (e.pointerType === "touch") return;
+      terminar(e.clientX, e.clientY);
+    });
+    pista.addEventListener("pointercancel", () => { modo = null; reiniciar(); });
+
+    pista.addEventListener("touchstart", (e) => {
+      const t = e.touches[0];
+      if (t) empezar(t.clientX, t.clientY, "tactil");
+    }, { passive: true });
+    pista.addEventListener("touchend", (e) => {
+      const t = e.changedTouches[0];
+      if (t) terminar(t.clientX, t.clientY);
+    });
+
+    /* Cada diapositiva tiene distinto contenido, asi que sin esto el alto del
+       banner cambiaria al pasar de una a otra y la pagina daria un salto. Se
+       mide la mas alta y se aplica a todas. */
+    let alturaFija = 0;
+    const fijarAlto = () => {
+      pista.style.height = "";
+      slides.forEach((s) => { s.hidden = false; });
+      const alto = Math.ceil(Math.max(...slides.map((s) => s.getBoundingClientRect().height)));
+      slides.forEach((s) => { s.hidden = true; });
+      if (alto > 0) {
+        alturaFija = alto;
+        pista.style.height = alto + "px";
+      }
+    };
+    slides.forEach((s) => { s.style.minHeight = alturaFija ? alturaFija + "px" : ""; });
+
+    let tAlto = null;
+    window.addEventListener("resize", () => {
+      if (tAlto) clearTimeout(tAlto);
+      tAlto = setTimeout(() => {
+        fijarAlto();
+        ir(actual);
+      }, 200);
+    });
+
+    ir(0);
+    fijarAlto();
+    reiniciar();
+  }
+
+  /* ============ Buscador del encabezado ============
+     Filtra por nombre, categoría y descripción; los resultados son
+     enlaces directos a la ficha. */
+  function iniciarBuscador() {
+    const form = document.getElementById("nav-search-form");
+    const input = document.getElementById("nav-search");
+    const box = document.getElementById("nav-search-results");
+    if (!form || !input || !box) return;
+
+    const cfg = (window.obtenerConfigTienda ? window.obtenerConfigTienda() : window.CONFIG_TIENDA) || {};
+    const sim = cfg.monedaSimbolo || "$";
+
+    const cerrar = () => { box.hidden = true; input.setAttribute("aria-expanded", "false"); };
+
+    const pintar = (q) => {
+      const datos = (window.obtenerProductos ? window.obtenerProductos() : window.PRODUCTOS) || [];
+      const t = q.trim().toLowerCase();
+      if (t.length < 2) return cerrar();
+
+      const res = datos.filter((p) =>
+        p.stock !== "oculto" &&
+        ((p.nombre || "") + " " + (p.categoria || "") + " " + (p.desc || "") + " " + (p.beneficios || []).join(" "))
+          .toLowerCase().includes(t)
+      ).slice(0, 6);
+
+      if (!res.length) {
+        box.innerHTML = `<p class="nav__search-empty">Sin resultados para “${q.trim()}”.</p>`;
+      } else {
+        box.innerHTML = res.map((p) => `
+          <a class="nav__search-item" href="producto.html?id=${p.id}" role="option">
+            <span class="nav__search-emoji">${p.emoji || "✨"}</span>
+            <span class="nav__search-info">
+              <span class="nav__search-name">${p.nombre}</span>
+              <span class="nav__search-cat">${p.categoria}</span>
+            </span>
+            <span class="nav__search-price">${sim}${p.precio}.00</span>
+          </a>`).join("");
+      }
+      box.hidden = false;
+      input.setAttribute("aria-expanded", "true");
+    };
+
+    input.addEventListener("input", () => pintar(input.value));
+    input.addEventListener("focus", () => { if (input.value.trim().length >= 2) pintar(input.value); });
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const t = input.value.trim();
+      if (!t) return;
+      const datos = (window.obtenerProductos ? window.obtenerProductos() : window.PRODUCTOS) || [];
+      const res = datos.filter((p) => p.stock !== "oculto" &&
+        ((p.nombre || "") + " " + (p.categoria || "") + " " + (p.desc || "")).toLowerCase().includes(t.toLowerCase()));
+
+      if (res.length === 1) {
+        window.location.href = `producto.html?id=${res[0].id}`;
+        return;
+      }
+      // Varios: llevamos al catálogo filtrado
+      cerrar();
+      const destino = document.getElementById("catalogo");
+      if (destino) destino.scrollIntoView({ behavior: "smooth" });
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!form.contains(e.target)) cerrar();
+    });
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape") cerrar(); });
+  }
+
   /* ============ Eventos de Actualización en Vivo ============ */
   window.addEventListener("productosActualizados", (e) => {
     PRODUCTOS = e.detail || (window.obtenerProductos ? window.obtenerProductos() : []);
@@ -482,6 +789,12 @@ document.addEventListener("DOMContentLoaded", () => {
     renderCategoriasGrid();
     renderVitrinas();
   }
+
+  renderHero();
+  iniciarBuscador();
+  // El hero se dibuja después de aplicar la configuración: se vuelve a
+  // aplicar para que las cifras y textos editados desde el panel lleguen.
+  aplicarConfigTienda();
 
   /* ============ Sincronización con el servidor ============ */
   if (window.sincronizarDesdeServidor) {
@@ -639,18 +952,35 @@ document.addEventListener("DOMContentLoaded", () => {
   const navLinks = document.getElementById("nav-links");
 
   if (burger && navLinks) {
+    /* El alto maximo del panel se calcula al abrirlo: la barra de anuncios
+       empuja el encabezado hacia abajo, asi que el espacio libre no se puede
+       anticipar con una cuenta fija en el CSS. Se mide desde el encabezado y
+       no desde el panel, que durante la transicion todavia esta desplazado. */
+    const ajustarPanel = () => {
+      if (!navLinks.classList.contains("open")) return;
+      const nav = document.getElementById("nav");
+      const base = nav ? nav.getBoundingClientRect().bottom : navLinks.getBoundingClientRect().top;
+      const disponible = window.innerHeight - base - 16;
+      navLinks.style.maxHeight = Math.max(180, Math.floor(disponible)) + "px";
+    };
+
     burger.addEventListener("click", () => {
       burger.classList.toggle("open");
       navLinks.classList.toggle("open");
       burger.setAttribute("aria-expanded", navLinks.classList.contains("open"));
+      ajustarPanel();
     });
 
     navLinks.querySelectorAll("a").forEach((a) => {
       a.addEventListener("click", () => {
         burger.classList.remove("open");
         navLinks.classList.remove("open");
+        navLinks.style.maxHeight = "";
       });
     });
+
+    window.addEventListener("resize", ajustarPanel);
+    window.addEventListener("orientationchange", ajustarPanel);
   }
 
   document.querySelectorAll(".menu-toggle").forEach((t) => {
@@ -661,23 +991,13 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  /* ============ Scroll: navbar + menú activo + back-to-top ============ */
-  const nav = document.getElementById("nav");
+  /* ============ Scroll: menú activo + back-to-top ============
+     El encabezado (compacto + barra de anuncios) se controla desde nav.js,
+     que está cargado en todas las páginas. */
   const toTop = document.getElementById("to-top");
-  const hayMarquee = !!document.querySelector(".marquee--top");
-  const secciones = ["inicio", "nosotros", "catalogo", "ofertas", "testimonios", "contacto"];
+  const secciones = ["inicio", "nosotros", "categorias", "destacados", "catalogo", "ofertas", "testimonios", "contacto"];
 
   window.addEventListener("scroll", () => {
-    if (nav) {
-      if (window.scrollY > 30) nav.classList.add("scrolled");
-      else nav.classList.remove("scrolled");
-    }
-
-    // La barra de anuncios se retira al bajar y el navbar queda arriba del todo
-    if (hayMarquee) {
-      document.body.classList.toggle("marquee-oculta", window.scrollY > 40);
-    }
-
     if (toTop) {
       // Aparece mas tarde en movil: antes podia pulsarse por error al
       // deslizar el pulgar y devolverte de golpe al inicio de la pagina.

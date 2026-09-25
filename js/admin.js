@@ -189,6 +189,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const cfgHeroEyebrow = document.getElementById("cfg-hero-eyebrow");
   const cfgHeroTitulo = document.getElementById("cfg-hero-titulo");
   const cfgHeroCopy = document.getElementById("cfg-hero-copy");
+  const cfgBanner1 = document.getElementById("cfg-banner-1");
+  const cfgBanner2 = document.getElementById("cfg-banner-2");
+  const cfgBanner3 = document.getElementById("cfg-banner-3");
   const cfgStat1Num = document.getElementById("cfg-stat1-num");
   const cfgStat1Label = document.getElementById("cfg-stat1-label");
   const cfgPromoTag = document.getElementById("cfg-promo-tag");
@@ -1162,6 +1165,12 @@ document.addEventListener("DOMContentLoaded", () => {
     if (cfgHeroEyebrow) cfgHeroEyebrow.value = cfg.heroEyebrow || "";
     if (cfgHeroTitulo) cfgHeroTitulo.value = cfg.heroTitulo || "";
     if (cfgHeroCopy) cfgHeroCopy.value = cfg.heroCopy || "";
+    // Fotos del carrusel: se guardan siempre las 3 ranuras para no perder
+    // la que el usuario ya habia escrito.
+    const banners = Array.isArray(cfg.banners) ? cfg.banners : [];
+    if (cfgBanner1) cfgBanner1.value = (banners[0] && banners[0].imagen) || "";
+    if (cfgBanner2) cfgBanner2.value = (banners[1] && banners[1].imagen) || "";
+    if (cfgBanner3) cfgBanner3.value = (banners[2] && banners[2].imagen) || "";
     if (cfgStat1Num) cfgStat1Num.value = cfg.stat1Num || "+12k";
     if (cfgStat1Label) cfgStat1Label.value = cfg.stat1Label || "Clientas felices";
     if (cfgPromoTag) cfgPromoTag.value = cfg.promoTag || "";
@@ -1181,6 +1190,11 @@ document.addEventListener("DOMContentLoaded", () => {
         heroEyebrow: cfgHeroEyebrow.value.trim(),
         heroTitulo: cfgHeroTitulo.value.trim(),
         heroCopy: cfgHeroCopy.value.trim(),
+        banners: [
+          { imagen: cfgBanner1 ? cfgBanner1.value.trim() : "", titulo: "Portada" },
+          { imagen: cfgBanner2 ? cfgBanner2.value.trim() : "", titulo: "Oferta" },
+          { imagen: cfgBanner3 ? cfgBanner3.value.trim() : "", titulo: "Categorias" }
+        ],
         stat1Num: cfgStat1Num.value.trim(),
         stat1Label: cfgStat1Label.value.trim(),
         promoTag: cfgPromoTag.value.trim(),

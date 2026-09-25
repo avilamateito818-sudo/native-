@@ -64,7 +64,7 @@ a { text-decoration: none; color: inherit; }
 .nav {
   position: fixed;
   inset: 0 0 auto 0;
-  height: var(--nav-h);
+  height: auto;
   z-index: 100;
   background: rgba(var(--nav-bg-rgb, 251, 246, 240), 0.82);
   backdrop-filter: blur(14px);
@@ -72,7 +72,6 @@ a { text-decoration: none; color: inherit; }
   transition: height 0.35s ease;
 }
 .nav.scrolled {
-  height: 66px;
   box-shadow: 0 10px 30px -18px rgba(62, 42, 53, 0.4);
 }
 .nav__inner {
@@ -83,6 +82,173 @@ a { text-decoration: none; color: inherit; }
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+/* ---- Menú de dos filas: marca + buscador arriba, enlaces abajo ----
+   Al bajar se colapsa a una sola fila (solo enlaces) para no comer
+   demasiado alto en el móvil. */
+.nav__top {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 12px 32px 6px;
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+.nav__top .brand { flex: 0 0 auto; }
+
+.nav__search {
+  position: relative;
+  flex: 1 1 auto;
+  max-width: 620px;
+  display: flex;
+  align-items: center;
+}
+.nav__search-input {
+  width: 100%;
+  height: 46px;
+  padding: 0 50px 0 18px;
+  border: 1px solid rgba(var(--wine-rgb), 0.18);
+  border-radius: 999px;
+  background: var(--white);
+  color: var(--charcoal);
+  font-family: inherit;
+  font-size: 15px;
+  transition: border-color 0.22s ease, box-shadow 0.22s ease;
+}
+.nav__search-input::placeholder { color: var(--muted); }
+.nav__search-input:focus {
+  outline: none;
+  border-color: var(--gold);
+  box-shadow: 0 0 0 4px rgba(var(--gold-rgb), 0.18);
+}
+.nav__search-btn {
+  position: absolute;
+  right: 6px;
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(var(--gold-rgb), 0.16);
+  font-size: 15px;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+.nav__search-btn:hover { background: var(--gold); transform: scale(1.06); }
+.nav__search-input::-webkit-search-cancel-button { -webkit-appearance: none; }
+
+.nav__search-results {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 0;
+  right: 0;
+  z-index: 130;
+  max-height: 60vh;
+  overflow-y: auto;
+  padding: 8px;
+  background: var(--white);
+  border: 1px solid rgba(var(--gold-rgb), 0.35);
+  border-radius: 18px;
+  box-shadow: var(--shadow-soft);
+}
+.nav__search-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  text-decoration: none;
+  color: var(--charcoal);
+  transition: background 0.18s ease;
+}
+.nav__search-item:hover,
+.nav__search-item:focus-visible { background: var(--cream); }
+.nav__search-emoji {
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: var(--blush);
+  font-size: 19px;
+}
+.nav__search-info { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; }
+.nav__search-name {
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--wine);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.nav__search-cat { font-size: 12px; color: var(--muted); }
+.nav__search-price { flex: 0 0 auto; font-size: 14px; font-weight: 700; color: var(--wine); }
+.nav__search-empty { padding: 16px 12px; font-size: 14px; color: var(--muted); }
+
+/* La barra de enlaces solo tiene sentido en escritorio. En movil y tableta
+   los enlaces siguen siendo el panel desplegable del boton de menu, asi que
+   todo lo de .nav__bottom se acota a pantallas anchas. */
+@media (min-width: 969px) {
+  .nav__bottom { border-top: 1px solid rgba(var(--gold-rgb), 0.3); }
+  .nav__bottom .nav__links {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 0 32px;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  .nav__bottom .nav__links a {
+    display: inline-flex;
+    align-items: center;
+    height: 46px;
+    padding: 0 16px;
+    font-size: 14.5px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--wine);
+  }
+  .nav__bottom .nav__links a::after { right: 16px; }
+  .nav__bottom .nav__links a:hover,
+  .nav__bottom .nav__links a.active { color: var(--gold-dark, var(--gold, #a8853f)); }
+}
+
+/* Al hacer scroll el encabezado se reduce: en escritorio se oculta la fila de
+   arriba y la de enlaces pasa a ser la barra principal. En movil la fila de
+   arriba se conserva, porque es la unica que lleva marca, buscador y menu. */
+.nav.compacto { height: auto; }
+@media (min-width: 969px) {
+  .nav.compacto .nav__top { display: none; }
+  .nav.compacto .nav__bottom { border-top: 0; }
+  .nav.compacto .nav__bottom .nav__links { flex-wrap: nowrap; overflow-x: auto; }
+  .nav.compacto .nav__bottom .nav__links a { height: 56px; }
+}
+@media (max-width: 968px) {
+  /* .nav__bottom no debe generar caja: sus enlaces se posicionan como el
+     panel fijo del boton de menu que define el bloque responsive original. */
+  .nav__bottom { display: contents; }
+  /* Con dos enlaces mas el panel puede no caber en pantallas cortas:
+     se limita a lo que queda bajo el encabezado y se deja deslizar. */
+  .nav__links {
+    max-height: calc(100vh - var(--nav-h) - 20px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+}
+
+@media (max-width: 900px) {
+  .nav__top { gap: 14px; padding: 10px 20px 4px; }
+  .nav__search-input { height: 42px; font-size: 16px; }
+}
+@media (max-width: 560px) {
+  .nav__top { padding: 8px 16px 2px; gap: 10px; }
+  .nav__top .brand__name { display: none; }
+  .nav__search-input { height: 40px; padding-left: 14px; font-size: 16px; }
 }
 .brand {
   display: flex;
@@ -2705,5 +2871,231 @@ body:has(.marquee--top) { padding-top: var(--marquee-h); }
   /* Objetivos táctiles cómodos en las rejillas */
   .vitrina__grid .card__actions .btn-more,
   .vitrina__grid .card__actions .btn-add { min-height: 44px; }
+}
+
+/* ==========================================================
+   HERO / CARRUSEL DE INICIO
+   Banners a sangre con altura fija, como en la referencia, pero
+   con los degradados de Amelisa: vino, oro y ciruela. Si en la
+   configuracion se guarda una foto (banners[i].imagen) se usa
+   como fondo de la diapositiva.
+   ========================================================== */
+.hero--carrusel {
+  position: relative;
+  padding: 0;
+  min-height: 0;
+  display: flex;
+  align-items: stretch;
+  overflow: hidden;
+  isolation: isolate;
+}
+/* La textura del hero antiguo era para el fondo claro: aqui estorba */
+.hero--carrusel::before { content: none; }
+.hero__pista { display: flex; width: 100%; }
+.hero__slide {
+  position: relative;
+  flex: 1 0 100%;
+  width: 100%;
+  min-height: 498px;
+  display: flex;
+  align-items: center;
+  padding: 68px 32px 84px;
+  background-color: var(--wine-deep, #4a1f33);
+  color: var(--white);
+  overflow: hidden;
+}
+/* Necesario: display:flex de arriba anula el [hidden] del navegador */
+.hero__slide[hidden] { display: none; }
+.hero__slide--wine { background-image: var(--hero-foto, radial-gradient(120% 120% at 78% 18%, #7a2f4d 0%, #4a1f33 45%, #2c1020 100%)); }
+.hero__slide--gold { background-image: var(--hero-foto, radial-gradient(120% 120% at 80% 22%, #a8853f 0%, #6d4a2a 42%, #2c1020 100%)); }
+.hero__slide--plum { background-image: var(--hero-foto, radial-gradient(120% 120% at 75% 25%, #6c3050 0%, #3d1830 45%, #25101d 100%)); }
+
+/* Velo para que el texto siempre se lea, haya foto o no */
+.hero__slide::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: linear-gradient(90deg, rgba(38, 14, 26, 0.88) 0%, rgba(38, 14, 26, 0.62) 45%, rgba(38, 14, 26, 0.25) 100%);
+}
+.hero__slide.has-foto::before {
+  background: linear-gradient(90deg, rgba(38, 14, 26, 0.86) 0%, rgba(38, 14, 26, 0.56) 48%, rgba(38, 14, 26, 0.28) 100%);
+}
+.hero__inner {
+  position: relative;
+  z-index: 1;
+  max-width: 1240px;
+  margin: 0 auto;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+.hero__content { max-width: 620px; }
+
+/* Etiqueta de descuento */
+.hero__sale {
+  display: inline-block;
+  margin-bottom: 16px;
+  padding: 7px 16px;
+  border-radius: 999px;
+  background: var(--gold);
+  color: #2c1020;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  box-shadow: 0 10px 24px -12px rgba(0, 0, 0, 0.6);
+}
+/* El guion dorado del hero antiguo no aporta aqui */
+.hero__slide .hero__eyebrow::before { display: none; }
+.hero__slide .hero__eyebrow {
+  display: block;
+  margin-bottom: 14px;
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold-light, #e4cd94);
+}
+/* Se usa .hero__slide para ganarle a la regla vieja ".hero h1", que tiene
+   mas especificidad y dejaba el titulo en color vino sobre fondo oscuro. */
+.hero__slide .hero__title {
+  margin: 0 0 18px;
+  font-size: clamp(2.3rem, 5.4vw, 3.9rem);
+  line-height: 1.05;
+  font-weight: 500;
+  color: var(--white);
+  text-wrap: balance;
+}
+.hero__slide .hero__title em { color: var(--gold); font-style: italic; }
+
+
+/* Precio con descuento */
+.hero__precio {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin: 0 0 14px;
+}
+.hero__precio strong {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--gold);
+  line-height: 1;
+}
+.hero__precio del { font-size: 1.05rem; color: rgba(255, 255, 255, 0.6); }
+
+.hero__copy {
+  margin: 0 0 26px;
+  max-width: 52ch;
+  font-size: 16.5px;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.86);
+}
+.hero__chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 26px; }
+.hero__chip {
+  padding: 8px 15px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--white);
+  font-size: 13.5px;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+.hero__chip:hover { background: rgba(255, 255, 255, 0.18); border-color: var(--gold); }
+
+.hero__actions { display: flex; flex-wrap: wrap; gap: 14px; }
+.hero__actions .btn--ghost { border-color: rgba(255, 255, 255, 0.45); color: var(--white); }
+.hero__actions .btn--ghost:hover { background: rgba(255, 255, 255, 0.14); }
+
+/* Flechas */
+.hero__arrow {
+  position: absolute;
+  top: 50%;
+  z-index: 3;
+  width: 48px;
+  height: 48px;
+  transform: translateY(-50%);
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  background: rgba(38, 14, 26, 0.42);
+  backdrop-filter: blur(6px);
+  color: var(--white);
+  font-size: 30px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+.hero__arrow:hover {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: #2c1020;
+  transform: translateY(-50%) scale(1.07);
+}
+.hero__arrow--prev { left: 18px; }
+.hero__arrow--next { right: 18px; }
+
+/* Puntos */
+.hero__dots {
+  position: absolute;
+  left: 50%;
+  bottom: 26px;
+  z-index: 3;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 9px;
+}
+.hero__dot {
+  position: relative;
+  width: 10px;
+  height: 10px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.45);
+  cursor: pointer;
+  transition: width 0.3s ease, background 0.3s ease;
+}
+/* Un punto de 10px es diminuto para el dedo: se amplia el area pulsable con un
+   pseudoelemento invisible, sin ensanchar el punto visible ni solaparlo con el
+   siguiente (los centros quedan a 19px y el area mide 26px). */
+.hero__dot::after { content: ""; position: absolute; inset: -13px -8px; }
+.hero__dot.is-active { width: 30px; background: var(--gold); }
+.hero__dot.is-active::after { inset: -13px -2px; }
+.hero__dot:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+
+.hero__slide .hero__stats { color: var(--white); }
+.hero__slide .hero__stats small { color: rgba(255, 255, 255, 0.7); }
+
+@media (max-width: 900px) {
+  .hero__slide { min-height: 430px; padding: 48px 24px 76px; }
+  .hero__arrow { width: 42px; height: 42px; font-size: 25px; }
+  .hero__arrow--prev { left: 10px; }
+  .hero__arrow--next { right: 10px; }
+}
+@media (max-width: 560px) {
+  .hero__slide { min-height: 460px; padding: 40px 18px 72px; }
+  .hero__slide::before,
+  .hero__slide.has-foto::before {
+    background: linear-gradient(180deg, rgba(38, 14, 26, 0.74) 0%, rgba(38, 14, 26, 0.9) 100%);
+  }
+  .hero__content { max-width: 100%; }
+  .hero__copy { font-size: 15.5px; margin-bottom: 22px; }
+  .hero__stats { gap: 18px; }
+  .hero__dots { bottom: 22px; gap: 9px; }
+  .hero__dot { width: 12px; height: 12px; }
+  .hero__dot::after { inset: -14px -7px; }
+  .hero__dot.is-active { width: 30px; }
+  .hero__dot.is-active::after { inset: -14px -2px; }
+  .hero__arrow { width: 40px; height: 40px; font-size: 22px; }
+  .hero__arrow--prev { left: 6px; }
+  .hero__arrow--next { right: 6px; }
+  .hero__actions .btn { min-height: 46px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero__dot, .hero__arrow { transition: none; }
 }
 
