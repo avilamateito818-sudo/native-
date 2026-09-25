@@ -515,7 +515,7 @@ a { text-decoration: none; color: inherit; }
 }
 .catalog__grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   gap: 28px;
 }
 
@@ -2221,4 +2221,170 @@ section[id] { scroll-margin-top: calc(var(--nav-h) + 12px); }
   .lbox__emoji { font-size: 90px; }
   .lbox__prev { left: 6px; }
   .lbox__next { right: 6px; }
+}
+
+/* ================================================================
+   PULIDO PROFESIONAL — táctil / tablet / PC
+   ================================================================ */
+
+/* ---- 1. Base: evita zoom accidental y rebote en iOS ---- */
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+body {
+  overflow-x: hidden;
+  -webkit-tap-highlight-color: rgba(200, 169, 110, 0.18);
+  min-height: 100dvh;
+}
+/* Imágenes y media nunca desbordan su contenedor */
+img, svg, video, canvas {
+  max-width: 100%;
+  height: auto;
+}
+/* Los controles no heredan tipografía del navegador en iOS */
+button, input, select, textarea {
+  font-family: inherit;
+  font-size: 16px; /* evita auto-zoom en iOS al enfocar */
+}
+
+/* ---- 2. Foco visible y consistente (accesibilidad) ---- */
+:focus-visible {
+  outline: 2.5px solid var(--gold);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+:focus:not(:focus-visible) { outline: none; }
+
+/* ---- 3. Safe-area para iPhone con notch (arriba y abajo) ---- */
+@supports (padding: max(0px)) {
+  .nav {
+    padding-left: max(20px, env(safe-area-inset-left));
+    padding-right: max(20px, env(safe-area-inset-right));
+  }
+  .section {
+    padding-left: max(20px, env(safe-area-inset-left));
+    padding-right: max(20px, env(safe-area-inset-right));
+  }
+  .toast {
+    bottom: max(24px, env(safe-area-inset-bottom));
+  }
+  .drawer, .lbox {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+/* ---- 4. Objetivos táctiles cómodos (mínimo 44px, estándar WCAG) ---- */
+@media (pointer: coarse) {
+  .btn-more, .btn-add, .btn-action, .qty-btn, .card__wish, .card__zoom,
+  .product-gallery__arrow, .lbox__prev, .lbox__next, .thumb,
+  .btn-icon-sm, .drawer__close, .burger {
+    min-width: 44px;
+    min-height: 44px;
+  }
+  .product-gallery__thumbs .thumb { width: 68px; height: 68px; }
+  .card__wish, .card__zoom {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+/* ---- 5. TABLET (768–1024px): rejilla y espaciadoIntermediate ---- */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .section { padding: 84px 28px; }
+  /* 2 columnas cómodas en lugar de 3 apretadas o 1 enorme */
+  .catalog__grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
+  .hero__inner { gap: 32px; }
+  .hero__blob { width: 320px; height: 320px; }
+  .footer__grid { grid-template-columns: repeat(2, 1fr); gap: 36px; }
+  .about__grid { gap: 34px; }
+  .orderbox__grid { gap: 14px; }
+  .card__foot { flex-wrap: wrap; }
+}
+
+/* ---- 6. TABLET PEQUEÑA / MÓVIL GRANDE (561–767px) ---- */
+@media (min-width: 561px) and (max-width: 767px) {
+  .section { padding: 76px 24px; }
+  .catalog__grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+  .card__actions { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .card__desc {
+    font-size: 12.5px;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .product-info__title { font-size: 30px; }
+}
+
+/* ---- 7. PC ancho: limita el crecimiento y mejora la lectura ---- */
+@media (min-width: 1600px) {
+  .section { max-width: 1360px; }
+  .page-producto .container { max-width: 1320px; }
+  .catalog__grid { gap: 32px; }
+}
+@media (min-width: 1920px) {
+  .section { max-width: 1440px; }
+}
+
+/* ---- 8. Móvil:LWide: tipografía fluida y tapado de saltos de línea ---- */
+.section__title, .hero__title, .product-info__title {
+  overflow-wrap: break-word;
+  word-break: normal;
+  hyphens: auto;
+}
+h1, h2, h3, h4 {
+  overflow-wrap: break-word;
+}
+
+/* ---- 9. Respeto a la preferencia de menos animación ---- */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .card:hover, .btn:hover, .btn-more:hover, .btn-add:hover { transform: none !important; }
+}
+
+/* ---- 10. Impresión: ficha y tarjetas legibles en papel ---- */
+@media print {
+  .nav, .burger, .drawer, .toast, .lbox, .footer, .hero__cta,
+  .card__wish, .card__zoom, .btn-add, .btn-more, .product-gallery__arrow {
+    display: none !important;
+  }
+  body { background: #fff; color: #000; }
+  .card, .product-info, .orderbox {
+    box-shadow: none !important;
+    border: 1px solid #ccc;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  .product-layout { grid-template-columns: 1fr; }
+  a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 10px; color: #555; }
+}
+
+/* ---- 11. Contraste: texto secundario más legible ---- */
+:root {
+  --muted: #7a6770;
+}
+.card__desc, .product-info__desc, .admin-card__desc {
+  line-height: 1.65;
+}
+
+/* ---- 12. Tablet en horizontal: el mini-menú no debe cortar contenido ---- */
+@media (min-width: 769px) and (max-width: 1024px) and (orientation: landscape) {
+  .product-layout { grid-template-columns: 1fr 1fr; gap: 24px; }
+  .section { padding: 64px 24px; }
 }
