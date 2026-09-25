@@ -199,20 +199,25 @@ document.addEventListener("DOMContentLoaded", () => {
                 <option>Punto de encuentro</option>
               </select>
             </label>
-            <label class="orderbox__field">
-              <span>Forma de pago</span>
-              <select id="order-pago">
-                <option>Efectivo al recibir</option>
-                <option>Nequi</option>
-                <option>Transferencia bancaria</option>
-              </select>
-            </label>
+            <div class="orderbox__field orderbox__field--pago">
+              <span>Puedes pagar con</span>
+              <ul class="orderbox__pagos">
+                <li>💵 Efectivo al recibir</li>
+                <li>📱 Nequi</li>
+                <li>🏦 Transferencia bancaria</li>
+              </ul>
+            </div>
           </div>
           <div class="orderbox__total">
             <span>Total a pagar</span>
             <strong id="orderbox-total">${sim}${(p.precio * cantidad).toFixed(2)}</strong>
           </div>
           <button type="submit" class="btn btn--gold" id="btn-orderbox-submit">Confirmar pedido por WhatsApp</button>
+          <ol class="orderbox__pasos">
+            <li><b>Busca</b> el producto que necesitas en el catálogo.</li>
+            <li><b>Llena</b> los datos de tu compra aquí.</li>
+            <li><b>Confirma</b> y te contactamos por WhatsApp.</li>
+          </ol>
         </form>
       </div>`}
     `;
@@ -257,7 +262,7 @@ document.addEventListener("DOMContentLoaded", () => {
           return;
         }
         const entrega = document.getElementById("order-entrega").value;
-        const pago = document.getElementById("order-pago").value;
+        const pago = "Efectivo al recibir / Nequi / Transferencia bancaria";
         const pedidos = (window.obtenerPedidos ? window.obtenerPedidos() : []) || [];
         const total = p.precio * cantidad;
         const nuevoPedido = {

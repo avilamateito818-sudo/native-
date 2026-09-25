@@ -1868,7 +1868,25 @@ section[id] { scroll-margin-top: calc(var(--nav-h) + 12px); }
   margin: 14px 0 12px; padding-top: 14px; border-top: 1px dashed var(--cream);
 }
 .orderbox__total span { color: var(--muted); font-weight: 600; }
-.orderbox__total strong { font-size: 26px; color: var(--wine); font-family: "Playfair Display", serif; }
+.orderbox__total strong { font-size: 26px; color: var(--wine); font-family: "Playfair Display",
+    serif; }
+.orderbox__field--pago {
+  grid-column: 1 / -1;
+}
+.orderbox__pagos {
+  list-style: none; margin: 0; padding: 11px 13px; border-radius: 12px;
+  border: 1.5px solid var(--cream); background: #fdfaf6;
+  display: flex; flex-wrap: wrap; gap: 6px 18px;
+  font-size: 14px; color: var(--wine-dark);
+}
+.orderbox__pasos {
+  margin: 14px 0 0; padding: 14px 16px 14px 34px; border-radius: 14px;
+  background: #fdf6f8; border: 1px dashed var(--gold);
+  font-size: 13px; line-height: 1.55; color: var(--muted);
+}
+.orderbox__pasos li { margin-bottom: 3px; }
+.orderbox__pasos li:last-child { margin-bottom: 0; }
+.orderbox__pasos b { color: var(--wine); }
 #btn-orderbox-submit { width: 100%; padding: 14px; font-size: 15px; }
 @media (max-width: 520px) {
   .orderbox__grid { grid-template-columns: 1fr; }
