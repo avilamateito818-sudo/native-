@@ -2258,21 +2258,30 @@ button, input, select, textarea {
 }
 :focus:not(:focus-visible) { outline: none; }
 
-/* ---- 3. Safe-area para iPhone con notch (arriba y abajo) ---- */
+/* ---- 3. Safe-area para iPhone con notch (solo donde aporta) ----
+   env() es 0 en escritorio, asi que max(32px, 0) conserva el padding
+   original de escritorio y solo crece en pantallas con notch. */
 @supports (padding: max(0px)) {
   .nav {
-    padding-left: max(20px, env(safe-area-inset-left));
-    padding-right: max(20px, env(safe-area-inset-right));
+    padding-left: max(32px, env(safe-area-inset-left));
+    padding-right: max(32px, env(safe-area-inset-right));
   }
   .section {
-    padding-left: max(20px, env(safe-area-inset-left));
-    padding-right: max(20px, env(safe-area-inset-right));
+    padding-left: max(32px, env(safe-area-inset-left));
+    padding-right: max(32px, env(safe-area-inset-right));
   }
   .toast {
     bottom: max(24px, env(safe-area-inset-bottom));
   }
   .drawer, .lbox {
     padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+/* En movil el padding lateral sigue siendo 20px como antes */
+@media (max-width: 560px) {
+  .section {
+    padding-left: max(20px, env(safe-area-inset-left));
+    padding-right: max(20px, env(safe-area-inset-right));
   }
 }
 
@@ -2292,7 +2301,7 @@ button, input, select, textarea {
   }
 }
 
-/* ---- 5. TABLET (768–1024px): rejilla y espaciadoIntermediate ---- */
+/* ---- 5. TABLET (768–1024px): rejilla y espaciado intermediate ---- */
 @media (min-width: 768px) and (max-width: 1024px) {
   .section { padding: 84px 28px; }
   /* 2 columnas cómodas en lugar de 3 apretadas o 1 enorme */
@@ -2336,7 +2345,7 @@ button, input, select, textarea {
   .section { max-width: 1440px; }
 }
 
-/* ---- 8. Móvil:LWide: tipografía fluida y tapado de saltos de línea ---- */
+/* ---- 8. Móvil: tipografía fluida y tapado de saltos de línea ---- */
 .section__title, .hero__title, .product-info__title {
   overflow-wrap: break-word;
   word-break: normal;
@@ -2387,4 +2396,146 @@ h1, h2, h3, h4 {
 @media (min-width: 769px) and (max-width: 1024px) and (orientation: landscape) {
   .product-layout { grid-template-columns: 1fr 1fr; gap: 24px; }
   .section { padding: 64px 24px; }
+}
+
+/* ================================================================
+   PULIDO PROFESIONAL — correcciones medidas en navegador real
+   ================================================================ */
+
+/* ---- A. Móvil: 2 columnas en vez de 1 tarjeta gigante de 605px ----
+   En 390px la tarjeta ocupaba 350x605 px (casi 2 pantallas). Con 2
+   columnas el catálogo se recorre mucho mejor en el dedo. */
+@media (min-width: 360px) and (max-width: 560px) {
+  .catalog__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+  }
+  .card { border-radius: 16px; }
+  .card__body { padding: 14px 13px 16px; }
+  .card__cat { font-size: 12px; }
+  .card__name {
+    font-size: 14.5px;
+    line-height: 1.35;
+  }
+  .card__desc {
+    font-size: 12px;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .card__price { font-size: 17px; }
+  .card__actions { gap: 7px; }
+  .btn-more, .btn-add {
+    padding: 11px 6px;
+    font-size: 11px;
+    letter-spacing: 0.04em;
+  }
+  .card__wish, .card__zoom {
+    width: 36px;
+    height: 36px;
+    font-size: 14px;
+  }
+}
+/* Teléfonos muy estrechos: 1 columna para que nada se apriete */
+@media (max-width: 359px) {
+  .catalog__grid { grid-template-columns: 1fr; }
+}
+
+/* ---- B. Texto secundario legible: nada por debajo de 12px ---- */
+.card__cat,
+.card__badge {
+  font-size: 12px;
+  line-height: 1.3;
+}
+
+/* ---- C. Alturas de botón cómodas también con ratón ---- */
+.btn-more, .btn-add, .qty-btn, .btn-action {
+  min-height: 44px;
+}
+.card__actions .btn-more,
+.card__actions .btn-add {
+  min-height: 44px;
+}
+
+/* ---- D. Tarjetas: mismo alto y sombra al pasar, sin saltos ---- */
+.card {
+  height: 100%;
+}
+.card__body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.card__desc {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.card__foot {
+  margin-top: auto;
+}
+@media (hover: hover) and (pointer: fine) {
+  .card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 18px 40px -18px rgba(62, 42, 53, 0.38);
+  }
+  .card__media img {
+    transition: transform 0.5s ease;
+  }
+  .card:hover .card__media img {
+    transform: scale(1.05);
+  }
+}
+
+/* ---- E. Foco visible también para quien navega con teclado ---- */
+.nav__links a:focus-visible,
+.footer a:focus-visible,
+.catalog__filters button:focus-visible {
+  outline: 2.5px solid var(--gold);
+  outline-offset: 4px;
+}
+
+/* ---- F. Formularios: campos comodos y sin zoom en iOS ---- */
+input, select, textarea {
+  min-height: 46px;
+  font-size: 16px;
+}
+textarea { min-height: 110px; }
+.contact__form input:focus,
+.contact__form textarea:focus,
+.newsletter__form input:focus,
+.orderbox__field input:focus,
+.orderbox__field select:focus {
+  outline: none;
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(200, 169, 110, 0.22);
+}
+
+/* ---- G. Botones: estado de pulsación en táctil ---- */
+@media (hover: none) {
+  .btn:active, .btn-more:active, .btn-add:active, .btn-action:active {
+    transform: scale(0.97);
+  }
+  .card:active { transform: scale(0.99); }
+}
+
+/* ---- H. Tabla del admin legible en móvil ---- */
+@media (max-width: 560px) {
+  .admin-table { font-size: 12.5px; }
+  .admin-table th, .admin-table td { padding: 9px 8px; }
+}
+
+/* ---- I. Jerarquía tipográfica consistente en toda la página ---- */
+.section__head { margin-bottom: 40px; }
+@media (max-width: 560px) {
+  .section__head { margin-bottom: 28px; }
+  .section__title { font-size: 27px; }
+}
+
+/* ---- J. Sin rebote al llegar al final de la página (iOS) ---- */
+body {
+  overscroll-behavior-y: none;
 }

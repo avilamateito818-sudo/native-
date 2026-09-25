@@ -51,7 +51,8 @@ async function leerCatalogo() {
 
 async function guardarCatalogo(cat) {
   cat.fechaActualizacion = new Date().toISOString();
-  if (process.env.BLOB_READ_WRITE_TOKEN) {
+  if (!process.env.BLOB_READ_WRITE_TOKEN) return false;
+  try {
     const clave = PREFIJO + "/" + niceTs(new Date()) + ".json";
     await put(clave, JSON.stringify(cat), {
       access: "public",
@@ -59,19 +60,22 @@ async function guardarCatalogo(cat) {
       contentType: "application/json",
       cacheControlMaxAge: 0
     });
-    try {
-      const l = await list({ prefix: PREFIJO });
-      const viejos = l.blobs
-        .map((b) => b.pathname)
-        .filter((p) => p !== clave)
-        .sort()
-        .reverse();
-      const sobrantes = viejos.slice(MAX_COPIAS - 1);
-      if (sobrantes.length) await del([...sobrantes]);
-    } catch (e) {}
-    return true;
+  } catch (e) {
+    // Blob suspendido/caido: la tienda sigue leyendo el respaldo local.
+    // Nunca propagamos el error para no devolver 500 al panel.
+    return false;
   }
-  return false;
+  try {
+    const l = await list({ prefix: PREFIJO });
+    const viejos = l.blobs
+      .map((b) => b.pathname)
+      .filter((p) => p !== clave)
+      .sort()
+      .reverse();
+    const sobrantes = viejos.slice(MAX_COPIAS - 1);
+    if (sobrantes.length) await del([...sobrantes]);
+  } catch (e) {}
+  return true;
 }
 
 function cabeceras(res) {

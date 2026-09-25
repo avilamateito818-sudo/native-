@@ -17,8 +17,13 @@ module.exports = async (req, res) => {
     }
     const catActual = cat || {};
     catActual.productos = lista;
-    await guardarCatalogo(catActual);
-    return res.status(200).json({ ok: true, message: "Productos guardados y publicados con éxito", total: lista.length });
+    const synced = await guardarCatalogo(catActual);
+    return res.status(200).json({
+      ok: true,
+      synced,
+      total: lista.length,
+      message: synced ? "Productos guardados y publicados con éxito" : "Productos guardados en este dispositivo (almacenamiento del servidor no disponible)"
+    });
   }
 
   res.status(200).json({ ok: true, data: productos, total: productos.length });

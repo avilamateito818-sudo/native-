@@ -14,8 +14,12 @@ module.exports = async (req, res) => {
     }
     const catActual = cat || {};
     catActual.configTienda = cfg;
-    await guardarCatalogo(catActual);
-    return res.status(200).json({ ok: true, message: "Configuración de tienda guardada con éxito" });
+    const synced = await guardarCatalogo(catActual);
+    return res.status(200).json({
+      ok: true,
+      synced,
+      message: synced ? "Configuración de tienda guardada con éxito" : "Configuración guardada en este dispositivo (almacenamiento del servidor no disponible)"
+    });
   }
 
   res.status(200).json({
