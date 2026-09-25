@@ -148,11 +148,107 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   /* ============ Renderizado de Productos ============ */
+  /* Tarjeta de producto reutilizable: la usan el catalogo y las vitrinas */
+  function crearTarjeta(p) {
+    const cfg = (window.obtenerConfigTienda ? window.obtenerConfigTienda() : window.CONFIG_TIENDA) || {};
+    const sim = cfg.monedaSimbolo || "$";
+    const card = document.createElement("article");
+    card.className = "card reveal visible";
+    const colA = (p.colores && p.colores[0]) ? p.colores[0] : "#f6e7dd";
+    const colB = (p.colores && p.colores[1]) ? p.colores[1] : "#e7cfc6";
+    card.style.setProperty("--media-a", colA);
+    card.style.setProperty("--media-b", colB);
+
+    const isAgotado = p.stock === "agotado";
+
+    let badgeHtml = "";
+    if (isAgotado) {
+      badgeHtml = '<span class="card__badge" style="background:#c92a2a;color:#fff;">Agotado</span>';
+    } else if (p.badge) {
+      badgeHtml = `<span class="card__badge">${p.badge}</span>`;
+    } else if (p.viejo && parseFloat(p.viejo) > parseFloat(p.precio)) {
+      badgeHtml = '<span class="card__badge">Oferta</span>';
+    }
+
+    const viejo = p.viejo ? `<del>${sim}${p.viejo}.00</del>` : "";
+    const mediaHtml = p.imagen
+      ? `<img src="${p.imagen}" alt="${p.nombre}" class="card__img" loading="lazy" />`
+      : `<span class="emoji" loading="lazy">${p.emoji || "✨"}</span>`;
+
+    card.innerHTML = `
+      <div class="card__media">
+        ${badgeHtml}
+        <button class="card__wish" aria-label="Agregar a favoritos">♡</button>
+        <button class="card__zoom" aria-label="Ver imagen completa">🔍</button>
+        ${mediaHtml}
+      </div>
+      <div class="card__body">
+        <span class="card__cat">${p.categoria}</span>
+        <h3 class="card__name">${p.nombre}</h3>
+        <p class="card__desc">${p.desc}</p>
+        <div class="card__foot">
+          <div class="card__price">${sim}${p.precio}.00${viejo}</div>
+          <div class="card__actions">
+            <button class="btn-more" aria-label="Ver más detalles">Ver más</button>
+            <button class="btn-add ${isAgotado ? 'btn-add--disabled' : ''}" data-id="${p.id}" ${isAgotado ? 'disabled style="opacity:0.6;cursor:not-allowed;"' : ''}>
+              ${isAgotado ? 'Agotado' : 'Añadir +'}
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+
+    card.querySelector(".card__wish").addEventListener("click", (e) => {
+      const btn = e.currentTarget;
+      btn.classList.toggle("liked");
+      btn.textContent = btn.classList.contains("liked") ? "♥" : "♡";
+      showToast(btn.classList.contains("liked") ? `♥ ${p.nombre} guardado en favoritos` : `♡ ${p.nombre} eliminado de favoritos`);
+    });
+
+    card.querySelector(".card__zoom").addEventListener("click", () => {
+      if (window.abrirLightbox) {
+        window.abrirLightbox({
+          titulo: p.nombre,
+          imagenes: window.imagenesProducto ? window.imagenesProducto(p) : [],
+          emoji: p.emoji,
+          colA,
+          colB
+        });
+      }
+    });
+
+    const btnAdd = card.querySelector(".btn-add");
+    if (!isAgotado) {
+      btnAdd.addEventListener("click", () => agregarAlBolsa(p));
+    }
+
+    card.querySelector(".btn-more").addEventListener("click", () => {
+      window.location.href = `producto.html?id=${p.id}`;
+    });
+
+    // Un arrastre para desplazar la pagina NUNCA debe abrir la ficha:
+    // solo cuenta como clic si el dedo casi no se movio.
+    let downX = 0;
+    let downY = 0;
+    card.addEventListener("pointerdown", (e) => {
+      downX = e.clientX;
+      downY = e.clientY;
+    }, { passive: true });
+
+    card.addEventListener("click", (e) => {
+      if (e.target.closest("button")) return;
+      const movX = Math.abs(e.clientX - downX);
+      const movY = Math.abs(e.clientY - downY);
+      if (movX > 12 || movY > 12) return; // fue un scroll, no un clic
+      window.location.href = `producto.html?id=${p.id}`;
+    });
+
+    return card;
+  }
+
   function renderProductos(cat) {
     if (!grid) return;
     PRODUCTOS = (window.obtenerProductos ? window.obtenerProductos() : window.PRODUCTOS) || [];
-    const cfg = (window.obtenerConfigTienda ? window.obtenerConfigTienda() : window.CONFIG_TIENDA) || {};
-    const sim = cfg.monedaSimbolo || "$";
 
     // Filtrar productos ocultos para clientes públicos
     const visibles = PRODUCTOS.filter((p) => p.stock !== "oculto");
@@ -164,101 +260,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    items.forEach((p) => {
-      const card = document.createElement("article");
-      card.className = "card reveal visible";
-      const colA = (p.colores && p.colores[0]) ? p.colores[0] : "#f6e7dd";
-      const colB = (p.colores && p.colores[1]) ? p.colores[1] : "#e7cfc6";
-      card.style.setProperty("--media-a", colA);
-      card.style.setProperty("--media-b", colB);
-
-      const isAgotado = p.stock === "agotado";
-
-      let badgeHtml = "";
-      if (isAgotado) {
-        badgeHtml = '<span class="card__badge" style="background:#c92a2a;color:#fff;">Agotado</span>';
-      } else if (p.badge) {
-        badgeHtml = `<span class="card__badge">${p.badge}</span>`;
-      } else if (p.viejo && parseFloat(p.viejo) > parseFloat(p.precio)) {
-        badgeHtml = '<span class="card__badge">Oferta</span>';
-      }
-
-      const viejo = p.viejo ? `<del>${sim}${p.viejo}.00</del>` : "";
-      const mediaHtml = p.imagen
-        ? `<img src="${p.imagen}" alt="${p.nombre}" class="card__img" loading="lazy" />`
-        : `<span class="emoji" loading="lazy">${p.emoji || "✨"}</span>`;
-
-      card.innerHTML = `
-        <div class="card__media">
-          ${badgeHtml}
-          <button class="card__wish" aria-label="Agregar a favoritos">♡</button>
-          <button class="card__zoom" aria-label="Ver imagen completa">🔍</button>
-          ${mediaHtml}
-        </div>
-        <div class="card__body">
-          <span class="card__cat">${p.categoria}</span>
-          <h3 class="card__name">${p.nombre}</h3>
-          <p class="card__desc">${p.desc}</p>
-          <div class="card__foot">
-            <div class="card__price">${sim}${p.precio}.00${viejo}</div>
-            <div class="card__actions">
-              <button class="btn-more" aria-label="Ver más detalles">Ver más</button>
-              <button class="btn-add ${isAgotado ? 'btn-add--disabled' : ''}" data-id="${p.id}" ${isAgotado ? 'disabled style="opacity:0.6;cursor:not-allowed;"' : ''}>
-                ${isAgotado ? 'Agotado' : 'Añadir +'}
-              </button>
-            </div>
-          </div>
-        </div>
-      `;
-      grid.appendChild(card);
-
-      card.querySelector(".card__wish").addEventListener("click", (e) => {
-        const btn = e.currentTarget;
-        btn.classList.toggle("liked");
-        btn.textContent = btn.classList.contains("liked") ? "♥" : "♡";
-        showToast(btn.classList.contains("liked") ? `♥ ${p.nombre} guardado en favoritos` : `♡ ${p.nombre} eliminado de favoritos`);
-      });
-
-      card.querySelector(".card__zoom").addEventListener("click", () => {
-        if (window.abrirLightbox) {
-          window.abrirLightbox({
-            titulo: p.nombre,
-            imagenes: window.imagenesProducto ? window.imagenesProducto(p) : [],
-            emoji: p.emoji,
-            colA,
-            colB
-          });
-        }
-      });
-
-      const btnAdd = card.querySelector(".btn-add");
-      if (!isAgotado) {
-        btnAdd.addEventListener("click", () => agregarAlBolsa(p));
-      }
-
-      card.querySelector(".btn-more").addEventListener("click", () => {
-        recordarPosicion();
-        window.location.href = `producto.html?id=${p.id}`;
-      });
-
-      // Un arrastre para desplazar la pagina NUNCA debe abrir la ficha:
-      // solo cuenta como clic si el dedo casi no se movio.
-      let downX = 0;
-      let downY = 0;
-      card.addEventListener("pointerdown", (e) => {
-        downX = e.clientX;
-        downY = e.clientY;
-      }, { passive: true });
-
-      card.addEventListener("click", (e) => {
-        if (e.target.closest("button")) return;
-        const movX = Math.abs(e.clientX - downX);
-        const movY = Math.abs(e.clientY - downY);
-        if (movX > 12 || movY > 12) return; // fue un scroll, no un clic
-        recordarPosicion();
-        window.location.href = `producto.html?id=${p.id}`;
-      });
-    });
+    items.forEach((p) => grid.appendChild(crearTarjeta(p)));
   }
 
   /* ============ Filtros Dinámicos en Home ============ */
@@ -302,16 +304,102 @@ document.addEventListener("DOMContentLoaded", () => {
     renderProductos(cat);
   }
 
+  /* ============ Grid de categorías ============
+     Reutiliza las clases del antiguo showcase para que el popover de
+     js/nav.js siga funcionando, y se rellena con TODAS las categorías
+     que existan en el catálogo (no una lista fija). */
+  const DESCRIPCION_CATEGORIA = {
+    Labiales: "Acabados mate, cremosos y brillo cristal que duran todo el día.",
+    Cremas: "Hidratación profunda con extractos botánicos y mantecas nobles.",
+    Mascarillas: "Arcillas, caolín y flores para un glow visible desde la primera aplicación.",
+    Fragancias: "Jazmín, vainilla y ámbar que dejan un recuerdo imposible de olvidar."
+  };
+
+  function renderCategoriasGrid() {
+    const cont = document.getElementById("categorias-grid");
+    if (!cont) return;
+
+    PRODUCTOS = (window.obtenerProductos ? window.obtenerProductos() : window.PRODUCTOS) || [];
+    CATEGORIAS = (window.obtenerCategorias ? window.obtenerCategorias() : window.CATEGORIAS) || {};
+
+    const lista = Array.from(new Set([
+      ...(window.ORDEN_CATEGORIAS_DEFECTO || []),
+      ...Object.keys(CATEGORIAS),
+      ...PRODUCTOS.map((p) => p.categoria)
+    ])).filter(Boolean);
+
+    cont.classList.add("showcase");
+    cont.innerHTML = "";
+
+    if (!lista.length) return;
+
+    lista.forEach((cat) => {
+      const info = CATEGORIAS[cat] || {};
+      const n = PRODUCTOS.filter((p) => p.categoria === cat).length;
+      const desc = DESCRIPCION_CATEGORIA[cat];
+      const tile = document.createElement("button");
+      tile.className = "showcase__card reveal visible";
+      tile.dataset.categoria = cat;
+      tile.setAttribute("aria-label", `Ver ${cat}`);
+      tile.innerHTML = `
+        <span class="showcase__emoji">${info.emoji || "🏷️"}</span>
+        <strong>${cat}</strong>
+        ${desc ? `<p>${desc}</p>` : ""}
+        <span class="showcase__cta">Ver Catálogo →</span>
+        ${n ? `<span class="showcase__count">${n} producto${n === 1 ? "" : "s"}</span>` : ""}
+      `;
+      cont.appendChild(tile);
+    });
+
+    // nav.js engancha el popover cuando este grid ya existe
+    document.dispatchEvent(new CustomEvent("amelisa:categorias"));
+  }
+
+  /* ============ Vitrinas de producto ============
+     Rejillos destacados con encabezado de sección, al estilo de las
+    /Home de tienda: "título + Ver todo". */
+  function renderVitrinas() {
+    PRODUCTOS = (window.obtenerProductos ? window.obtenerProductos() : window.PRODUCTOS) || [];
+
+    const disponibles = PRODUCTOS.filter((p) => p.stock !== "oculto" && p.stock !== "agotado");
+
+    // Solo cuenta como oferta un precio tachado REAL, no una etiqueta
+    const conDescuento = disponibles.filter((p) => p.viejo && parseFloat(p.viejo) > parseFloat(p.precio));
+
+    // "Los más sentidos": primero los destacados por etiqueta (Bestseller/Nuevo)
+    const peso = (p) => (/bestseller|nuevo/i.test(p.badge || "") ? 0 : 1);
+    const destacados = disponibles.slice().sort((a, b) => peso(a) - peso(b)).slice(0, 4);
+
+    const llenar = (id, items) => {
+      const cont = document.getElementById(id);
+      if (!cont) return;
+      cont.innerHTML = "";
+      const seccion = cont.closest(".vitrina");
+      if (!items.length) {
+        if (seccion) seccion.hidden = true;
+        return;
+      }
+      if (seccion) seccion.hidden = false;
+      items.forEach((p) => cont.appendChild(crearTarjeta(p)));
+    };
+
+    llenar("vitrina-destacados", destacados);
+    llenar("vitrina-ofertas", conDescuento.slice(0, 4));
+  }
+
   /* ============ Eventos de Actualización en Vivo ============ */
   window.addEventListener("productosActualizados", (e) => {
     PRODUCTOS = e.detail || (window.obtenerProductos ? window.obtenerProductos() : []);
     if (!categoria) renderFiltrosHome();
     renderProductos(categoria || filtro);
+    renderCategoriasGrid();
+    renderVitrinas();
   });
 
   window.addEventListener("categoriasActualizadas", (e) => {
     CATEGORIAS = e.detail || (window.obtenerCategorias ? window.obtenerCategorias() : {});
     if (!categoria) renderFiltrosHome();
+    renderCategoriasGrid();
   });
 
   window.addEventListener("testimoniosActualizados", (e) => {
@@ -322,6 +410,7 @@ document.addEventListener("DOMContentLoaded", () => {
   window.addEventListener("configTiendaActualizada", () => {
     aplicarConfigTienda();
     renderProductos(categoria || filtro);
+    renderVitrinas();
   });
 
   window.addEventListener("storage", (e) => {
@@ -390,6 +479,8 @@ document.addEventListener("DOMContentLoaded", () => {
     renderFiltrosHome();
 
     renderProductos("Todos");
+    renderCategoriasGrid();
+    renderVitrinas();
   }
 
   /* ============ Sincronización con el servidor ============ */
@@ -573,12 +664,18 @@ document.addEventListener("DOMContentLoaded", () => {
   /* ============ Scroll: navbar + menú activo + back-to-top ============ */
   const nav = document.getElementById("nav");
   const toTop = document.getElementById("to-top");
+  const hayMarquee = !!document.querySelector(".marquee--top");
   const secciones = ["inicio", "nosotros", "catalogo", "ofertas", "testimonios", "contacto"];
 
   window.addEventListener("scroll", () => {
     if (nav) {
       if (window.scrollY > 30) nav.classList.add("scrolled");
       else nav.classList.remove("scrolled");
+    }
+
+    // La barra de anuncios se retira al bajar y el navbar queda arriba del todo
+    if (hayMarquee) {
+      document.body.classList.toggle("marquee-oculta", window.scrollY > 40);
     }
 
     if (toTop) {

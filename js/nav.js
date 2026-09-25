@@ -149,6 +149,8 @@
     activarMenuCatalogo();
     activarPopoverShowcase();
   }
+  // El grid de categorías se genera después, así que re-enlazamos cuando llegue.
+  document.addEventListener("amelisa:categorias", activarPopoverShowcase);
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", iniciar);
   else iniciar();
 })();

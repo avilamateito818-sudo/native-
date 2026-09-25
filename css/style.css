@@ -2588,3 +2588,122 @@ a, button, input, select, textarea, .card, .card__media, .thumb,
    NO usar `overscroll-behavior: none` aquí: sobre `body` Chromium lo
    convierte en contenedor de scroll y cancela la rueda y el deslizamiento
    del dedo, dejando la página sin poder bajar. Es preferible el rebote. */
+
+/* ============================================================
+   K. Estructura de tienda: encabezado de sección, vitrinas y
+      grid de categorías (rejillo de 4 columnas, 20px de separación).
+   ============================================================ */
+
+/* Encabezado "eyebrow + título + Ver todo" */
+.section__eyebrow {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 10px;
+}
+.section__head:has(.section__eyebrow) {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.section__more {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 18px;
+  border: 1px solid rgba(var(--gold-rgb), 0.5);
+  border-radius: 999px;
+  color: var(--wine);
+  background: transparent;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.22s ease, color 0.22s ease, border-color 0.22s ease;
+}
+.section__more span { transition: transform 0.22s ease; }
+.section__more:hover {
+  background: var(--wine);
+  border-color: var(--wine);
+  color: var(--cream);
+}
+.section__more:hover span { transform: translateX(3px); }
+
+/* Vitrinas: rejillo de 4, igual que la referencia */
+.vitrina__grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 20px;
+}
+.vitrina--alt .vitrina__grid { align-items: start; }
+/* Rejilla clock: mantiene alineadas las tarjetas aunque el texto varíe */
+.vitrina__grid > .card { height: 100%; display: flex; flex-direction: column; }
+.vitrina__grid > .card .card__body { flex: 1; display: flex; flex-direction: column; }
+.vitrina__grid > .card .card__foot { margin-top: auto; }
+
+/* Grid de categorías: 6 tarjetas, 3 por fila en escritorio */
+.categorias__grid.showcase {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+.categorias__grid .showcase__card { position: relative; }
+.categorias__count {
+  display: inline-block;
+  margin-top: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--gold);
+  background: rgba(var(--gold-rgb), 0.14);
+  border-radius: 999px;
+  padding: 4px 11px;
+}
+.categorias__grid .showcase__card { min-height: 172px; }
+
+/* Barra de anuncios fija encima del navbar; al hacer scroll se retira
+   y el navbar sube a=top 0 (js/main.js alterna .marquee-oculta en <body>). */
+:root { --marquee-h: 53px; }
+.marquee--top {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 101;
+  padding: 11px 0;
+  transition: transform 0.3s ease;
+}
+.marquee--top + .nav { top: var(--marquee-h); }
+body.marquee-oculta .marquee--top { transform: translateY(-100%); }
+body.marquee-oculta .nav { top: 0; }
+@media (max-width: 560px) {
+  :root { --marquee-h: 46px; }
+  .marquee--top { padding: 9px 0; }
+  .marquee--top .marquee__track { gap: 32px; }
+  .marquee--top span { font-size: 14px; }
+}
+/* El contenido arranca por debajo de la barra fija. Padding constante
+   (nunca 0 al hacer scroll) para no provocar reflow ni saltos. */
+body:has(.marquee--top) { padding-top: var(--marquee-h); }
+
+/* ---- Responsive de la nueva estructura ---- */
+@media (max-width: 1024px) {
+  .vitrina__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .categorias__grid.showcase { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 560px) {
+  .vitrina__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+  .categorias__grid.showcase { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+  .section__head:has(.section__eyebrow) { align-items: flex-start; }
+  .section__more { padding: 8px 15px; font-size: 13px; }
+  .categorias__grid .showcase__card { min-height: 150px; }
+  /* Objetivos táctiles cómodos en las rejillas */
+  .vitrina__grid .card__actions .btn-more,
+  .vitrina__grid .card__actions .btn-add { min-height: 44px; }
+}
+

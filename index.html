@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css?v=18" />
+  <link rel="stylesheet" href="css/style.css?v=19" />
 </head>
 <body>
 
@@ -18,6 +18,13 @@
   <div class="preloader" id="preloader">
     <div class="preloader__bar" id="preloader-bar"></div>
     <div class="preloader__logo">A</div>
+  </div>
+
+  <!-- ============ BARRA DE ANUNCIOS ============ -->
+  <div class="marquee marquee--top" aria-hidden="true">
+    <div class="marquee__track">
+      <span>Envio gratis +$50 <i class="star">✦</i> Belleza limpia <i class="star">✦</i> Cruelty free <i class="star">✦</i> Vegano friendly <i class="star">✦</i> Envio gratis +$50 <i class="star">✦</i> Belleza limpia <i class="star">✦</i> Cruelty free <i class="star">✦</i> Vegano friendly <i class="star">✦</i></span>
+    </div>
   </div>
 
   <!-- ============ NAVBAR ============ -->
@@ -86,13 +93,6 @@
       </div>
     </section>
 
-    <!-- ============ MARQUEE ============ -->
-    <div class="marquee" aria-hidden="true">
-      <div class="marquee__track">
-        <span>Envio gratis +$50 <i class="star">✦</i> Belleza limpia <i class="star">✦</i> Cruelty free <i class="star">✦</i> Vegano friendly <i class="star">✦</i> Envio gratis +$50 <i class="star">✦</i> Belleza limpia <i class="star">✦</i> Cruelty free <i class="star">✦</i> Vegano friendly <i class="star">✦</i></span>
-      </div>
-    </div>
-
     <!-- ============ SOBRE NOSOTROS ============ -->
     <section class="section about" id="nosotros">
       <div class="section__head">
@@ -113,35 +113,6 @@
         buen ingrediente, una fórmula cuidada y cero artificios que sobren.
       </p>
 
-      <!-- Vitrina interactiva de categorías -->
-      <div class="showcase" id="showcase">
-        <button class="showcase__card reveal" data-categoria="Labiales" aria-label="Ver labiales">
-          <span class="showcase__emoji">💄</span>
-          <strong>Labiales</strong>
-          <p>Acabados mate, cremosos y brillo cristal que duran todo el día.</p>
-          <span class="showcase__cta">Ver Catálogo →</span>
-        </button>
-        <button class="showcase__card reveal" data-categoria="Cremas" aria-label="Ver cremas">
-          <span class="showcase__emoji">🧴</span>
-          <strong>Cremas</strong>
-          <p>Hidratación profunda con extractos botánicos y mantecas nobles.</p>
-          <span class="showcase__cta">Ver Catálogo →</span>
-        </button>
-        <button class="showcase__card reveal" data-categoria="Mascarillas" aria-label="Ver mascarillas">
-          <span class="showcase__emoji">🎭</span>
-          <strong>Mascarillas</strong>
-          <p>Arcillas, caolín y flores para un glow visible desde la primera aplicación.</p>
-          <span class="showcase__cta">Ver Catálogo →</span>
-        </button>
-        <button class="showcase__card reveal" data-categoria="Fragancias" aria-label="Ver fragancias">
-          <span class="showcase__emoji">🌸</span>
-          <strong>Fragancias</strong>
-          <p>Jazmín, vainilla y ámbar que dejan un recuerdo imposible de olvidar.</p>
-          <span class="showcase__cta">Ver Catálogo →</span>
-        </button>
-      </div>
-
-      <!-- Franja de cifras -->
       <div class="about__band reveal">
         <div>
           <span class="big">120</span>
@@ -199,7 +170,10 @@
     </section>
 
     <!-- ============ CATÁLOGO ============ -->
-    <section class="section catalog" id="catalogo">
+    
+  <!-- Vitrina interactiva de categorías -->  <!-- ============ CATEGORÍAS ============ -->  <section class="section categorias" id="categorias">    <div class="section__head">      <div>        <span class="section__eyebrow">Explora</span>        <h2 class="section__title">Categorías</h2>      </div>      <a href="#catalogo" class="section__more">Ver todo <span aria-hidden="true">→</span></a>    </div>    <div class="categorias__grid" id="categorias-grid"></div>  </section>  <!-- ============ VITRINA: MÁS SENTIDOS ============ -->  <section class="section vitrina" id="destacados">    <div class="section__head">      <div>        <span class="section__eyebrow">Selección Amelisa</span>        <h2 class="section__title">Los más sentidos</h2>      </div>      <a href="#catalogo" class="section__more">Ver todo <span aria-hidden="true">→</span></a>    </div>    <div class="vitrina__grid" id="vitrina-destacados"></div>  </section>  <!-- ============ VITRINA: OFERTAS ============ -->  <section class="section vitrina vitrina--alt" id="ofertas-vitrina">    <div class="section__head">      <div>        <span class="section__eyebrow">Precio especial</span>        <h2 class="section__title">Ofertas del momento</h2>      </div>      <a href="#ofertas" class="section__more">Ver todo <span aria-hidden="true">→</span></a>    </div>    <div class="vitrina__grid" id="vitrina-ofertas"></div>  </section>  <!-- Franja de cifras -->
+
+<section class="section catalog" id="catalogo">
       <div class="section__head">
         <span class="section__num">02</span>
         <div>
@@ -377,8 +351,8 @@
 
   <script src="js/productos.js?v=2"></script>
   <script src="js/store.js?v=11"></script>
-  <script src="js/nav.js"></script>
+  <script src="js/nav.js?v=2"></script>
   <script src="js/gallery.js"></script>
-  <script src="js/main.js?v=8"></script>
+  <script src="js/main.js?v=9"></script>
 </body>
 </html>
