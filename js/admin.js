@@ -380,9 +380,33 @@ document.addEventListener("DOMContentLoaded", () => {
             ${viejoHtml}
           </div>
           <div class="admin-card__actions">
+            <button class="btn-action btn-action--more" data-id="${p.id}" aria-expanded="false" aria-controls="admin-detalle-${p.id}">👁️ Ver más</button>
             <button class="btn-action btn-action--edit" data-id="${p.id}">✏️ Editar</button>
             <button class="btn-action btn-action--duplicate" data-id="${p.id}" title="Duplicar producto">📋 Duplicar</button>
             <button class="btn-action btn-action--delete" data-id="${p.id}">🗑️ Eliminar</button>
+          </div>
+          <div class="admin-card__detalle" id="admin-detalle-${p.id}" hidden>
+            <div class="admin-detalle__inner">
+              ${p.desc ? `
+              <section class="detalle__bloque">
+                <h4 class="admin-detalle__titulo">De qué trata</h4>
+                <p class="admin-detalle__texto">${p.desc}</p>
+              </section>` : ""}
+              ${(Array.isArray(p.beneficios) && p.beneficios.length) ? `
+              <section class="detalle__bloque">
+                <h4 class="admin-detalle__titulo">Beneficios</h4>
+                <ul class="admin-detalle__lista">
+                  ${p.beneficios.map((b) => `<li>${b}</li>`).join("")}
+                </ul>
+              </section>` : ""}
+              ${p.uso ? `
+              <section class="detalle__bloque">
+                <h4 class="admin-detalle__titulo">Modo de uso</h4>
+                <p class="admin-detalle__texto">${p.uso}</p>
+              </section>` : ""}
+              ${(!p.desc && !(Array.isArray(p.beneficios) && p.beneficios.length) && !p.uso) ? `
+              <p class="admin-detalle__vacio">Este producto aún no tiene descripción, beneficios ni modo de uso. Agrégalos con "Editar".</p>` : ""}
+            </div>
           </div>
         </div>
       `;
@@ -400,6 +424,17 @@ document.addEventListener("DOMContentLoaded", () => {
       card.querySelector(".btn-action--edit").addEventListener("click", () => abrirModalEditar(p));
       card.querySelector(".btn-action--duplicate").addEventListener("click", () => duplicarProducto(p));
       card.querySelector(".btn-action--delete").addEventListener("click", () => confirmarEliminar(p));
+
+      const btnMore = card.querySelector(".btn-action--more");
+      const cardDetalle = card.querySelector(".admin-card__detalle");
+      if (btnMore && cardDetalle) {
+        btnMore.addEventListener("click", () => {
+          const abierto = btnMore.getAttribute("aria-expanded") === "true";
+          btnMore.setAttribute("aria-expanded", String(!abierto));
+          btnMore.textContent = abierto ? "👁️ Ver más" : "🙈 Ver menos";
+          cardDetalle.hidden = abierto;
+        });
+      }
 
       productsGrid.appendChild(card);
     });

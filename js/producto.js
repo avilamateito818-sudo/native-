@@ -223,11 +223,42 @@ document.addEventListener("DOMContentLoaded", () => {
             </li>
           </ol>
         </form>
+        ${(Array.isArray(p.beneficios) && p.beneficios.length) || p.uso ? `
+        <div class="product-info__detalle">
+          <button type="button" class="product-info__vermas" id="btn-vermas" aria-expanded="false" aria-controls="detalle-producto">
+            <span class="product-info__vermas-txt">Ver más</span>
+            <span class="product-info__vermas-ico" aria-hidden="true">▾</span>
+          </button>
+          <div class="product-info__detalle-body" id="detalle-producto" hidden>
+            ${(Array.isArray(p.beneficios) && p.beneficios.length) ? `
+            <section class="detalle__bloque">
+              <h3 class="detalle__titulo">Beneficios</h3>
+              <ul class="detalle__lista">
+                ${p.beneficios.map((b) => `<li>${b}</li>`).join("")}
+              </ul>
+            </section>` : ""}
+            ${p.uso ? `
+            <section class="detalle__bloque">
+              <h3 class="detalle__titulo">Modo de uso</h3>
+              <p class="detalle__texto">${p.uso}</p>
+            </section>` : ""}
+          </div>
+        </div>` : ""}
       </div>`}
     `;
 
     const qtyVal = document.getElementById("qty-val");
 
+    const btnVermas = document.getElementById("btn-vermas");
+    if (btnVermas) {
+      const cuerpo = document.getElementById("detalle-producto");
+      btnVermas.addEventListener("click", () => {
+        const abierto = btnVermas.getAttribute("aria-expanded") === "true";
+        btnVermas.setAttribute("aria-expanded", String(!abierto));
+        btnVermas.classList.toggle("is-open", !abierto);
+        cuerpo.hidden = abierto;
+      });
+    }
     const sincronizarOrden = () => {
       const q = document.getElementById("orderbox-qty");
       const t = document.getElementById("orderbox-total");
