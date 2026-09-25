@@ -1290,6 +1290,23 @@ a { text-decoration: none; color: inherit; }
 }
 .to-top.show { opacity: 1; transform: translateY(0) scale(1); }
 .to-top:hover { background: var(--gold); color: var(--wine-dark); transform: translateY(-4px); }
+/* No debe robar el gesto de desplazar: sin retardo de toque ni zoom */
+.to-top { touch-action: manipulation; }
+
+/* En movil el pulgar descansa abajo a la derecha, justo donde vivia el
+   boton. Lo subimos y encogemos para que nunca intercepte el scroll. */
+@media (max-width: 560px) {
+  .to-top {
+    right: 14px;
+    bottom: 88px;
+    width: 44px;
+    height: 44px;
+    font-size: 18px;
+    opacity: 0;
+  }
+  .to-top.show { opacity: 0.92; }
+  .to-top:active { transform: scale(0.92); }
+}
 
 /* Contadores hero */
 .hero__stats div { position: relative; }
@@ -2538,6 +2555,20 @@ textarea { min-height: 110px; }
     transform: scale(0.97);
   }
   .card:active { transform: scale(0.99); }
+}
+
+/* ---- G2. Desplazamiento libre: sin retardo de toque ni zoom doble ----
+   `manipulation` quita los ~300ms de retardo y el zoom por doble toque,
+   y NO bloquea el desplazamiento vertical de la pagina. */
+a, button, input, select, textarea, .card, .card__media, .thumb,
+.btn-more, .btn-add, .card__wish, .card__zoom, .nav__links a, .to-top {
+  touch-action: manipulation;
+}
+/* La pagina debe poder deslizarse siempre, incluso empezando el gesto
+   encima de una tarjeta, una imagen o un boton. */
+.card, .card__media, .card__body, .card__foot, .card__actions,
+.product-gallery, .product-info, .orderbox, .catalog__grid, .section {
+  touch-action: pan-y;
 }
 
 /* ---- H. Tabla del admin legible en móvil ---- */

@@ -220,8 +220,20 @@ document.addEventListener("DOMContentLoaded", () => {
         window.location.href = `producto.html?id=${p.id}`;
       });
 
+      // Un arrastre para desplazar la pagina NUNCA debe abrir la ficha:
+      // solo cuenta como clic si el dedo casi no se movio.
+      let downX = 0;
+      let downY = 0;
+      card.addEventListener("pointerdown", (e) => {
+        downX = e.clientX;
+        downY = e.clientY;
+      }, { passive: true });
+
       card.addEventListener("click", (e) => {
         if (e.target.closest("button")) return;
+        const movX = Math.abs(e.clientX - downX);
+        const movY = Math.abs(e.clientY - downY);
+        if (movX > 12 || movY > 12) return; // fue un scroll, no un clic
         window.location.href = `producto.html?id=${p.id}`;
       });
     });
@@ -548,7 +560,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (toTop) {
-      toTop.classList.toggle("show", window.scrollY > 600);
+      // Aparece mas tarde en movil: antes podia pulsarse por error al
+      // deslizar el pulgar y devolverte de golpe al inicio de la pagina.
+      toTop.classList.toggle("show", window.scrollY > (window.innerWidth < 560 ? 1400 : 600));
     }
 
     const pos = window.scrollY + 140;
