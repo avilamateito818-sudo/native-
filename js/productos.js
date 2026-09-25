@@ -26,7 +26,13 @@ window.PRODUCTOS_DEFECTO = [
       "#d98f8f"
     ],
     "stock": "disponible",
-    "badge": "Bestseller"
+    "badge": "Bestseller",
+    "beneficios": [
+      "Acabado mate intenso que no transfiere ni marca la boquilla del vaso",
+      "Manteca de cacao y vitamina E que hidratan los labios todo el dia",
+      "Desliza como seda y se retira con un solo paso de tissue"
+    ],
+    "uso": "Aplica una capa fina sobre labios limpios y secos. Para un look mas duradero, presiona ligeramente con un panuelo tras la primera capa. Retiralo al final del dia con un aceite labial o un cotton de makeup."
   },
   {
     "id": 2,
@@ -40,7 +46,13 @@ window.PRODUCTOS_DEFECTO = [
       "#f6d6d8",
       "#efa3a9"
     ],
-    "stock": "disponible"
+    "stock": "disponible",
+    "beneficios": [
+      "Efecto espejo de alto brillo con particulas de mica sutil",
+      "Menta fresca que da sensacion de labios mas jugosos",
+      "Textura ligera no pegajosa, con acabado degradado facil"
+    ],
+    "uso": "Aplica con el aplicador desde el centro de los labios hacia las comisuras, en capas finas para intensificar el brillo. Ideal solo o como toque final sobre cualquier labial mate."
   },
   {
     "id": 3,
@@ -54,7 +66,13 @@ window.PRODUCTOS_DEFECTO = [
       "#f2c2be",
       "#d97a74"
     ],
-    "stock": "disponible"
+    "stock": "disponible",
+    "beneficios": [
+      "Pigmento rojo puro de alta saturacion con una sola pasada",
+      "Acabado mate completamente transferible",
+      "Formula de larga duracion que aguanta comidas y bebidas"
+    ],
+    "uso": "Delinea y rellena los labios con el pincel fino. Sella presionando ligeramente con un tissue para fijar el color. Para un degradado elegante, difumina el borde exterior con el dedo."
   },
   {
     "id": 4,
@@ -69,7 +87,13 @@ window.PRODUCTOS_DEFECTO = [
       "#c8a96e"
     ],
     "stock": "disponible",
-    "badge": "Nuevo"
+    "badge": "Nuevo",
+    "beneficios": [
+      "12 tonos que van de la familia rosa a ciruela para dia y noche",
+      "Pigmentacion intensa en una sola aplicacion y facil de difuminar",
+      "Textura sedosa que no se cae ni al parpadear"
+    ],
+    "uso": "Aplica el tono claro como base en todo el parpado. Suma el tono medio en el pliegue y oscurece en el exterior. Difumina con un pincel limpio para un degradado sin bordes."
   },
   {
     "id": 5,
@@ -83,7 +107,13 @@ window.PRODUCTOS_DEFECTO = [
       "#d9d9d9",
       "#b9bec9"
     ],
-    "stock": "disponible"
+    "stock": "disponible",
+    "beneficios": [
+      "Volumen dramatico desde la primera capa, sin grumos",
+      "Pincel de fibras finas que separa y alarga las pestanas",
+      "Impermeable hasta 12 horas y no corre bajo los ojos"
+    ],
+    "uso": "Aplica en zigzag desde la raiz de las pestanas hasta las puntas. Usa movimientos en forma de C para envolver cada pelo. En la segunda capa, solo en las puntas para mas definicion."
   },
   {
     "id": 6,
@@ -97,7 +127,13 @@ window.PRODUCTOS_DEFECTO = [
       "#f7dcc4",
       "#efb68d"
     ],
-    "stock": "disponible"
+    "stock": "disponible",
+    "beneficios": [
+      "Pigmento melocoton que simula un rubor natural de piel",
+      "Textura powder suave que se fusiona con la piel",
+      "Aporta luminosidad sin marcado ni brillo excesivo"
+    ],
+    "uso": "Sonrie y aplica sobre el pomulo de la mejilla, difumiendo hacia las sienes. Para un look mas intenso, repite una capa en el centro."
   },
   {
     "id": 7,
@@ -112,7 +148,13 @@ window.PRODUCTOS_DEFECTO = [
       "#eec9d6"
     ],
     "stock": "disponible",
-    "badge": "100% Orgánico"
+    "badge": "100% Orgánico",
+    "beneficios": [
+      "Acido hialuronico y rosa mosqueta que hidratan 24 horas",
+      "Absorcion rapida que no deja capa grasa",
+      "Suaviza la textura de la piel y aporta luminosidad"
+    ],
+    "uso": "Aplica una avellana de crema en rostro y cuello con movimientos circulares ascendentes. Usa AM y PM: por la manana siempre debajo del bloqueador solar."
   },
   {
     "id": 8,
@@ -128,7 +170,13 @@ window.PRODUCTOS_DEFECTO = [
       "#e3c4f0"
     ],
     "stock": "disponible",
-    "badge": "Oferta"
+    "badge": "Oferta",
+    "beneficios": [
+      "Vitamina C y acido hialuronico que unifican el tono",
+      "Efecto glow inmediato sin particulas brillantes",
+      "Ligero, se absorbe en segundos y sirve como base de maquillaje"
+    ],
+    "uso": "Sobre piel limpia, aplica 3 a 4 gotas en el rostro y cuello. Deja actuar 1 minuto y sigue con tu crema hidratante o bloqueador."
   },
   {
     "id": 9,
@@ -142,7 +190,13 @@ window.PRODUCTOS_DEFECTO = [
       "#f7ecd8",
       "#ecd3a8"
     ],
-    "stock": "disponible"
+    "stock": "disponible",
+    "beneficios": [
+      "Manteca de karite pura que suaviza las manos al instante",
+      "Absorcion rapida sin dejar sensacion pegajosa",
+      "Ideal para preparar la mano antes de la manicure o para el frio seco"
+    ],
+    "uso": "Aplica una nuez del producto en las manos y masajelas hasta que absorba. Reaplica antes de dormir para un cuidado nocturno profundo."
   },
   {
     "id": 10,
@@ -156,7 +210,13 @@ window.PRODUCTOS_DEFECTO = [
       "#e9e3f2",
       "#c2b0e0"
     ],
-    "stock": "disponible"
+    "stock": "disponible",
+    "beneficios": [
+      "Arcilla rosa que absorbe el exceso de grasa y purifica los poros",
+      "Rosa mosqueta que calma e hidrata durante la aplicacion",
+      "Elimina impurezas y puntos negros de forma progresiva"
+    ],
+    "uso": "Aplica una capa fina sobre la piel limpia, evitando el contorno de ojos y labios. Deja actuar 10 a 15 minutos sin dejar que seque por completo, y retira con agua tibia y movimientos circulares."
   },
   {
     "id": 11,
@@ -170,7 +230,13 @@ window.PRODUCTOS_DEFECTO = [
       "#f3e3c8",
       "#e2c79a"
     ],
-    "stock": "disponible"
+    "stock": "disponible",
+    "beneficios": [
+      "Granos de azucar que exfolian suavemente sin ser agresivos",
+      "Remueve celulas muertas y revela una piel mas luminosa",
+      "Enriquecida con aceite de jojoba que deja la piel suave tras exfoliar"
+    ],
+    "uso": "Sobre piel humeda, masajee suavemente durante 1 o 2 minutos en movimientos circulares. Enjuaga con agua tibia y aplica hidratacion inmediatamente despues."
   },
   {
     "id": 12,
@@ -185,7 +251,13 @@ window.PRODUCTOS_DEFECTO = [
       "#a8d4b6"
     ],
     "stock": "disponible",
-    "badge": "Vegano"
+    "badge": "Vegano",
+    "beneficios": [
+      "Aloe vera que refresca, calma e hidrata mientras duermes",
+      "Acidos suaves que renuevan la piel durante la noche",
+      "Textura de gel crema que no deja residuos ni sensacion pegajosa"
+    ],
+    "uso": "Aplica como ultimo paso de la rutina nocturna, en rostro, cuello y manos. Deja actuar toda la noche y limpia al despertar. Usalo 2 o 3 veces por semana."
   },
   {
     "id": 13,
@@ -199,7 +271,13 @@ window.PRODUCTOS_DEFECTO = [
       "#e6e4f0",
       "#c9c4e0"
     ],
-    "stock": "disponible"
+    "stock": "disponible",
+    "beneficios": [
+      "Aceite de almendra dulce rico en vitamina E que nutre en profundidad",
+      "Suaviza la piel aspera de brazos, piernas y codos",
+      "Textura ligera de absorcion rapida, no deja marcas en la ropa"
+    ],
+    "uso": "Aplica sobre piel humeda despues de la ducha, en movimientos ascendentes. En zonas muy secas como codos, rodillas y talones, reaplica por la noche."
   },
   {
     "id": 14,
@@ -213,7 +291,13 @@ window.PRODUCTOS_DEFECTO = [
       "#ecd3bf",
       "#d4a58a"
     ],
-    "stock": "disponible"
+    "stock": "disponible",
+    "beneficios": [
+      "Cacao puro y mantequilla de shea que hidratan 48 horas",
+      "Textura densa y nutritiva que devuelve la elasticidad",
+      "Aroma dulce a cacao que perdura suavemente en la piel"
+    ],
+    "uso": "Aplica generosamente en el cuerpo, especialmente en zonas secas como codos, rodillas y manos. Ideal como bano de leche antes de dormir."
   },
   {
     "id": 15,
@@ -227,7 +311,13 @@ window.PRODUCTOS_DEFECTO = [
       "#d8f0ea",
       "#a9d8cc"
     ],
-    "stock": "disponible"
+    "stock": "disponible",
+    "beneficios": [
+      "Gel limpiador suave que respeta el pH natural de la piel",
+      "Aloe y menta que dejan una sensacion fresca y tonificada",
+      "Espuma abundante que perfuma la piel sin resecar"
+    ],
+    "uso": "Aplica una pequena cantidad sobre piel humeda, massagea y luego enjuaga bien. Para una exfoliacion semanal, combina con un guante de baoding exfoliante."
   },
   {
     "id": 16,
@@ -243,7 +333,13 @@ window.PRODUCTOS_DEFECTO = [
       "#ddb4c4"
     ],
     "stock": "disponible",
-    "badge": "Exclusivo"
+    "badge": "Exclusivo",
+    "beneficios": [
+      "Notas de flor de noche con corazon de vainilla y fondo de almizclado",
+      "Aroma envolvente de larga duracion, hasta 8 horas",
+      "Ideal para noches especiales por su caracter misterioso y seductor"
+    ],
+    "uso": "Aplica sobre los puntos de pulso: munecas, cuello, detras de las orejas y en los codos internos. Para mayor duracion, atomiza ligeramente a 15 o 20 cm de distancia."
   },
   {
     "id": 17,
@@ -257,7 +353,13 @@ window.PRODUCTOS_DEFECTO = [
       "#f7ead2",
       "#e9cf9a"
     ],
-    "stock": "disponible"
+    "stock": "disponible",
+    "beneficios": [
+      "Aroma dulce y envolvente de vainilla con toque de caramelo",
+      "Frescura floral de fondo que lo hace versatile todo el ano",
+      "Duracion media de 6 a 8 horas sin ser invasivo"
+    ],
+    "uso": "Aplica generosamente en el cuello, las munecas y la linea del pelo. Se recomienda atomizar a 20 cm para que el aroma se distribute de forma uniforme por toda la piel."
   },
   {
     "id": 18,
@@ -271,9 +373,15 @@ window.PRODUCTOS_DEFECTO = [
       "#ede2cf",
       "#d3cba0"
     ],
-    "stock": "disponible"
+    "stock": "disponible",
+    "beneficios": [
+      "Jazmin fresco que aporta una fragancia ligera y elegante",
+      "Absorcion instantanea que deja la piel suave y fragante",
+      "Ideal para uso diario o para revitalizar a media tarde"
+    ],
+    "uso": "Aplica a una distancia de 20 cm sobre el cuerpo o la ropa. Puedes usarlo en dias de calor para una sensacion fresca y ligera."
   }
-];
+]
 
 window.CATEGORIAS_DEFECTO = {
   "Labiales": {

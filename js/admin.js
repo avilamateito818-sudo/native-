@@ -135,6 +135,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const prodStock = document.getElementById("prod-stock");
   const prodBadge = document.getElementById("prod-badge");
   const prodDesc = document.getElementById("prod-desc");
+  const prodBeneficios = document.getElementById("prod-beneficios");
+  const prodUso = document.getElementById("prod-uso");
   const prodFile = document.getElementById("prod-file");
   const imageDropzone = document.getElementById("image-dropzone");
   const prodImgUrl = document.getElementById("prod-img-url");
@@ -568,6 +570,8 @@ document.addEventListener("DOMContentLoaded", () => {
     prodStock.value = p.stock || "disponible";
     prodBadge.value = p.badge || "";
     prodDesc.value = p.desc || "";
+    if (prodBeneficios) prodBeneficios.value = Array.isArray(p.beneficios) ? p.beneficios.join("\n") : (p.beneficios || "");
+    if (prodUso) prodUso.value = p.uso || "";
     prodEmoji.value = p.emoji || "✨";
     prodImgUrl.value = p.imagen && p.imagen.startsWith("http") ? p.imagen : "";
     imagenActualBase64 = p.imagen && p.imagen.startsWith("data:") ? p.imagen : "";
@@ -792,6 +796,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const stock = prodStock.value || "disponible";
     const badge = prodBadge.value || undefined;
     const desc = prodDesc.value.trim();
+    const beneficios = prodBeneficios
+      ? prodBeneficios.value.split("\n").map((s) => s.trim()).filter(Boolean)
+      : [];
+    const uso = prodUso ? prodUso.value.trim() : "";
     const emoji = prodEmoji.value.trim() || "✨";
     const colores = [prodColorA.value, prodColorB.value];
     const imagen = prodImgUrl.value.trim() || imagenActualBase64 || "";
@@ -829,6 +837,8 @@ document.addEventListener("DOMContentLoaded", () => {
           stock,
           badge,
           desc,
+          beneficios,
+          uso,
           emoji,
           imagen,
           galeria,
@@ -851,6 +861,8 @@ document.addEventListener("DOMContentLoaded", () => {
         stock,
         badge,
         desc,
+        beneficios,
+        uso,
         emoji,
         imagen,
         galeria,
