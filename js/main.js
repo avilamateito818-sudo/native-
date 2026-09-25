@@ -182,10 +182,31 @@ document.addEventListener("DOMContentLoaded", () => {
           <div class="card__foot">
             <div class="card__price">${sim}${p.precio}.00${viejo}</div>
             <div class="card__actions">
-              <button class="btn-more" aria-label="Ver más detalles">Ver más</button>
+              <button class="btn-more" aria-expanded="false" aria-controls="detalle-card-${p.id}">Ver más</button>
               <button class="btn-add ${isAgotado ? 'btn-add--disabled' : ''}" data-id="${p.id}" ${isAgotado ? 'disabled style="opacity:0.6;cursor:not-allowed;"' : ''}>
                 ${isAgotado ? 'Agotado' : 'Añadir +'}
               </button>
+            </div>
+          </div>
+          <div class="card__detalle" id="detalle-card-${p.id}" hidden>
+            <div class="card__detalle-inner">
+              ${p.desc ? `
+              <section class="detalle__bloque">
+                <h3 class="detalle__titulo">De qué trata</h3>
+                <p class="detalle__texto">${p.desc}</p>
+              </section>` : ""}
+              ${(Array.isArray(p.beneficios) && p.beneficios.length) ? `
+              <section class="detalle__bloque">
+                <h3 class="detalle__titulo">Beneficios</h3>
+                <ul class="detalle__lista">
+                  ${p.beneficios.map((b) => `<li>${b}</li>`).join("")}
+                </ul>
+              </section>` : ""}
+              ${p.uso ? `
+              <section class="detalle__bloque">
+                <h3 class="detalle__titulo">Modo de uso</h3>
+                <p class="detalle__texto">${p.uso}</p>
+              </section>` : ""}
             </div>
           </div>
         </div>
@@ -216,9 +237,18 @@ document.addEventListener("DOMContentLoaded", () => {
         btnAdd.addEventListener("click", () => agregarAlBolsa(p));
       }
 
-      card.querySelector(".btn-more").addEventListener("click", () => {
-        window.location.href = `producto.html?id=${p.id}`;
-      });
+      const btnMore = card.querySelector(".btn-more");
+      const cardDetalle = card.querySelector(".card__detalle");
+      if (btnMore && cardDetalle) {
+        btnMore.addEventListener("click", (e) => {
+          e.stopPropagation();
+          const abierto = btnMore.getAttribute("aria-expanded") === "true";
+          btnMore.setAttribute("aria-expanded", String(!abierto));
+          btnMore.classList.toggle("is-open", !abierto);
+          btnMore.textContent = abierto ? "Ver más" : "Ver menos";
+          cardDetalle.hidden = abierto;
+        });
+      }
 
       card.addEventListener("click", (e) => {
         if (e.target.closest("button")) return;
