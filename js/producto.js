@@ -147,21 +147,6 @@ document.addEventListener("DOMContentLoaded", () => {
         <span class="stock ${p.stock}">${st.icono} ${st.texto}</span>
       </div>
       <p class="product-info__desc">${p.desc || "Descripción próximamente."}</p>
-      ${((Array.isArray(p.beneficios) && p.beneficios.length) || p.uso) ? `
-      <div class="product-info__sec">
-        ${(Array.isArray(p.beneficios) && p.beneficios.length) ? `
-        <section class="product-info__bloque">
-          <h2 class="product-info__sec-titulo">Beneficios</h2>
-          <ul class="product-info__sec-lista">
-            ${p.beneficios.map((b) => `<li>${b}</li>`).join("")}
-          </ul>
-        </section>` : ""}
-        ${p.uso ? `
-        <section class="product-info__bloque">
-          <h2 class="product-info__sec-titulo">Modo de uso</h2>
-          <p class="product-info__sec-texto">${p.uso}</p>
-        </section>` : ""}
-      </div>` : ""}
       <ul class="product-info__features">
         <li>🚚 Envío gratis desde ${sim}${cfg.envioGratisMinimo || 50}</li>
         <li>🌱 Cruelty free</li>
